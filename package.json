@@ -1,0 +1,42 @@
+{
+  "name": "@discue/paddle-integration-firestore",
+  "author": "Stefan Pfaffel",
+  "license": "MIT",
+  "version": "0.1.0",
+  "description": "Paddle payments integaration for Google Cloud Firestore",
+  "main": "lib/index",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "test": "mocha test/spec/**/*.spec.js --check-leaks  --timeout 50000",
+    "lint": "eslint -c .eslintrc.json lib",
+    "release": "npm run build && standard-version && git push --follow-tags origin && npm publish",
+    "release-minor": "npm run build && standard-version --release-as minor && git push --follow-tags origin && npm publish",
+    "paddle-webhook-tunnel": "lt --port 3456 --subdomain ii533vj7h9qipggbkbze"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/discue/paddle-integration-firestore.git"
+  },
+  "bugs": {
+    "url": "https://github.com/discue/paddle-integration-firestore/issues"
+  },
+  "homepage": "https://github.com/discue/paddle-integration-firestore#readme",
+  "keywords": [
+    "paddle",
+    "payments",
+    "firestore"
+  ],
+  "devDependencies": {
+    "chai": "^4.3.6",
+    "eslint": "^8.22.0",
+    "mocha": "^10.0.0",
+    "nodemon": "^2.0.19",
+    "standard-version": "^9.5.0"
+  },
+  "dependencies": {
+    "firebase-admin": "^11.0.1",
+    "firebase-tools": "^11.7.0"
+  }
+}
