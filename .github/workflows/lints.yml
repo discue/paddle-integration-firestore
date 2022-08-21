@@ -1,0 +1,36 @@
+name: lints
+on:
+  pull_request:
+    branches-ignore:
+      - dependabot/**
+  push:
+    branches-ignore:
+      - deploy
+    tags-ignore:
+      - "*"
+
+jobs:
+  # Set the job key. The key is displayed as the job name
+  # when a job name is not provided
+  js:
+    timeout-minutes: 10
+    # Name the Job
+    name: javascript
+    # Set the type of machine to run on
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks out a copy of your repository on the ubuntu-latest machine
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+
+      - name: Install modules
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint

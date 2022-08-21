@@ -1,0 +1,31 @@
+name: tests
+on:
+  push:
+    branches-ignore:
+      - deploy
+    tags-ignore:
+      - "*"
+      
+jobs:
+  build:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [lts/*]
+
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@master
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - run: npm ci
+
+    - name: test
+      run: npm run test
+      env:
+        NODE_ENV: production
