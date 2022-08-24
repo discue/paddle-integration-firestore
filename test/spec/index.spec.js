@@ -47,6 +47,26 @@ describe('PaddleIntegration', () => {
             expect(status.quantity).to.equal(createPayload.quantity)
             expect(status.start_at).to.equal(createPayload.event_time)
         })
+        it('throws if identifier is falsy', () => {
+            return paddleIntegration.addSubscription(null, 'not-null').then(() => {
+                return Promise.reject('Must throw an error')
+            }, (error) => {
+                console.log(error.message)
+                if (error.message !== 'INVALID_ARGUMENTS') {
+                    return Promise.reject('Must throw an error "INVALID_ARGUMENTS')
+                }
+            })
+        })
+        it('throws if subscription is falsy', () => {
+            return paddleIntegration.addSubscription('not-null', null).then(() => {
+                return Promise.reject('Must throw an error')
+            }, (error) => {
+                console.log(error.message)
+                if (error.message !== 'INVALID_ARGUMENTS') {
+                    return Promise.reject('Must throw an error "INVALID_ARGUMENTS')
+                }
+            })
+        })
     })
 
     describe('.updateSubscription', () => {
@@ -107,6 +127,16 @@ describe('PaddleIntegration', () => {
             expect(status2.quantity).to.equal(updatePayload.new_quantity)
             expect(status2.start_at).to.equal(updatePayload.event_time)
         })
+        it('throws if subscription is falsy', () => {
+            return paddleIntegration.updateSubscription(null).then(() => {
+                return Promise.reject('Must throw an error')
+            }, (error) => {
+                console.log(error.message)
+                if (error.message !== 'INVALID_ARGUMENTS') {
+                    return Promise.reject('Must throw an error "INVALID_ARGUMENTS')
+                }
+            })
+        })
     })
 
     describe('.cancelSubscription', () => {
@@ -152,6 +182,15 @@ describe('PaddleIntegration', () => {
             expect(status.unit_price).to.equal(cancelPayload.unit_price)
             expect(status.quantity).to.equal(cancelPayload.quantity)
             expect(status.start_at).to.equal(cancelPayload.cancellation_effective_date)
+        })
+        it('throws if subscription is falsy', () => {
+            return paddleIntegration.cancelSubscription(null).then(() => {
+                return Promise.reject('Must throw an error')
+            }, (error) => {
+                if (error.message !== 'INVALID_ARGUMENTS') {
+                    return Promise.reject('Must throw an error "INVALID_ARGUMENTS')
+                }
+            })
         })
     })
 
