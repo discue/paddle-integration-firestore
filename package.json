@@ -30,14 +30,14 @@
   ],
   "devDependencies": {
     "chai": "^4.3.6",
-    "eslint": "^8.22.0",
+    "eslint": "^8.23.0",
     "mocha": "^10.0.0",
     "nodemon": "^2.0.19",
     "standard-version": "^9.5.0"
   },
   "dependencies": {
     "firebase-admin": "^11.0.1",
-    "firebase-tools": "^11.7.0",
+    "firebase-tools": "^11.8.0",
     "html-entities": "^2.3.3"
   }
 }
