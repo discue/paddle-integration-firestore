@@ -5,6 +5,9 @@ const uuid = require('crypto').randomUUID
 const subscriptionCreated = require('../fixtures/subscription-created')
 const subscriptionCancelled = require('../fixtures/subscription-cancelled')
 const subscriptionUpdated = require('../fixtures/subscription-updated')
+const paymentSucceded = require('../fixtures/payment-succeeded')
+const paymentFailed = require('../fixtures/payment-failed')
+const paymentRefunded = require('../fixtures/payment-refunded')
 
 const paddleIntegration = require('../../lib/index')
 const storage = require('../../lib/storage/subscriptions')
@@ -229,6 +232,64 @@ describe('PaddleIntegration', () => {
 
             const isSubscription2Active = await paddleIntegration.hasActiveSubscription('userId', ['8'])
             expect(isSubscription2Active).to.be.true
+        })
+    })
+
+    describe('.addSuccessfulPayment', () => {
+        it('returns true if one active subscription with given plan id was found', async () => {
+            const id = uuid()
+
+            const subscriptionId = uuid()
+            const createPayload = Object.assign({}, subscriptionCreated, { subscription_id: subscriptionId })
+            await paddleIntegration.addSubscription(id, createPayload)
+
+            const paymentPayload = Object.assign({}, paymentSucceded, { subscription_id: subscriptionId })
+            await paddleIntegration.addSuccessfulPayment(paymentPayload)
+
+            const sub = await storage.get(subscriptionId)
+            expect(sub.payments).to.have.length(1)
+
+            const [payment] = sub.payments
+            expect(payment.alert_name).to.equal('subscription_payment_succeeded')
+        })
+    })
+
+    describe('.addRefundedPayment', () => {
+        it('returns true if one active subscription with given plan id was found', async () => {
+            const id = uuid()
+
+            const subscriptionId = uuid()
+            const createPayload = Object.assign({}, subscriptionCreated, { subscription_id: subscriptionId })
+            await paddleIntegration.addSubscription(id, createPayload)
+
+            const paymentPayload = Object.assign({}, paymentRefunded, { subscription_id: subscriptionId })
+            await paddleIntegration.addRefundedPayment(paymentPayload)
+
+            const sub = await storage.get(subscriptionId)
+            expect(sub.payments).to.have.length(1)
+
+            const [payment] = sub.payments
+            expect(payment.alert_name).to.equal('subscription_payment_refunded')
+
+        })
+    })
+
+    describe('.addFailedPayment', () => {
+        it('returns true if one active subscription with given plan id was found', async () => {
+            const id = uuid()
+
+            const subscriptionId = uuid()
+            const createPayload = Object.assign({}, subscriptionCreated, { subscription_id: subscriptionId })
+            await paddleIntegration.addSubscription(id, createPayload)
+
+            const paymentPayload = Object.assign({}, paymentFailed, { subscription_id: subscriptionId })
+            await paddleIntegration.addFailedPayment(paymentPayload)
+
+            const sub = await storage.get(subscriptionId)
+            expect(sub.payments).to.have.length(1)
+
+            const [payment] = sub.payments
+            expect(payment.alert_name).to.equal('subscription_payment_failed')
         })
     })
 })

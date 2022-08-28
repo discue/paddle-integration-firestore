@@ -1,225 +1,38 @@
 module.exports = {
-    "type": "object",
-    "title": "Subscription Payment Succeeded",
-    "description": "Identify this event with the HTTP POST parameter `alert_name` with a value of `subscription_payment_succeeded`",
-    "properties": {
-        "alert_name": {
-            "type": "string",
-            "default": "subscription_payment_succeeded"
-        },
-        "alert_id": {
-            "type": "string",
-            "title": "Alert ID",
-            "description": "The unique identifier for this Paddle webhook alert. Integer value sent as a string.",
-            "pattern": "\\d+"
-        },
-        "balance_currency": {
-            "type": "string",
-            "title": "Balance Currency",
-            "description": "The three letter ISO currency code of the vendor’s default currency at the time of the transaction. Eg: `USD`, `GBP`.",
-            "pattern": "[A-Z]{3}"
-        },
-        "balance_earnings": {
-            "type": "string",
-            "description": "The amount of revenue added to the vendor’s balance as a result of this payment, in the vendor’s `balance_currency` at the time of the transaction.",
-            "pattern": "^\\d+(\\.\\d{1,2})?$"
-        },
-        "balance_fee": {
-            "type": "string",
-            "description": "The fee amount taken from the vendor, in the vendor’s `balance_currency` at the time of the transaction.",
-            "pattern": "^\\d+(\\.\\d{1,2})?$"
-        },
-        "balance_gross": {
-            "type": "string",
-            "description": "The total amount received from the customer as a result of the payment, in the vendor’s `balance_currency` at the time of the transaction.",
-            "pattern": "^\\d+(\\.\\d{1,2})?$"
-        },
-        "balance_tax": {
-            "type": "string",
-            "description": "The amount of tax received from the customer, in the vendor’s `balance_currency` at the time of the transaction.",
-            "pattern": "^\\d+(\\.\\d{1,2})?$"
-        },
-        "checkout_id": {
-            "type": "string",
-            "title": "Checkout ID",
-            "description": "The checkout id of the order created.",
-            "example": "27835673-chre93c81118fc7-b3092639c1"
-        },
-        "country": {
-            "type": "string",
-            "title": "Country",
-            "description": "The two-letter ISO country code of the customer. Eg: `US`, `GB`. See [Supported Countries](/reference/platform-parameters/supported-countries).",
-            "pattern": "[A-Z]{2}"
-        },
-        "coupon": {
-            "type": "string",
-            "title": "Coupon",
-            "description": "The coupon code that was used on this order",
-            "minLength": 5,
-            "maxLength": 300
-        },
-        "currency": {
-            "type": "string",
-            "title": "Currency",
-            "description": "The three-letter ISO currency code. Eg: `USD`, `GBP`. See [Supported Currencies](/reference/platform-parameters/supported-currencies).",
-            "pattern": "[A-Z]{3}"
-        },
-        "customer_name": {
-            "title": "Customer Name",
-            "description": "The name of the customer. For card payments, this will return the cardholder name entered by the buyer during the checkout. For PayPal payments, this will return the name from the PayPal account used during the checkout. For all other payment methods where the name is not collected (including Apple Pay and Wire Transfer), this will be empty.",
-            "type": "string"
-        },
-        "earnings": {
-            "type": "string",
-            "description": "The total amount (after taxes and fees) you earned from this payment.",
-            "pattern": "^\\d+(\\.\\d{1,2})?$"
-        },
-        "email": {
-            "type": "string",
-            "title": "Email",
-            "description": "The email address of the customer.",
-            "format": "email"
-        },
-        "event_time": {
-            "type": "string",
-            "title": "Event Time",
-            "description": "The date and time the event was triggered in UTC (Coordinated Universal Time).",
-            "format": "date-time",
-            "pattern": "[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]"
-        },
-        "fee": {
-            "type": "string",
-            "description": "The total amount in Paddle fees for this payment.",
-            "pattern": "^\\d+(\\.\\d{1,2})?$"
-        },
-        "initial_payment": {
-            "type": "integer",
-            "title": "Initial Payment",
-            "description": "The value of this field `0` or `1` indicates whether it is the customer’s first payment for this subscription.",
-            "enum": [
-                0,
-                1
-            ]
-        },
-        "instalments": {
-            "type": "string",
-            "title": "Instalments",
-            "description": "Number of payments made to date, starting from `1` for the customer's first payment. Integer sent as string.",
-            "pattern": "\\d+"
-        },
-        "marketing_consent": {
-            "type": "integer",
-            "title": "Marketing Consent",
-            "description": "The value of this field `0` or `1` indicates whether the user has agreed to receive marketing messages from the vendor.",
-            "enum": [
-                0,
-                1
-            ]
-        },
-        "next_bill_date": {
-            "type": "string",
-            "title": "Next Bill Date",
-            "description": "The date the next payment is due on this subscription.",
-            "format": "date",
-            "pattern": "^\\d{4}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$"
-        },
-        "next_payment_amount": {
-            "type": "string",
-            "description": "The total amount that the customer will be charged for on their upcoming payment, in the subscription’s currency.",
-            "pattern": "^\\d+(\\.\\d{1,2})?$"
-        },
-        "order_id": {
-            "type": "string",
-            "title": "Order ID",
-            "description": "The Paddle Order ID for this payment. This can be used to look up the order within your Seller Dashboard.",
-            "pattern": "^\\d+(-\\d+)?"
-        },
-        "passthrough": {
-            "type": "string",
-            "title": "Passthrough",
-            "description": "This field contains any values that you passed into the checkout using the `passthrough` parameter. See the [Pass Parameters documentation](/guides/how-tos/checkout/pass-parameters#sending-additional-user-data) for more information.",
-            "maxLength": 1000
-        },
-        "payment_method": {
-            "type": "string",
-            "title": "Subscription Payment Method",
-            "description": "Payment method used to make the transaction.",
-            "enum": [
-                "card",
-                "paypal"
-            ]
-        },
-        "payment_tax": {
-            "type": "string",
-            "description": "Amount of tax paid as a result of this payment.",
-            "pattern": "^\\d+(\\.\\d{1,2})?$"
-        },
-        "plan_name": {
-            "type": "string",
-            "description": "Subscription plan name."
-        },
-        "quantity": {
-            "type": "string",
-            "title": "Quantity",
-            "description": "The number of products or subscription seats sold in the transaction.",
-            "pattern": "\\d+"
-        },
-        "receipt_url": {
-            "type": "string",
-            "description": "URL containing the customer receipt.",
-            "format": "uri"
-        },
-        "sale_gross": {
-            "type": "string",
-            "description": "The total amount the customer was charged for this payment. Decimal sent as string.",
-            "pattern": "^\\d+(\\.\\d{1,2})?$"
-        },
-        "status": {
-            "type": "string",
-            "title": "Status",
-            "description": "This is the current status of the subscription. A list of possible values and their meanings can be found under [Event Statuses](/reference/platform-parameters/event-statuses).",
-            "enum": [
-                "active",
-                "trialing",
-                "past_due",
-                "paused",
-                "deleted"
-            ]
-        },
-        "subscription_id": {
-            "type": "string",
-            "title": "Subscription ID",
-            "description": "This is the unique Subscription ID for this customer’s subscription. You should store this with the customer in your database, as it is needed for making API calls.",
-            "pattern": "\\d+"
-        },
-        "subscription_payment_id": {
-            "type": "string",
-            "title": "Subscription Payment ID",
-            "description": "The unique ID of the subscription payment.",
-            "pattern": "\\d+"
-        },
-        "subscription_plan_id": {
-            "type": "string",
-            "title": "Subscription Plan ID",
-            "description": "The ID of the Subscription Plan the customer is subscribed to. (This is the value that will change upon plan change).",
-            "pattern": "\\d+"
-        },
-        "unit_price": {
-            "type": "string",
-            "title": "Unit Price",
-            "description": "The price per unit of the subscription.",
-            "pattern": "(\\d+\\.\\d{1,2})"
-        },
-        "user_id": {
-            "type": "string",
-            "title": "User ID",
-            "description": "The customer user id.",
-            "pattern": "\\d+"
-        },
-        "p_signature": {
-            "type": "string",
-            "title": "P Signature",
-            "description": "This field contains an encrypted token that you can use to verify the request authenticity. See [Verifying Webhooks](/webhook-reference/verifying-webhooks)."
-        }
-    }
+    alert_id: '746440922',
+    alert_name: 'subscription_payment_succeeded',
+    balance_currency: 'USD',
+    balance_earnings: '557.8',
+    balance_fee: '792.19',
+    balance_gross: '81.7',
+    balance_tax: '553.35',
+    checkout_id: '6-2a237989a49e4be-3d49169283',
+    country: 'DE',
+    coupon: 'Coupon 1',
+    currency: 'USD',
+    customer_name: 'customer_name',
+    earnings: '337.34',
+    email: 'awiegand@example.com',
+    event_time: '2021-08-08 10:47:47',
+    fee: '0.75',
+    initial_payment: '1',
+    instalments: '2',
+    marketing_consent: '1',
+    next_bill_date: '2021-08-25',
+    next_payment_amount: '4.35',
+    order_id: '2',
+    passthrough: 'Example String',
+    payment_method: 'paypal',
+    payment_tax: '0.95',
+    plan_name: 'Example String',
+    quantity: '79',
+    receipt_url: 'https://sandbox-my.paddle.com/receipt/5/ba9910942a7331d-722813e1b3',
+    sale_gross: '436.34',
+    status: 'trialing',
+    subscription_id: '2',
+    subscription_payment_id: '8',
+    subscription_plan_id: '1',
+    unit_price: '2.35',
+    user_id: '3',
+    p_signature: 'TzwfWanmyu09Aat1eL8n1ztXlijhs7nGAF/XO3+3ZKrH5FfZfVWN61VZZui+wSAyJHe8TRtf1UF8riOsxUP445/mDfI156Eco70qABw2g0A6msMnpKcIsE9Zzqrw68sNn1iff+zY/c2vw5nflBQPkX2whu8sDbvglG6u+5Hz0ObwsR7m0R3A/HVd78GDsuQP7dTW4tu3iGhN/lxLLNOH/HIqL7LrHlHsC7of197zi12A7VzPcVe7UzokE1xqYsv+cHsD9bUTngqfsI7C0fQW6i1NSs0dT9fYcRuULown1M+gcHCpSF1PDgb2US71vsxyH7bkXiGP0+uM1caZduitCY9BHYFH6i371LeqEFNE16sxN3roBOCkgJkrxOH8pp+t1Z0/kYIIHCbdvfHrKaQmoKZqKDWZFfQD0u+heyXS4B/+Ma1RgNVy6l/fOd0ClAPygTLf2jUr4B7wL7RjbDwdVQeXj2tam6H/4jsQsfCwDW4Vy3gzhGvX2eML9SGFoCcwrKCjlhxLj/084vRWojleGha3KmxUSQlcZGppaUw1x8nEoeW3esyaUlp/Awk/jGccutmhIkmOXxG6O4Qt4cLSQXa9lxDj66RwzNorBk/Qx7bcwm49q4LkwEAl6gbekaxmMcrt6io+n1kYYowCvaLsBuIhNXTyLvE2ChvoYsoekYU='
 }

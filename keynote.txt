@@ -1,0 +1,27 @@
+Vita:
+In seiner Rolle als System Architect arbeitet Stefan Pfaffel bei Allianz Technology am globalen Rollout einer intern entwickelten CRM-Software.
+
+Stefan Pfaffel leitet internationale Teams aus dem Bereich Testing, DevOps und Architektur und arbeitet vorrangig an der Bereitstellung von Infrastruktur, sowie der Etablierung von DevOps-, Release- und Rollout-, sowie Betriebsprozessen.
+
+Titel:
+Does DevOps scale?
+
+Unterpunkt 1:
+Ausgangssituation der Allianz Technology (Pre-Cloud)
+
+Unterpunkt 2:
+Globale Entwicklung und Rollouts (Post-Cloud)
+
+Unterpunkt 3:
+Pizza-Teams vs. Zeitzonen
+
+Summary:
+Als IT-Dienstleister der Allianz SE entwickelt die Allianz Technology moderne Software, die perspektivisch in allen Ländergesellschaften weltweit Einsatz finden soll. Der Shift von rein lokaler Software-Entwicklung auf Länderebene, hin zu globaler, erlaubt Synergien im Bereich der Design- und Entwicklungsarbeit und erfordert besonderes Augenmerk auf Rollout- und Releaseprozesse. 
+
+Denn: Bekannte Thesen wie "You build it you run it" und der Einsatz von "Pizza Teams" scheinen bei operativem Einsatz in mehreren Zeitzonen schnell herausfordernd bis unmöglich.
+
+Icebreaker 1:
+Ist der Einsatz von SaaS Software denkbar, um die genannten Herausforderungen hinsichtlich Rollouts und Betrieb zu erleichtern?
+
+Icebreaker 2:
+Wie sehr schränken regulatorische Anforderungen in der Versicherungsbranche die Lösungsfindung hinsichtlich DevOps und Infrastruktur ein?
