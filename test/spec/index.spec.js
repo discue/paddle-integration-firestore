@@ -10,7 +10,7 @@ const paymentFailed = require('../fixtures/payment-failed')
 const paymentRefunded = require('../fixtures/payment-refunded')
 
 const paddleIntegration = require('../../lib/index')
-const storage = require('../../lib/storage/subscriptions')
+const storage = require('../../lib/firestore/firestore-resource')('subscriptions')
 
 const { expect } = require('chai')
 
