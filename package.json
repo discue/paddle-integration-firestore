@@ -40,7 +40,7 @@
     "node-amy": "^3.7.0",
     "nodemon": "^2.0.19",
     "playwright": "^1.25.1",
-    "puppeteer": "^16.2.0",
+    "puppeteer": "^17.0.0",
     "standard-version": "^9.5.0"
   },
   "dependencies": {
