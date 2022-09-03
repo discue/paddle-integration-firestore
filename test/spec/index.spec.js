@@ -280,4 +280,76 @@ describe('PaddleIntegration', () => {
             expect(payment.alert_name).to.equal('subscription_payment_failed')
         })
     })
+
+    describe('.isSubscriptionActive', () => {
+        it('takes the most recent status into account', async () => {
+            const subscriptionId = uuid()
+            const createPayload = Object.assign({}, subscriptionCreated,
+                {
+                    subscription_id: subscriptionId, passthrough: JSON.stringify({ ids }),
+                    event_time: new Date().toISOString()
+                }
+            )
+            await paddleIntegration.addSubscription(createPayload)
+
+            const payload = Object.assign({}, subscriptionCancelled,
+                {
+                    subscription_id: subscriptionId,
+                    passthrough: JSON.stringify({ ids }),
+                    cancellation_effective_date: new Date(new Date().getTime()).toISOString()
+                }
+            )
+            await paddleIntegration.cancelSubscription(payload)
+
+            const sub = await storage.get(ids)
+            const isActive = await paddleIntegration.isSubscriptionActive(sub)
+            expect(isActive).to.be.false
+        })
+        it('ignores a status that starts in the future', async () => {
+            const subscriptionId = uuid()
+            const createPayload = Object.assign({}, subscriptionCreated,
+                {
+                    subscription_id: subscriptionId, passthrough: JSON.stringify({ ids }),
+                    event_time: new Date().toISOString()
+                }
+            )
+            await paddleIntegration.addSubscription(createPayload)
+
+            const payload = Object.assign({}, subscriptionCancelled,
+                {
+                    subscription_id: subscriptionId,
+                    passthrough: JSON.stringify({ ids }),
+                    cancellation_effective_date: new Date(new Date().getTime() + 1000).toISOString()
+                }
+            )
+            await paddleIntegration.cancelSubscription(payload)
+
+            const sub = await storage.get(ids)
+            const isActive = await paddleIntegration.isSubscriptionActive(sub)
+            expect(isActive).to.be.true
+        })
+        it('accepts a second parameter that changes the target date', async () => {
+            const subscriptionId = uuid()
+            const createPayload = Object.assign({}, subscriptionCreated,
+                {
+                    subscription_id: subscriptionId, passthrough: JSON.stringify({ ids }),
+                    event_time: new Date().toISOString()
+                }
+            )
+            await paddleIntegration.addSubscription(createPayload)
+
+            const payload = Object.assign({}, subscriptionCancelled,
+                {
+                    subscription_id: subscriptionId,
+                    passthrough: JSON.stringify({ ids }),
+                    cancellation_effective_date: new Date(new Date().getTime() + 1000).toISOString()
+                }
+            )
+            await paddleIntegration.cancelSubscription(payload)
+
+            const sub = await storage.get(ids)
+            const isActive = await paddleIntegration.isSubscriptionActive(sub, new Date(new Date().getTime() + 5000))
+            expect(isActive).to.be.false
+        })
+    })
 })
