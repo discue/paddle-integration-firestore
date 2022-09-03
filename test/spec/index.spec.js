@@ -220,13 +220,16 @@ describe('PaddleIntegration', () => {
             })
             await paddleIntegration.addSubscription(createPayload)
 
+            let sub = await storage.get(ids)
+            expect(sub.payments).to.have.length(0)
+
             const paymentPayload = Object.assign({}, paymentSucceded, {
                 subscription_id: subscriptionId,
                 passthrough: JSON.stringify({ ids }),
             })
             await paddleIntegration.addSuccessfulPayment(paymentPayload)
 
-            const sub = await storage.get(ids)
+            sub = await storage.get(ids)
             expect(sub.payments).to.have.length(1)
 
             const [payment] = sub.payments
