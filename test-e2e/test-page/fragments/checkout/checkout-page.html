@@ -1,0 +1,188 @@
+<main class="p-4 flex flex-col justify-center">
+    <div class="flex flex-col lg:flex-row justify-center space-x-8">
+
+        <div
+            class="px-4 min-w-160 flex flex-col items-center justify-start rounded-xl bg-gray-100 border border-gray-200">
+            <h2 class="p-4 text-base text-center">
+                <span class="text-sm font-highlight text-gray-900">Checkout</span>
+            </h2>
+
+            <div id="waitingForPaddle" class="w-160 py-4 flex-row justify-center space-y-4 animate-pulse">
+                <div class="bg-gray-300 h-6 w-full rounded"></div>
+                <div class="bg-gray-300 h-6 w-32 rounded"></div>
+                <div class="bg-gray-300 h-6 w-full rounded"></div>
+                <div class="bg-gray-300 h-6 w-20 rounded"></div>
+                <div class="bg-gray-300 h-6 w-full rounded"></div>
+                <div class="bg-gray-300 h-6 w-20 rounded"></div>
+                <div class="bg-gray-300 h-6 w-full rounded"></div>
+                <div class="bg-gray-300 h-6 w-full rounded"></div>
+                <div class="bg-gray-300 h-32 w-full rounded"></div>
+            </div>
+            <div id="paddleError" hidden="true">
+                <span class="text-sm font-highlight text-gray-900">Sorry, our checkout is not available at the
+                    moment.</span>
+            </div>
+            <div id="paddleSuccess" hidden="true">
+                <span class="text-sm font-highlight text-gray-900">Thanks for your purchase</span>
+            </div>
+            <div id="paddleContainer" class="absolute hidden w-full">
+                <p class="px-4 w-full text-2xl text-center items-center flex flex-row my-4 space-x-2">
+                    <span class="font-highlight text-gray-900">Price</span>
+                    <span class="flex-grow"></span>
+                    <span class="price-currency text-gray-900"></span>
+                    <span class="price-total block font-highlight text-gray-900"></span>
+                    <span class="block font-highlight text-gray-900">/</span>
+                    <span class="price-interval block font-highlight text-gray-900"></span>
+                </p>
+                <div class="paddle"></div>
+            </div>
+        </div>
+
+        <div class="items-center text-xl font-light w-72">
+            <div
+                class="p-4 flex flex-col justify-center items-center space-y-4 rounded-xl bg-white border border-gray-200">
+
+                <h2 class="text-base text-center">
+                    <span class="text-sm font-highlight text-gray-900">Your subscription</span>
+                </h2>
+
+                <h2 class="text-3xl text-center">
+                    <span class="font-highlight text-gray-900">Visionary</span>
+                </h2>
+
+                <ul class="text-center">
+                    <li class="font-highlight text-sm">Scheduling</li>
+                    <li class="text-sm flex flex-row items-center justify-center space-x-2">
+                        5 tweets per day</li>
+                    <li class="text-sm">30 tweets per week</li>
+                    <li class="text-sm">4 weeks in advance</li>
+                    <li class="mt-4 font-highlight text-sm">Drafts</li>
+                    <li class="text-sm">Save up to 25 drafts</li>
+                    <li class="mt-4 font-highlight text-sm">Intelligent Analysis</li>
+                    <li class="text-sm flex flex-row items-center justify-center space-x-2">
+                        <span class="text-green-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-check-circle">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                        </span>
+                        <span>Sentiment analysis for all replies</span>
+                    </li>
+                    <li class="mt-4 font-highlight text-sm">Drafts</li>
+                    <li class="text-sm flex flex-row items-center justify-center space-x-2">
+                        <span class="text-green-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-check-circle">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                        </span>
+                        <span>Automatic retweets</span>
+                    </li>
+                </ul>
+
+                <app-primary.action.link.component action="/subscriptions">
+                    <template slot="text">
+                        Change Plan
+                    </template>
+                </app-primary.action.link.component>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://cdn.paddle.com/paddle/paddle.js" crossorigin=""></script>
+<script type="text/javascript" nonce="{{nonce.scriptNonce}}">
+    ((window) => {
+        'use strict'
+
+        Paddle.Environment.set('sandbox');
+
+        const paddleCheckoutTimeout = window.setTimeout(() => {
+            document.querySelector('#waitingForPaddle').classList.add('hidden')
+            document.querySelector('#paddleError').classList.remove('hidden')
+        }, 15_000);
+
+        const updatePrices = (data) => {
+            const recurringCurrency = data.eventData.checkout.recurring_prices.customer.currency
+            const recurringTotal = data.eventData.checkout.recurring_prices.customer.total
+            const intervalType = data.eventData.checkout.recurring_prices.interval.type
+
+            window.document.querySelectorAll('.price-currency').forEach(element => {
+                element.textContent = recurringCurrency + ' '
+            })
+
+            window.document.querySelectorAll('.price-interval').forEach(element => {
+                element.textContent = intervalType
+            })
+
+            window.document.querySelectorAll('.price-total').forEach(element => {
+                element.textContent = recurringTotal
+            })
+        }
+
+        Paddle.Setup({
+            vendor: 7663,
+            completeDetails: true,
+            eventCallback: function (data) {
+                console.log('eventCallback', data.event)
+                // The data.event will specify the event type
+                if (data.event === "Checkout.Loaded") {
+                    updatePrices(data)
+
+                    window.clearTimeout(paddleCheckoutTimeout)
+
+                    document.querySelector('#waitingForPaddle').classList.add('hidden')
+                    document.querySelector('#paddleContainer').classList.remove('hidden', 'absolute')
+
+                    console.log(data.eventData); // Data specifics on the event
+                }
+                // The data.event will specify the event type
+                if (data.event === "Checkout.Complete") {
+                    document.querySelector('#paddleSuccess').hidden = false
+                }
+                else if (data.event === "Checkout.Close") {
+                    console.log(data.eventData); // Data specifics on the event
+                }
+            }
+        })
+        Paddle.Checkout.open({
+            method: 'inline',
+            // product: 649915,       // Replace with your Product or Plan ID
+            product: 33590,       // Replace with your Product or Plan ID
+            upsellTitle: 'UpsellTitle',
+            upsellText: 'UpsellText',
+            email: 'a@b.com',
+            title: 'This is the title',
+            message: 'This is a message',
+            allowQuantity: false,
+            disableLogout: false,
+            passthrough: '{"ids": ["4815162342"]}',
+            frameTarget: 'paddle', // The className of your checkout <div>
+            frameInitialHeight: 500,
+            frameStyle: 'position: relative;',    // Please ensure the minimum width is kept at or above 286px with checkout padding disabled, or 312px with checkout padding enabled. See "General" section under "Branded Inline Checkout" below for more information on checkout padding.
+            successCallback: function (data) {
+                const checkoutId = data.checkout.id;
+
+                Paddle.Order.details(checkoutId, function (data) {
+                    console.log('details')
+                    // Order data, downloads, receipts etc... available within 'data' constiable.
+                    console.log(data);
+                })
+            },
+        })
+    })(window)
+</script>
+
+<style nonce="{{nonce.styleNonce}}">
+    iframe {
+        font-family: "ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji";
+        min-width: 40rem;
+        background-color: transparent;
+        border: none;
+        margin: auto;
+    }
+</style>
