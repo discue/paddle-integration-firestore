@@ -51,8 +51,7 @@ test('test receives and stores webhooks', async ({ page }) => {
 
     let subscription = await storage.get(['4815162342'])
     expect(subscription).not.toBeFalsy()
-
-    console.log({ subscription })
+    expect(subscription.payments).toHaveLength(1)
 
     let isActive = await subscriptions.isSubscriptionActive(subscription)
     expect(isActive).toBeTruthy()
