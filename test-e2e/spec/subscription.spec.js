@@ -1,6 +1,7 @@
 'use strict'
 
 const { test, expect } = require('@playwright/test')
+const { expect: chaiExpect } = require('chai')
 const emulatorRunner = require('../../test/emulators-runner')
 const hookRunner = require('../hook-server-runner')
 const hookTunnelRunner = require('../hook-tunnel-runner')
@@ -77,16 +78,31 @@ async function cancelSubscription(page, subscription) {
     await page.locator('text=Cancel Subscription').click()
 }
 
+function validateStatus(status) {
+    if (status.next_bill_date) {
+        chaiExpect(status.next_bill_date).to.match(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/)
+    }
+    chaiExpect(status.alert_id).to.match(/^[0-9]{7,10}$/)
+    chaiExpect(status.alert_name).to.match(/subscription_.*/)
+    chaiExpect(status.currency).to.match(/EUR|USD/)
+    chaiExpect(status.description).to.match(/active|deleted/)
+    chaiExpect(status.unit_price).to.match(/[0-9]{1,2}\.[0-9]{2}/)
+    chaiExpect(status.quantity).to.match(/[0-9]{1}/)
+    chaiExpect(status.start_at).to.match(/^[0-9]{4}-[0-9]{2}-[0-9]{2}/)
+}
+
 test('test receives and stores webhooks', async ({ page }) => {
     // create new subscription and ...
     await createNewSubscription(page)
-    await page.waitForTimeout(10000)
+    await page.waitForTimeout(30000)
 
     // .. check it was stored and payment status was received ..
     let subscription = await storage.get(['4815162342'])
     expect(subscription).not.toBeFalsy()
     expect(subscription.status).toHaveLength(2)
     expect(subscription.payments).toHaveLength(1)
+
+    validateStatus(subscription.status[1])
 
     // .. and check it is active
     let isActive = await subscriptions.isSubscriptionActive(subscription)
@@ -112,6 +128,11 @@ test('test receives and stores webhooks', async ({ page }) => {
 
     // ... verify subscription still active today ...
     subscription = await storage.get(['4815162342'])
+    expect(subscription.status).toHaveLength(3)
+    expect(subscription.payments).toHaveLength(1)
+
+    validateStatus(subscription.status[2])
+
     isActive = await subscriptions.isSubscriptionActive(subscription)
     expect(isActive).toBeTruthy()
 
