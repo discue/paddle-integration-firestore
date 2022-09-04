@@ -14,7 +14,6 @@ const paddleIntegration = new PaddleIntegration('subscriptions')
 const storage = require('../../lib/firestore/nested-firestore-resource')({ documentPath: 'subscriptions', resourceName: 'subscriptions' })
 
 const { expect } = require('chai')
-const { create } = require('domain')
 
 describe('PaddleIntegration', () => {
 
