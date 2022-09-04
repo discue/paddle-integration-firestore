@@ -28,7 +28,7 @@ test.beforeAll(() => {
     return subscriptions.addSubscriptionPlaceholder(['4815162342'])
 })
 
-test('test receives and stores webhooks', async ({ page }) => {
+async function createNewSubscription(page) {
     await page.goto('http://localhost:3333/checkout.html')
     await page.frameLocator('iframe[name="paddle_frame"]').locator('[data-testid="postcodeInput"]').click()
     await page.frameLocator('iframe[name="paddle_frame"]').locator('[data-testid="postcodeInput"]').fill('12345')
@@ -47,15 +47,9 @@ test('test receives and stores webhooks', async ({ page }) => {
     await page.frameLocator('iframe[name="paddle_frame"]').locator('[data-testid="cardVerificationValueInput"]').press('Enter')
 
     await page.waitForSelector('#paddleSuccess', { state: 'visible', timeout: 50000 })
-    await page.waitForTimeout(30000)
+}
 
-    let subscription = await storage.get(['4815162342'])
-    expect(subscription).not.toBeFalsy()
-    expect(subscription.payments).toHaveLength(1)
-
-    let isActive = await subscriptions.isSubscriptionActive(subscription)
-    expect(isActive).toBeTruthy()
-
+async function updatePaymentMethod(page, subscription) {
     await page.goto(subscription.update_url)
     await page.locator('[data-testid="CARD_PaymentSelectionButton"]').click()
     await page.locator('[data-testid="cardNumberInput"]').click()
@@ -73,21 +67,50 @@ test('test receives and stores webhooks', async ({ page }) => {
         page.waitForEvent('popup'),
         page.locator('[data-testid="cardPaymentFormSubmitButton"]').click()
     ])
-    
+
     await page1.locator('text=Complete authentication').click()
     await page.locator('[data-testid="subscriptionManagementSuccess"] div').first().click()
+}
+
+async function cancelSubscription(page, subscription) {
+    await page.goto(subscription.cancel_url)
+    await page.locator('text=Cancel Subscription').click()
+}
+
+test('test receives and stores webhooks', async ({ page }) => {
+    // create new subscription and ...
+    await createNewSubscription(page)
     await page.waitForTimeout(10000)
 
+    // .. check it was stored and payment status was received ..
+    let subscription = await storage.get(['4815162342'])
+    expect(subscription).not.toBeFalsy()
+    expect(subscription.status).toHaveLength(2)
+    expect(subscription.payments).toHaveLength(1)
+
+    // .. and check it is active
+    let isActive = await subscriptions.isSubscriptionActive(subscription)
+    expect(isActive).toBeTruthy()
+
+    // update payment method ...
+    await updatePaymentMethod(page, subscription)
+    await page.waitForTimeout(10000)
+
+    // .. check no new status or payments added ...
     subscription = await storage.get(['4815162342'])
     expect(subscription).not.toBeFalsy()
     expect(subscription.status).toHaveLength(2)
+    expect(subscription.payments).toHaveLength(1)
 
-    await page.goto(subscription.cancel_url)
-    await page.locator('text=Cancel Subscription').click()
+    // .. and still active
+    isActive = await subscriptions.isSubscriptionActive(subscription)
+    expect(isActive).toBeTruthy()
 
+    // cancel subscription ...
+    await cancelSubscription(page, subscription)
     await page.waitForTimeout(10000)
 
-    // verify subscription still active today ...
+    // ... verify subscription still active today ...
     subscription = await storage.get(['4815162342'])
     isActive = await subscriptions.isSubscriptionActive(subscription)
     expect(isActive).toBeTruthy()
