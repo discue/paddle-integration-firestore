@@ -2,7 +2,7 @@
   "name": "@discue/paddle-integration-firestore",
   "author": "Stefan Pfaffel",
   "license": "MIT",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Paddle payments integaration for Google Cloud Firestore",
   "main": "lib/index",
   "files": [
@@ -13,8 +13,8 @@
     "test": "mocha test/spec/**/*.spec.js --check-leaks  --timeout 50000 --file test/global-mocha-setup.js",
     "test-e2e": "playwright test test-e2e/spec",
     "lint": "eslint -c .eslintrc.json lib",
-    "release": "npm run build && standard-version && git push --follow-tags origin && npm publish",
-    "release-minor": "npm run build && standard-version --release-as minor && git push --follow-tags origin && npm publish",
+    "release": "test.sh && test-e2e.sh && standard-version && git push --follow-tags origin && npm publish",
+    "release-minor": "test.sh && test-e2e.sh && standard-version --release-as minor && git push --follow-tags origin && npm publish",
     "paddle-webhook-tunnel": "lt --port 3456 --subdomain xxrrii533vj7h9qipggbkbze"
   },
   "repository": {
