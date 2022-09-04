@@ -56,17 +56,43 @@ test('test receives and stores webhooks', async ({ page }) => {
     let isActive = await subscriptions.isSubscriptionActive(subscription)
     expect(isActive).toBeTruthy()
 
+    await page.goto(subscription.update_url)
+    await page.locator('[data-testid="CARD_PaymentSelectionButton"]').click()
+    await page.locator('[data-testid="cardNumberInput"]').click()
+    await page.locator('[data-testid="cardNumberInput"]').fill('4000 0038 0000 0446')
+    await page.locator('[data-testid="cardNumberInput"]').press('Tab')
+    await page.locator('[data-testid="cardholderNameInput"]').fill('Mullan')
+    await page.locator('[data-testid="cardholderNameInput"]').press('Tab')
+    await page.locator('[data-testid="expiryMonthInput"]').fill('12')
+    await page.locator('[data-testid="expiryMonthInput"]').press('Tab')
+    await page.locator('[data-testid="expiryYearInput"]').fill('2030')
+    await page.locator('[data-testid="expiryYearInput"]').press('Tab')
+    await page.locator('[data-testid="cardVerificationValueInput"]').fill('123')
+
+    const [page1] = await Promise.all([
+        page.waitForEvent('popup'),
+        page.locator('[data-testid="cardPaymentFormSubmitButton"]').click()
+    ])
+    
+    await page1.locator('text=Complete authentication').click()
+    await page.locator('[data-testid="subscriptionManagementSuccess"] div').first().click()
+    await page.waitForTimeout(10000)
+
+    subscription = await storage.get(['4815162342'])
+    expect(subscription).not.toBeFalsy()
+    expect(subscription.status).toHaveLength(2)
+
     await page.goto(subscription.cancel_url)
     await page.locator('text=Cancel Subscription').click()
 
     await page.waitForTimeout(10000)
 
-    // subscription still active today
+    // verify subscription still active today ...
     subscription = await storage.get(['4815162342'])
     isActive = await subscriptions.isSubscriptionActive(subscription)
     expect(isActive).toBeTruthy()
 
-    // but cancelled next month
+    // and not active next month (35 days)
     isActive = await subscriptions.isSubscriptionActive(subscription, new Date(new Date().getTime() + 1000 * 3600 * 24 * 35))
     expect(isActive).toBeFalsy()
 })
