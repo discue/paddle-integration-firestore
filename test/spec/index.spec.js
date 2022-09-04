@@ -14,6 +14,7 @@ const paddleIntegration = new PaddleIntegration('subscriptions')
 const storage = require('../../lib/firestore/nested-firestore-resource')({ documentPath: 'subscriptions', resourceName: 'subscriptions' })
 
 const { expect } = require('chai')
+const { create } = require('domain')
 
 describe('PaddleIntegration', () => {
 
@@ -53,6 +54,8 @@ describe('PaddleIntegration', () => {
             expect(sub.vendor_user_id).to.equal(createPayload.user_id)
 
             const status = sub.status[1]
+            expect(status.alert_id).to.equal(createPayload.alert_id)
+            expect(status.alert_name).to.equal(createPayload.alert_name)
             expect(status.currency).to.equal(createPayload.currency)
             expect(status.description).to.equal(createPayload.status)
             expect(status.next_bill_date).to.equal(createPayload.next_bill_date)
@@ -104,6 +107,8 @@ describe('PaddleIntegration', () => {
             expect(status0.description).to.equal('pre-checkout-placeholder')
 
             const status1 = sub.status[1]
+            expect(status1.alert_id).to.equal(createPayload.alert_id)
+            expect(status1.alert_name).to.equal(createPayload.alert_name)
             expect(status1.currency).to.equal(createPayload.currency)
             expect(status1.description).to.equal(createPayload.status)
             expect(status1.next_bill_date).to.equal(createPayload.next_bill_date)
@@ -119,6 +124,8 @@ describe('PaddleIntegration', () => {
             expect(status2.quantity).to.not.equal(createPayload.quantity)
             expect(status2.start_at).to.not.equal(createPayload.event_time)
             // these values must be equal to update payload values
+            expect(status2.alert_id).to.equal(updatePayload.alert_id)
+            expect(status2.alert_name).to.equal(updatePayload.alert_name)
             expect(status2.currency).to.equal(updatePayload.currency)
             expect(status2.description).to.equal(updatePayload.status)
             expect(status2.next_bill_date).to.equal(updatePayload.next_bill_date)
@@ -194,6 +201,8 @@ describe('PaddleIntegration', () => {
             expect(sub.vendor_user_id).to.equal(createPayload.user_id)
 
             const status = sub.status[2]
+            expect(status.alert_id).to.equal(cancelPayload.alert_id)
+            expect(status.alert_name).to.equal(cancelPayload.alert_name)
             expect(status.currency).to.equal(cancelPayload.currency)
             expect(status.description).to.equal(cancelPayload.status)
             expect(status.unit_price).to.equal(cancelPayload.unit_price)
