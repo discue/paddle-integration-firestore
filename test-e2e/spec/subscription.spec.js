@@ -73,7 +73,7 @@ async function updatePaymentMethod(page, subscription) {
     await page.locator('[data-testid="subscriptionManagementSuccess"] div').first().click()
 }
 
-async function cancelSubscription(page, subscription) {
+async function addSubscriptionCancelledStatus(page, subscription) {
     await page.goto(subscription.cancel_url)
     await page.locator('text=Cancel Subscription').click()
 }
@@ -123,7 +123,7 @@ test('test receives and stores webhooks', async ({ page }) => {
     expect(isActive).toBeTruthy()
 
     // cancel subscription ...
-    await cancelSubscription(page, subscription)
+    await addSubscriptionCancelledStatus(page, subscription)
     await page.waitForTimeout(10000)
 
     // ... verify subscription still active today ...

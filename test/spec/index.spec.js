@@ -28,7 +28,7 @@ describe('PaddleIntegration', () => {
         it('creates an aactive subscription', async () => {
             const createPayload = Object.assign({}, subscriptionCreated, { passthrough: JSON.stringify({ ids }) })
 
-            await paddleIntegration.addSubscription(createPayload)
+            await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
             const sub = await storage.get(ids)
             const isActive = await paddleIntegration.isSubscriptionActive(sub)
             expect(isActive).to.be.true
@@ -39,7 +39,7 @@ describe('PaddleIntegration', () => {
                     subscription_id: uuid(), passthrough: JSON.stringify({ ids })
                 }
             )
-            await paddleIntegration.addSubscription(createPayload)
+            await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
 
             const sub = await storage.get(ids)
             expect(sub.cancel_url).to.equal(createPayload.cancel_url)
@@ -63,7 +63,7 @@ describe('PaddleIntegration', () => {
             expect(status.start_at).to.equal(createPayload.event_time)
         })
         it('throws if subscription is falsy', () => {
-            return paddleIntegration.addSubscription(null).then(() => {
+            return paddleIntegration.addSubscriptionCreatedStatus(null).then(() => {
                 return Promise.reject('Must throw an error')
             }, (error) => {
                 if (error.message !== 'INVALID_ARGUMENTS') {
@@ -82,14 +82,14 @@ describe('PaddleIntegration', () => {
                     subscription_id: subscriptionId, passthrough: JSON.stringify({ ids })
                 }
             )
-            await paddleIntegration.addSubscription(createPayload)
+            await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
 
             const updatePayload = Object.assign({}, subscriptionUpdated,
                 {
                     subscription_id: subscriptionId, passthrough: JSON.stringify({ ids })
                 }
             )
-            await paddleIntegration.updateSubscription(updatePayload)
+            await paddleIntegration.addSubscriptionUpdatedStatus(updatePayload)
 
             const sub = await storage.get(ids)
             expect(sub.cancel_url).to.equal(updatePayload.cancel_url)
@@ -133,7 +133,7 @@ describe('PaddleIntegration', () => {
             expect(status2.start_at).to.equal(updatePayload.event_time)
         })
         it('throws if subscription is falsy', () => {
-            return paddleIntegration.updateSubscription(null).then(() => {
+            return paddleIntegration.addSubscriptionUpdatedStatus(null).then(() => {
                 return Promise.reject('Must throw an error')
             }, (error) => {
                 if (error.message !== 'INVALID_ARGUMENTS') {
@@ -143,7 +143,7 @@ describe('PaddleIntegration', () => {
         })
     })
 
-    describe('.cancelSubscription', () => {
+    describe('.addSubscriptionCancelledStatus', () => {
         it('cancels a subscription', async () => {
             const subscriptionId = uuid()
 
@@ -152,7 +152,7 @@ describe('PaddleIntegration', () => {
                     subscription_id: subscriptionId, passthrough: JSON.stringify({ ids })
                 }
             )
-            await paddleIntegration.addSubscription(createPayload)
+            await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
 
             const payload = Object.assign({}, subscriptionCancelled,
                 {
@@ -161,7 +161,7 @@ describe('PaddleIntegration', () => {
                     cancellation_effective_date: new Date(new Date().getTime() - 1000).toISOString()
                 }
             )
-            await paddleIntegration.cancelSubscription(payload)
+            await paddleIntegration.addSubscriptionCancelledStatus(payload)
 
             const sub = await storage.get(ids)
             const isActive = await paddleIntegration.isSubscriptionActive(sub)
@@ -175,7 +175,7 @@ describe('PaddleIntegration', () => {
                     subscription_id: subscriptionId, passthrough: JSON.stringify({ ids })
                 }
             )
-            await paddleIntegration.addSubscription(createPayload)
+            await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
 
             const cancelPayload = Object.assign({}, subscriptionCancelled,
                 {
@@ -184,7 +184,7 @@ describe('PaddleIntegration', () => {
                     cancellation_effective_date: new Date(new Date().getTime() - 1000).toISOString()
                 }
             )
-            await paddleIntegration.cancelSubscription(cancelPayload)
+            await paddleIntegration.addSubscriptionCancelledStatus(cancelPayload)
 
             const sub = await storage.get(ids)
             expect(sub.cancel_url).to.equal(createPayload.cancel_url)
@@ -209,7 +209,7 @@ describe('PaddleIntegration', () => {
             expect(status.start_at).to.equal(cancelPayload.cancellation_effective_date)
         })
         it('throws if subscription is falsy', () => {
-            return paddleIntegration.cancelSubscription(null).then(() => {
+            return paddleIntegration.addSubscriptionCancelledStatus(null).then(() => {
                 return Promise.reject('Must throw an error')
             }, (error) => {
                 if (error.message !== 'INVALID_ARGUMENTS') {
@@ -226,7 +226,7 @@ describe('PaddleIntegration', () => {
                 subscription_id: subscriptionId,
                 passthrough: JSON.stringify({ ids }),
             })
-            await paddleIntegration.addSubscription(createPayload)
+            await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
 
             let sub = await storage.get(ids)
             expect(sub.payments).to.have.length(0)
@@ -252,7 +252,7 @@ describe('PaddleIntegration', () => {
                 subscription_id: subscriptionId,
                 passthrough: JSON.stringify({ ids }),
             })
-            await paddleIntegration.addSubscription(createPayload)
+            await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
 
             const paymentPayload = Object.assign({}, paymentRefunded, {
                 subscription_id: subscriptionId,
@@ -276,7 +276,7 @@ describe('PaddleIntegration', () => {
                 subscription_id: subscriptionId,
                 passthrough: JSON.stringify({ ids }),
             })
-            await paddleIntegration.addSubscription(createPayload)
+            await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
 
             const paymentPayload = Object.assign({}, paymentFailed, {
                 subscription_id: subscriptionId,
@@ -301,7 +301,7 @@ describe('PaddleIntegration', () => {
                     event_time: new Date().toISOString()
                 }
             )
-            await paddleIntegration.addSubscription(createPayload)
+            await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
 
             const payload = Object.assign({}, subscriptionCancelled,
                 {
@@ -310,7 +310,7 @@ describe('PaddleIntegration', () => {
                     cancellation_effective_date: new Date(new Date().getTime()).toISOString()
                 }
             )
-            await paddleIntegration.cancelSubscription(payload)
+            await paddleIntegration.addSubscriptionCancelledStatus(payload)
 
             const sub = await storage.get(ids)
             const isActive = await paddleIntegration.isSubscriptionActive(sub)
@@ -324,7 +324,7 @@ describe('PaddleIntegration', () => {
                     event_time: new Date().toISOString()
                 }
             )
-            await paddleIntegration.addSubscription(createPayload)
+            await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
 
             const payload = Object.assign({}, subscriptionCancelled,
                 {
@@ -333,7 +333,7 @@ describe('PaddleIntegration', () => {
                     cancellation_effective_date: new Date(new Date().getTime() + 1000).toISOString()
                 }
             )
-            await paddleIntegration.cancelSubscription(payload)
+            await paddleIntegration.addSubscriptionCancelledStatus(payload)
 
             const sub = await storage.get(ids)
             const isActive = await paddleIntegration.isSubscriptionActive(sub)
@@ -347,7 +347,7 @@ describe('PaddleIntegration', () => {
                     event_time: new Date().toISOString()
                 }
             )
-            await paddleIntegration.addSubscription(createPayload)
+            await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
 
             const payload = Object.assign({}, subscriptionCancelled,
                 {
@@ -356,7 +356,7 @@ describe('PaddleIntegration', () => {
                     cancellation_effective_date: new Date(new Date().getTime() + 1000).toISOString()
                 }
             )
-            await paddleIntegration.cancelSubscription(payload)
+            await paddleIntegration.addSubscriptionCancelledStatus(payload)
 
             const sub = await storage.get(ids)
             const isActive = await paddleIntegration.isSubscriptionActive(sub, new Date(new Date().getTime() + 5000))
