@@ -364,4 +364,50 @@ describe('PaddleIntegration', () => {
             expect(isActive).to.be.false
         })
     })
+
+    describe('.getStartAndEndDates', () => {
+        it('returns only start date if theres no end date', async () => {
+            const subscriptionId = uuid()
+            const startTimeString = new Date().toISOString()
+            const createPayload = Object.assign({}, subscriptionCreated,
+                {
+                    subscription_id: subscriptionId, passthrough: JSON.stringify({ ids }),
+                    event_time: startTimeString
+                }
+            )
+            await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
+
+            const { subscription: sub } = await storage.get(ids)
+            const { start, end } = await paddleIntegration.getStartAndEndDates(sub)
+            expect(start).to.equal(startTimeString)
+            expect(end).to.be.null
+        })
+        it('returns start and end date', async () => {
+            const subscriptionId = uuid()
+            const startTimeString = new Date().toISOString()
+            const endTimeString = new Date(new Date().getTime() + 1000 * 3600 * 24 * 33).toISOString()
+
+            const createPayload = Object.assign({}, subscriptionCreated,
+                {
+                    subscription_id: subscriptionId, passthrough: JSON.stringify({ ids }),
+                    event_time: startTimeString
+                }
+            )
+            await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
+
+            const payload = Object.assign({}, subscriptionCancelled,
+                {
+                    subscription_id: subscriptionId,
+                    passthrough: JSON.stringify({ ids }),
+                    cancellation_effective_date: endTimeString
+                }
+            )
+            await paddleIntegration.addSubscriptionCancelledStatus(payload)
+
+            const { subscription: sub } = await storage.get(ids)
+            const { start, end } = await paddleIntegration.getStartAndEndDates(sub)
+            expect(start).to.equal(startTimeString)
+            expect(end).to.equal(endTimeString)
+        })
+    })
 })
