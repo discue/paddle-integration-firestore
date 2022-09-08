@@ -3,8 +3,8 @@
 const express = require('express')
 const app = express()
 
-const Subscriptions = require('../lib/index')
-const subscriptions = new Subscriptions('subscriptions')
+const { Subscriptions } = require('../lib/index')
+const subscriptions = new Subscriptions('api_client')
 
 const Middleware = require('../lib/middleware')
 const middleware = Middleware(subscriptions)

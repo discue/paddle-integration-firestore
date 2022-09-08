@@ -9,9 +9,9 @@ const paymentSucceded = require('../fixtures/payment-succeeded')
 const paymentFailed = require('../fixtures/payment-failed')
 const paymentRefunded = require('../fixtures/payment-refunded')
 
-const PaddleIntegration = require('../../lib/index')
-const paddleIntegration = new PaddleIntegration('subscriptions')
-const storage = require('../../lib/firestore/nested-firestore-resource')({ documentPath: 'subscriptions', resourceName: 'subscriptions' })
+const { Subscriptions } = require('../../lib/index')
+const paddleIntegration = new Subscriptions('api_client')
+const storage = require('../../lib/firestore/nested-firestore-resource')({ documentPath: 'api_client', resourceName: 'api_clients' })
 
 const { expect } = require('chai')
 
@@ -21,6 +21,7 @@ describe('PaddleIntegration', () => {
 
     beforeEach(async () => {
         ids = [uuid()]
+        await storage.put(ids, {})
         await paddleIntegration.addSubscriptionPlaceholder(ids)
     })
 
@@ -29,7 +30,7 @@ describe('PaddleIntegration', () => {
             const createPayload = Object.assign({}, subscriptionCreated, { passthrough: JSON.stringify({ ids }) })
 
             await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
-            const sub = await storage.get(ids)
+            const { subscription: sub } = await storage.get(ids)
             const isActive = await paddleIntegration.isSubscriptionActive(sub)
             expect(isActive).to.be.true
         })
@@ -41,7 +42,7 @@ describe('PaddleIntegration', () => {
             )
             await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
 
-            const sub = await storage.get(ids)
+            const { subscription: sub } = await storage.get(ids)
             expect(sub.cancel_url).to.equal(createPayload.cancel_url)
             expect(sub.checkout_id).to.equal(createPayload.checkout_id)
             expect(sub.payments).to.have.length(0)
@@ -91,7 +92,7 @@ describe('PaddleIntegration', () => {
             )
             await paddleIntegration.addSubscriptionUpdatedStatus(updatePayload)
 
-            const sub = await storage.get(ids)
+            const { subscription: sub } = await storage.get(ids)
             expect(sub.cancel_url).to.equal(updatePayload.cancel_url)
             expect(sub.checkout_id).to.equal(updatePayload.checkout_id)
             expect(sub.payments).to.have.length(0)
@@ -163,7 +164,7 @@ describe('PaddleIntegration', () => {
             )
             await paddleIntegration.addSubscriptionCancelledStatus(payload)
 
-            const sub = await storage.get(ids)
+            const { subscription: sub } = await storage.get(ids)
             const isActive = await paddleIntegration.isSubscriptionActive(sub)
             expect(isActive).to.be.false
         })
@@ -186,7 +187,7 @@ describe('PaddleIntegration', () => {
             )
             await paddleIntegration.addSubscriptionCancelledStatus(cancelPayload)
 
-            const sub = await storage.get(ids)
+            const { subscription: sub } = await storage.get(ids)
             expect(sub.cancel_url).to.equal(createPayload.cancel_url)
             expect(sub.checkout_id).to.equal(createPayload.checkout_id)
             expect(sub.payments).to.have.length(0)
@@ -228,16 +229,16 @@ describe('PaddleIntegration', () => {
             })
             await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
 
-            let sub = await storage.get(ids)
+            let { subscription: sub } = await storage.get(ids)
             expect(sub.payments).to.have.length(0)
 
             const paymentPayload = Object.assign({}, paymentSucceded, {
                 subscription_id: subscriptionId,
                 passthrough: JSON.stringify({ ids }),
             })
-            await paddleIntegration.addSuccessfulPayment(paymentPayload)
+            await paddleIntegration.addSuccessfulPayment(paymentPayload);
 
-            sub = await storage.get(ids)
+            ({ subscription: sub } = await storage.get(ids))
             expect(sub.payments).to.have.length(1)
 
             const [payment] = sub.payments
@@ -260,7 +261,7 @@ describe('PaddleIntegration', () => {
             })
             await paddleIntegration.addRefundedPayment(paymentPayload)
 
-            const sub = await storage.get(ids)
+            const { subscription: sub } = await storage.get(ids)
             expect(sub.payments).to.have.length(1)
 
             const [payment] = sub.payments
@@ -284,7 +285,7 @@ describe('PaddleIntegration', () => {
             })
             await paddleIntegration.addFailedPayment(paymentPayload)
 
-            const sub = await storage.get(ids)
+            const { subscription: sub } = await storage.get(ids)
             expect(sub.payments).to.have.length(1)
 
             const [payment] = sub.payments
@@ -312,7 +313,7 @@ describe('PaddleIntegration', () => {
             )
             await paddleIntegration.addSubscriptionCancelledStatus(payload)
 
-            const sub = await storage.get(ids)
+            const { subscription: sub } = await storage.get(ids)
             const isActive = await paddleIntegration.isSubscriptionActive(sub)
             expect(isActive).to.be.false
         })
@@ -335,7 +336,7 @@ describe('PaddleIntegration', () => {
             )
             await paddleIntegration.addSubscriptionCancelledStatus(payload)
 
-            const sub = await storage.get(ids)
+            const { subscription: sub } = await storage.get(ids)
             const isActive = await paddleIntegration.isSubscriptionActive(sub)
             expect(isActive).to.be.true
         })
@@ -358,7 +359,7 @@ describe('PaddleIntegration', () => {
             )
             await paddleIntegration.addSubscriptionCancelledStatus(payload)
 
-            const sub = await storage.get(ids)
+            const { subscription: sub } = await storage.get(ids)
             const isActive = await paddleIntegration.isSubscriptionActive(sub, new Date(new Date().getTime() + 5000))
             expect(isActive).to.be.false
         })

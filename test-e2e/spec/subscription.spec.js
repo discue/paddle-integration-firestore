@@ -7,11 +7,11 @@ const hookRunner = require('../hook-server-runner')
 const hookTunnelRunner = require('../hook-tunnel-runner')
 const testPageRunner = require('../test-page-runner')
 
-const Subscriptions = require('../../lib/index')
-const subscriptions = new Subscriptions('subscriptions')
+const { Subscriptions } = require('../../lib/index')
+const subscriptions = new Subscriptions('api_client')
 
 const storageResource = require('../../lib/firestore/nested-firestore-resource')
-const storage = storageResource({ documentPath: 'subscriptions', resourceName: 'subscription' })
+const storage = storageResource({ documentPath: 'api_client', resourceName: 'api_clients' })
 
 test.beforeAll(emulatorRunner.start)
 test.afterAll(emulatorRunner.stop)
@@ -25,6 +25,9 @@ test.afterAll(hookTunnelRunner.stop)
 test.beforeAll(testPageRunner.start)
 test.afterAll(testPageRunner.stop)
 
+test.beforeAll(() => {
+    return storage.put(['4815162342'], {})
+})
 test.beforeAll(() => {
     return subscriptions.addSubscriptionPlaceholder(['4815162342'])
 })
@@ -94,10 +97,10 @@ function validateStatus(status) {
 test('test receives and stores webhooks', async ({ page }) => {
     // create new subscription and ...
     await createNewSubscription(page)
-    await page.waitForTimeout(30000)
+    await page.waitForTimeout(45000)
 
     // .. check it was stored and payment status was received ..
-    let subscription = await storage.get(['4815162342'])
+    let { subscription } = await storage.get(['4815162342'])
     expect(subscription).not.toBeFalsy()
     expect(subscription.status).toHaveLength(2)
     expect(subscription.payments).toHaveLength(1)
@@ -110,10 +113,10 @@ test('test receives and stores webhooks', async ({ page }) => {
 
     // update payment method ...
     await updatePaymentMethod(page, subscription)
-    await page.waitForTimeout(10000)
+    await page.waitForTimeout(10000);
 
     // .. check no new status or payments added ...
-    subscription = await storage.get(['4815162342'])
+    ({ subscription } = await storage.get(['4815162342']))
     expect(subscription).not.toBeFalsy()
     expect(subscription.status).toHaveLength(2)
     expect(subscription.payments).toHaveLength(1)
@@ -124,10 +127,10 @@ test('test receives and stores webhooks', async ({ page }) => {
 
     // cancel subscription ...
     await addSubscriptionCancelledStatus(page, subscription)
-    await page.waitForTimeout(10000)
+    await page.waitForTimeout(10000);
 
     // ... verify subscription still active today ...
-    subscription = await storage.get(['4815162342'])
+    ({ subscription } = await storage.get(['4815162342']))
     expect(subscription.status).toHaveLength(3)
     expect(subscription.payments).toHaveLength(1)
 
