@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/discue/paddle-integration-firestore/compare/v0.2.0...v0.3.0) (2022-09-08)
+
+
+### Features
+
+* dont store subscription in subcollection ([6ff74fb](https://github.com/discue/paddle-integration-firestore/commit/6ff74fb777f12473e6cf395b6579cfd7019581fb))
+
+
+### Refactorings
+
+* rename all status methods ([1dfe541](https://github.com/discue/paddle-integration-firestore/commit/1dfe54163471b7138289923594196a32a76a0d51))
+
+
+### Chores
+
+* **docs:** update readme ([6afe36d](https://github.com/discue/paddle-integration-firestore/commit/6afe36d506d7deea85bac7c9fcecc07101d82b87))
+* make sure test scripts actually run ([591a7a1](https://github.com/discue/paddle-integration-firestore/commit/591a7a158f4011af31aad8595ed76417c26b95f0))
+* run tests before releases ([43b7821](https://github.com/discue/paddle-integration-firestore/commit/43b7821cabcaee0d3fae9add68a25f08c0f180e5))
+
 ## [0.2.0](https://github.com/discue/paddle-integration-firestore/compare/v0.1.0...v0.2.0) (2022-09-04)
 
 
