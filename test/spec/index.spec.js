@@ -411,7 +411,7 @@ describe('PaddleIntegration', () => {
         })
     })
 
-    describe('.getPaymentsTrail', () => {
+    describe('.getStatusTrail', () => {
         beforeEach(async () => {
             const subscriptionId = uuid()
             const createPayload = Object.assign({}, subscriptionCreated, {
@@ -482,6 +482,48 @@ describe('PaddleIntegration', () => {
             expect(trail[2].receipt_url).to.equal(paymentSucceded.receipt_url)
             expect(trail[2].instalments).to.equal(paymentSucceded.instalments)
             expect(trail[2].subscription_plan_id).to.equal(paymentSucceded.subscription_plan_id)
+        })
+    })
+    describe('.getStatusTrail', () => {
+        beforeEach(async () => {
+            const subscriptionId = uuid()
+
+            const createPayload = Object.assign({}, subscriptionCreated,
+                {
+                    event_time: '2024-08-08 10:47:47',
+                    subscription_id: subscriptionId, passthrough: JSON.stringify({ ids })
+                }
+            )
+            await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
+
+            const updatePayload = Object.assign({}, subscriptionUpdated,
+                {
+                    event_time: '2026-08-08 10:47:47',
+                    subscription_id: subscriptionId, passthrough: JSON.stringify({ ids })
+                }
+            )
+            await paddleIntegration.addSubscriptionUpdatedStatus(updatePayload)
+
+            const cancelPayload = Object.assign({}, subscriptionCancelled,
+                {
+                    subscription_id: subscriptionId,
+                    passthrough: JSON.stringify({ ids }),
+                    cancellation_effective_date: '2028-08-08 10:47:47',
+                }
+            )
+            await paddleIntegration.addSubscriptionCancelledStatus(cancelPayload)
+        })
+        it('returns a sorted listed of payments', async () => {
+            const { subscription: sub } = await storage.get(ids)
+            const trail = await paddleIntegration.getStatusTrail(sub)
+
+            expect(trail).to.have.length(3)
+            expect(trail[0].type).to.equal('subscription_created')
+            expect(trail[0].description).to.equal('active')
+            expect(trail[1].type).to.equal('subscription_updated')
+            expect(trail[1].description).to.equal('active')
+            expect(trail[2].type).to.equal('subscription_cancelled')
+            expect(trail[2].description).to.equal('deleted')
         })
     })
 })
