@@ -450,73 +450,82 @@ describe('PaddleIntegration', () => {
         beforeEach(async () => {
             const subscriptionId = uuid()
             const createPayload = Object.assign({}, subscriptionCreated, {
-                event_time: '2028-08-08 10:47:47',
+                event_time: '2018-08-08 10:47:47',
                 subscription_id: subscriptionId,
                 passthrough: JSON.stringify({ ids }),
             })
             await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
 
             const paymentSuccesfulPayload = Object.assign({}, paymentSucceded, {
-                event_time: '2027-08-08 10:47:47',
+                event_time: '2017-08-08 10:47:47',
                 subscription_id: subscriptionId,
                 passthrough: JSON.stringify({ ids }),
             })
-            await paddleIntegration.addSuccessfulPayment(paymentSuccesfulPayload);
+            await paddleIntegration.addSuccessfulPayment(paymentSuccesfulPayload)
+
+            const paymentSuccesfulPayload2 = Object.assign({}, paymentSucceded, {
+                event_time: '2017-08-08 10:47:47',
+                subscription_id: subscriptionId,
+                subscription_plan_id: '4',
+                passthrough: JSON.stringify({ ids }),
+            })
+            await paddleIntegration.addSuccessfulPayment(paymentSuccesfulPayload2)
 
             const paymentRefundedPayload = Object.assign({}, paymentRefunded, {
-                event_time: '2024-08-08 10:47:47',
+                event_time: '2014-08-08 10:47:47',
                 subscription_id: subscriptionId,
                 passthrough: JSON.stringify({ ids }),
             })
             await paddleIntegration.addRefundedPayment(paymentRefundedPayload)
 
             const paymentFailedPayload = Object.assign({}, paymentFailed, {
-                event_time: '2022-08-08 10:47:47',
+                event_time: '2012-08-08 10:47:47',
                 subscription_id: subscriptionId,
                 passthrough: JSON.stringify({ ids }),
             })
             await paddleIntegration.addFailedPayment(paymentFailedPayload)
         })
-        it('returns a sorted listed of payments', async () => {
+        it('returns a sorted listed of payments per subscription plan id', async () => {
             const { subscription: sub } = await storage.get(ids)
             const trail = await paddleIntegration.getPaymentsTrail(sub)
 
-            expect(trail).to.have.length(3)
-            expect(trail[0].description).to.equal('subscription_payment_failed')
-            expect(trail[0].amount.currency).to.equal(paymentFailed.currency)
-            expect(trail[0].amount.total).to.equal(paymentFailed.amount)
-            expect(trail[0].amount.quantity).to.equal(paymentFailed.quantity)
-            expect(trail[0].amount.unit_price).to.equal(paymentFailed.unit_price)
-            expect(trail[0].next_try.date).to.equal(paymentFailed.next_retry_date)
-            expect(trail[0].instalments).to.equal(paymentFailed.instalments)
-            expect(trail[0].subscription_plan_id).to.equal(paymentFailed.subscription_plan_id)
+            expect(trail).to.have.keys(paymentSucceded.subscription_plan_id, '4')
 
+            const paymentsForSubscription = trail[paymentSucceded.subscription_plan_id]
+            expect(paymentsForSubscription).to.have.length(3)
+            expect(paymentsForSubscription[0].description).to.equal('subscription_payment_failed')
+            expect(paymentsForSubscription[0].amount.currency).to.equal(paymentFailed.currency)
+            expect(paymentsForSubscription[0].amount.total).to.equal(paymentFailed.amount)
+            expect(paymentsForSubscription[0].amount.quantity).to.equal(paymentFailed.quantity)
+            expect(paymentsForSubscription[0].amount.unit_price).to.equal(paymentFailed.unit_price)
+            expect(paymentsForSubscription[0].next_try.date).to.equal(paymentFailed.next_retry_date)
+            expect(paymentsForSubscription[0].instalments).to.equal(paymentFailed.instalments)
+            expect(paymentsForSubscription[0].subscription_plan_id).to.equal(paymentFailed.subscription_plan_id)
 
-            expect(trail[1].description).to.equal('subscription_payment_refunded')
-            expect(trail[1].amount.currency).to.equal(paymentRefunded.currency)
-            expect(trail[1].amount.total).to.equal(paymentRefunded.gross_refund)
-            expect(trail[1].amount.quantity).to.equal(paymentRefunded.quantity)
-            expect(trail[1].amount.tax).to.equal(paymentRefunded.tax_refund)
-            expect(trail[1].amount.unit_price).to.equal(paymentRefunded.unit_price)
-            expect(trail[1].refund.reason).to.equal(paymentRefunded.refund_reason)
-            expect(trail[1].refund.type).to.equal(paymentRefunded.refund_type)
-            expect(trail[1].instalments).to.equal(paymentRefunded.instalments)
-            expect(trail[1].subscription_plan_id).to.equal(paymentRefunded.subscription_plan_id)
+            expect(paymentsForSubscription[1].description).to.equal('subscription_payment_refunded')
+            expect(paymentsForSubscription[1].amount.currency).to.equal(paymentRefunded.currency)
+            expect(paymentsForSubscription[1].amount.total).to.equal(paymentRefunded.gross_refund)
+            expect(paymentsForSubscription[1].amount.quantity).to.equal(paymentRefunded.quantity)
+            expect(paymentsForSubscription[1].amount.tax).to.equal(paymentRefunded.tax_refund)
+            expect(paymentsForSubscription[1].amount.unit_price).to.equal(paymentRefunded.unit_price)
+            expect(paymentsForSubscription[1].refund.reason).to.equal(paymentRefunded.refund_reason)
+            expect(paymentsForSubscription[1].refund.type).to.equal(paymentRefunded.refund_type)
+            expect(paymentsForSubscription[1].instalments).to.equal(paymentRefunded.instalments)
+            expect(paymentsForSubscription[1].subscription_plan_id).to.equal(paymentRefunded.subscription_plan_id)
 
-
-            expect(trail[2].description).to.equal('subscription_payment_succeeded')
-            expect(trail[2].amount.currency).to.equal(paymentSucceded.currency)
-            expect(trail[2].amount.total).to.equal(paymentSucceded.sale_gross)
-            expect(trail[2].amount.quantity).to.equal(paymentSucceded.quantity)
-            expect(trail[2].amount.tax).to.equal(paymentSucceded.payment_tax)
-            expect(trail[2].amount.unit_price).to.equal(paymentSucceded.unit_price)
-            expect(trail[2].amount.method).to.equal(paymentSucceded.payment_method)
-            expect(trail[2].next_payment.date).to.equal(paymentSucceded.next_bill_date)
-            expect(trail[2].next_payment.amount.currency).to.equal(paymentSucceded.currency)
-            expect(trail[2].next_payment.amount.total).to.equal(paymentSucceded.next_payment_amount)
-            expect(trail[2].receipt_url).to.equal(paymentSucceded.receipt_url)
-            expect(trail[2].instalments).to.equal(paymentSucceded.instalments)
-            expect(trail[2].subscription_plan_id).to.equal(paymentSucceded.subscription_plan_id)
+            expect(paymentsForSubscription[2].description).to.equal('subscription_payment_succeeded')
+            expect(paymentsForSubscription[2].amount.currency).to.equal(paymentSucceded.currency)
+            expect(paymentsForSubscription[2].amount.total).to.equal(paymentSucceded.sale_gross)
+            expect(paymentsForSubscription[2].amount.quantity).to.equal(paymentSucceded.quantity)
+            expect(paymentsForSubscription[2].amount.tax).to.equal(paymentSucceded.payment_tax)
+            expect(paymentsForSubscription[2].amount.unit_price).to.equal(paymentSucceded.unit_price)
+            expect(paymentsForSubscription[2].amount.method).to.equal(paymentSucceded.payment_method)
+            expect(paymentsForSubscription[2].next_payment.date).to.equal(paymentSucceded.next_bill_date)
+            expect(paymentsForSubscription[2].next_payment.amount.currency).to.equal(paymentSucceded.currency)
+            expect(paymentsForSubscription[2].next_payment.amount.total).to.equal(paymentSucceded.next_payment_amount)
+            expect(paymentsForSubscription[2].receipt_url).to.equal(paymentSucceded.receipt_url)
+            expect(paymentsForSubscription[2].instalments).to.equal(paymentSucceded.instalments)
+            expect(paymentsForSubscription[2].subscription_plan_id).to.equal(paymentSucceded.subscription_plan_id)
         })
     })
     describe('.getStatusTrail', () => {
