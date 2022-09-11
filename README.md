@@ -24,11 +24,12 @@
 [paddle.com](https://www.paddle.com/) payments integration for [Google Cloud Firestore](https://cloud.google.com/firestore).
 
 This module provides 
-- a middleware function
 - a body parser function
-- a component that stores payment-related information.
+- a middleware function to receive and store [Paddle Webhooks](https://developer.paddle.com/getting-started/ef9af9f700849-working-with-paddle-webhooks)
 
-It does **not** provide a component or methods to query payment-related information. 
+It does **not** 
+- validate webhook content. Use and register [paddle-webhook-validator](https://github.com/discue/paddle-webhook-validator) in your application to validate webhooks before storing them.
+- provide a component or methods to query payment-related information. 
 
 The module stores payment-related information in aollection of the target application like e.g. `api-clients`, or `api-users` and expects the application to read this information anyhow for every request. Therefore, no extra costly read is required.
 
@@ -39,7 +40,7 @@ npm install @discue/paddle-integration-firestore
 
 ## Usage
 ### Webhooks Middleware
-Necessary to receive and store payment related hooks from [paddle.com](https://www.paddle.com/). Currently supported hooks are
+The middleware component is necessary to receive and store payment related hooks from [paddle.com](https://www.paddle.com/). Currently supported hooks are:
 - subscription_created
 - subscription_updated
 - subscription_cancelled
@@ -59,7 +60,7 @@ const port = process.env.PORT || 3456
 
 const { bodyparser, middleware,Subscriptions } = require('@discue/paddle-firebase-integration')
 // pass the path to the collection here
-const subscriptions = new Subscriptions('api_clients/subscriptions')
+const subscriptions = new Subscriptions('api_clients')
 
 // register body parser first and middleware second
 app.use('/_/payments', bodyparser())
@@ -69,9 +70,9 @@ module.exports = app.listen(port)
 ```
 
 ### Preparing a New Subscription
-For the webhooks integration to work and to be able to correlate incoming hooks with the correct subscription, a placeholder needs to be created **first**. Additionally, a specific value must be passed via the `passthrough` parameter to the [Checkout API](https://developer.paddle.com/guides/ZG9jOjI1MzU0MDQz-pass-parameters-to-the-checkout). This value will be returned by the `addSubscriptionPlaceholder` method.
+For the webhooks integration to work and to be able to correlate incoming hooks with the correct subscription, a placeholder needs to be created **before the checkout** and - afterward - a specific value must be passed to the [Checkout API](https://developer.paddle.com/guides/ZG9jOjI1MzU0MDQz-pass-parameters-to-the-checkout) via the `passthrough` parameter. This value will be returned by the `addSubscriptionPlaceholder` method.
 
-To create a subscription placeholder, you need to pass the id of the target parent document. The placeholder will be created and the method will return the required `passthrough` value.
+You can see in the example below, the Subscriptions constructor is called with the name of the target `collection` and the id of the target document. The id could be your `user` or `api_client` id. Remember: the target document must exist before creating the placeholder.
 
 ```js
 'use strict'
@@ -83,7 +84,7 @@ const { Subscriptions } = require('@discue/paddle-firebase-integration')
 const subscriptions = new Subscriptions('api_clients')
 
 module.exports = async (req, res, next) => {
-    // require application to read api_client information 
+    // requires application to read api_client information 
     // based on incoming information like a JWT or a cookie
     const apiClient = readApiClient(req)
     // get id of target client
@@ -97,7 +98,7 @@ module.exports = async (req, res, next) => {
 ```
 
 ### Checking Subscription Status
-Expects the parent application to read the actual subscription from the database. The subscription object can then be passed without modification to the `isSubscriptionActive` method.
+Will return the status for all subscriptions associated with the given user/api_client.
 
 ```js
 'use strict'
@@ -106,20 +107,78 @@ const { Subscriptions } = require('@discue/paddle-firebase-integration')
 // pass the path to the collection here
 const subscriptions = new Subscriptions('api_clients')
 
+const PREMIUM_SUBSCRIPTION_PLAN_ID = '123'
+
 module.exports = (req,res,next) => {
-    // require application to read api_client information 
+    // requires application to read api_client information 
     // based on incoming information like a JWT or a cookie
     const apiClient = readApiClient(req)
     const { subscription } = apiClient
 
-    const isActive = await subscriptions.isSubscriptionActive(subscription)
-    if (!isActive) {
+    const status = await subscriptions.getAllSubscriptionsStatus(subscription)
+    if (!status[PREMIUM_SUBSCRIPTION_PLAN_ID]) {
         // subscription is not active anymore or never was
         res.status(422).send('Subscription needed!')
     } else {
         // subscription is active
         next()
     }
+}
+```
+
+### Get list of payment events
+Returns list of payments for for all subscriptions associated with the given user/api_client.
+
+```js
+'use strict'
+
+const { Subscriptions } = require('@discue/paddle-firebase-integration')
+// pass the path to the collection here
+const subscriptions = new Subscriptions('api_clients')
+
+const PREMIUM_SUBSCRIPTION_PLAN_ID = '123'
+
+module.exports = (req,res,next) => {
+    // requires application to read api_client information 
+    // based on incoming information like a JWT or a cookie
+    const apiClient = readApiClient(req)
+    const { subscription } = apiClient
+
+    const payments = await subscriptions.getPaymentsTrail(subscription)
+    // payments = {
+    //    "123": [
+    //       { event_time: "2021-08-08 11:49:59", type: subscription_payment_failed", ...},
+    //       { event_time: "2021-08-09 11:49:59", type: subscription_payment_succeeded", ...},
+    //    ]
+    // }
+}
+```
+
+### Get list of subscription update events
+Returns list of payments for for all subscriptions associated with the given user/api_client.
+
+```js
+'use strict'
+
+const { Subscriptions } = require('@discue/paddle-firebase-integration')
+// pass the path to the collection here
+const subscriptions = new Subscriptions('api_clients')
+
+const PREMIUM_SUBSCRIPTION_PLAN_ID = '123'
+
+module.exports = (req,res,next) => {
+    // requires application to read api_client information 
+    // based on incoming information like a JWT or a cookie
+    const apiClient = readApiClient(req)
+    const { subscription } = apiClient
+
+    const status = await subscriptions.getStatusTrail(subscription)
+    // status = {
+    //    "123": [
+    //       { start_at: "2021-08-08 11:49:59", type: "subscription_created", ... },
+    //       { start_at: "2021-08-09 11:49:59", type: "subscription_cancelled", ... },
+    //    ]
+    // }
 }
 ```
 
