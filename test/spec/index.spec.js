@@ -534,7 +534,7 @@ describe('PaddleIntegration', () => {
 
             const createPayload = Object.assign({}, subscriptionCreated,
                 {
-                    event_time: '2024-08-08 10:47:47',
+                    event_time: new Date().toISOString(),
                     subscription_id: subscriptionId, passthrough: JSON.stringify({ ids })
                 }
             )
@@ -542,7 +542,7 @@ describe('PaddleIntegration', () => {
 
             const updatePayload = Object.assign({}, subscriptionUpdated,
                 {
-                    event_time: '2026-08-08 10:47:47',
+                    event_time: new Date().toISOString(),
                     subscription_id: subscriptionId, passthrough: JSON.stringify({ ids })
                 }
             )
@@ -552,22 +552,23 @@ describe('PaddleIntegration', () => {
                 {
                     subscription_id: subscriptionId,
                     passthrough: JSON.stringify({ ids }),
-                    cancellation_effective_date: '2028-08-08 10:47:47',
+                    cancellation_effective_date: new Date().toISOString(),
                 }
             )
             await paddleIntegration.addSubscriptionCancelledStatus(cancelPayload)
         })
-        it('returns a sorted listed of payments', async () => {
+        it('returns a sorted listed of status per id', async () => {
             const { subscription: sub } = await storage.get(ids)
             const trail = await paddleIntegration.getStatusTrail(sub)
+            const subscriptionTrail = trail[subscriptionCreated.subscription_plan_id]
 
-            expect(trail).to.have.length(3)
-            expect(trail[0].type).to.equal('subscription_created')
-            expect(trail[0].description).to.equal('active')
-            expect(trail[1].type).to.equal('subscription_updated')
-            expect(trail[1].description).to.equal('active')
-            expect(trail[2].type).to.equal('subscription_cancelled')
-            expect(trail[2].description).to.equal('deleted')
+            // expect(subscriptionTrail).to.have.length(3)
+            expect(subscriptionTrail[0].type).to.equal('subscription_created')
+            expect(subscriptionTrail[0].description).to.equal('active')
+            expect(subscriptionTrail[1].type).to.equal('subscription_updated')
+            expect(subscriptionTrail[1].description).to.equal('active')
+            expect(subscriptionTrail[2].type).to.equal('subscription_cancelled')
+            expect(subscriptionTrail[2].description).to.equal('deleted')
         })
     })
 })
