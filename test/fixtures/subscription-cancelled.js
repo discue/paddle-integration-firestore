@@ -12,7 +12,7 @@ module.exports = {
     quantity: '86',
     status: 'deleted',
     subscription_id: '2',
-    subscription_plan_id: '18',
+    subscription_plan_id: '8',
     unit_price: '3.25',
     user_id: '9',
     p_signature: 'r'

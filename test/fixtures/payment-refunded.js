@@ -25,7 +25,7 @@ module.exports = {
     status: 'active',
     subscription_id: '7',
     subscription_payment_id: '4',
-    subscription_plan_id: '2',
+    subscription_plan_id: '8',
     tax_refund: '0.2',
     unit_price: '3.10',
     user_id: '4',

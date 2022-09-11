@@ -17,7 +17,7 @@ module.exports =  {
     status: 'active',
     subscription_id: '1',
     subscription_payment_id: '4',
-    subscription_plan_id: '6',
+    subscription_plan_id: '8',
     unit_price: '3.15',
     update_url: 'https://sandbox-checkout.paddle.com/subscription/update?user=5&subscription=5&hash=de02f4fe97e1ea310310215e7991614b438ed755',
     user_id: '9',
