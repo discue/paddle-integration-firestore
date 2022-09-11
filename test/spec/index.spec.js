@@ -399,6 +399,31 @@ describe('PaddleIntegration', () => {
     })
 
     describe('.getStartAndEndDates', () => {
+        it('returns dates for each known subscription plan id', async () => {
+            const subscriptionId = uuid()
+            const startTimeString = new Date().toISOString()
+            const createPayload = Object.assign({}, subscriptionCreated,
+                {
+                    subscription_id: subscriptionId,
+                    passthrough: JSON.stringify({ ids }),
+                    event_time: startTimeString
+                }
+            )
+            await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
+            const createPayload2 = Object.assign({}, subscriptionCreated,
+                {
+                    subscription_id: subscriptionId,
+                    passthrough: JSON.stringify({ ids }),
+                    event_time: startTimeString,
+                    subscription_plan_id: '4'
+                }
+            )
+            await paddleIntegration.addSubscriptionCreatedStatus(createPayload2)
+
+            const { subscription: sub } = await storage.get(ids)
+            const dates = await paddleIntegration.getStartAndEndDates(sub)
+            expect(dates).to.have.keys(createPayload.subscription_plan_id, createPayload2.subscription_plan_id)
+        })
         it('returns only start date if theres no end date', async () => {
             const subscriptionId = uuid()
             const startTimeString = new Date().toISOString()
@@ -412,7 +437,7 @@ describe('PaddleIntegration', () => {
             await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
 
             const { subscription: sub } = await storage.get(ids)
-            const { start, end } = await paddleIntegration.getStartAndEndDates(sub)
+            const { [createPayload.subscription_plan_id]: { start, end } } = await paddleIntegration.getStartAndEndDates(sub)
             expect(start).to.equal(startTimeString)
             expect(end).to.be.null
         })
@@ -440,7 +465,7 @@ describe('PaddleIntegration', () => {
             await paddleIntegration.addSubscriptionCancelledStatus(payload)
 
             const { subscription: sub } = await storage.get(ids)
-            const { start, end } = await paddleIntegration.getStartAndEndDates(sub)
+            const { [createPayload.subscription_plan_id]: { start, end } } = await paddleIntegration.getStartAndEndDates(sub)
             expect(start).to.equal(startTimeString)
             expect(end).to.equal(endTimeString)
         })
@@ -557,6 +582,7 @@ describe('PaddleIntegration', () => {
             )
             await paddleIntegration.addSubscriptionCancelledStatus(cancelPayload)
         })
+
         it('returns a sorted listed of status per id', async () => {
             const { subscription: sub } = await storage.get(ids)
             const trail = await paddleIntegration.getStatusTrail(sub)
