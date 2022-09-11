@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.4.0](https://github.com/discue/paddle-integration-firestore/compare/v0.3.0...v0.4.0) (2022-09-11)
+
+
+### Features
+
+* add get start and end date method ([db8e775](https://github.com/discue/paddle-integration-firestore/commit/db8e7752045c9e3ae8192b8655adaa9e3d22d0d1))
+* add method to compile payments list ([93b2704](https://github.com/discue/paddle-integration-firestore/commit/93b270429fbfbbc8b0845c6885414271a1ffa559))
+* add method to compile status trail ([7dfe368](https://github.com/discue/paddle-integration-firestore/commit/7dfe368046cf4874bfa12849daf733b19b4b52d9))
+* calculate subscription status per subscription plan id ([f0e02bd](https://github.com/discue/paddle-integration-firestore/commit/f0e02bdce1728a4c63c561ec6f64a7f66c1c65a3))
+* return payment trail per sub plan id ([bc4c0bd](https://github.com/discue/paddle-integration-firestore/commit/bc4c0bd6f6f59c300e4516e4c1a7766f21e6b349))
+* return start/end date per sub plan id ([9a217a9](https://github.com/discue/paddle-integration-firestore/commit/9a217a94caf792c3578fcd0150824b562962d3ad))
+* return status trail per sub plan id ([9f1444b](https://github.com/discue/paddle-integration-firestore/commit/9f1444bd45074bb989ed395673ea324a7fc156bb))
+
+
+### Refactorings
+
+* use event_time instead of start_time for status ([b2fc819](https://github.com/discue/paddle-integration-firestore/commit/b2fc819756aca06ba1a99d6c7e78ffa19259b21c))
+* use event_time instead of start_time for status ([bb107dc](https://github.com/discue/paddle-integration-firestore/commit/bb107dc09c97ca5f66ff57e64538e0d8ea800efc))
+
+
+### Chores
+
+* add start date for placeholder ([54d837f](https://github.com/discue/paddle-integration-firestore/commit/54d837fd3dbdf65a42fb19ce1f6d8f257c4a8688))
+* do not store signature with payments ([e697625](https://github.com/discue/paddle-integration-firestore/commit/e69762523585d03fbf215ab3afef9a6820e5ae66))
+* **docs:** add jsdoc to all functions ([1596d8c](https://github.com/discue/paddle-integration-firestore/commit/1596d8cf44a4de185e33514f2b32ce32b3de51d2))
+* **docs:** add jsdoc types ([609ba17](https://github.com/discue/paddle-integration-firestore/commit/609ba17bbb35464e1b74c253e3b82724eb7501d7))
+* **docs:** update readme ([8fbb40a](https://github.com/discue/paddle-integration-firestore/commit/8fbb40ac5dccad393d2bbbd4fd59c751114ab457))
+
 ## [0.3.0](https://github.com/discue/paddle-integration-firestore/compare/v0.2.0...v0.3.0) (2022-09-08)
 
 
