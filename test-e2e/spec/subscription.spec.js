@@ -54,7 +54,7 @@ async function createNewSubscription(page) {
 }
 
 async function updatePaymentMethod(page, subscription) {
-    await page.goto(subscription.update_url)
+    await page.goto(subscription.status[1].update_url)
     await page.locator('[data-testid="CARD_PaymentSelectionButton"]').click()
     await page.locator('[data-testid="cardNumberInput"]').click()
     await page.locator('[data-testid="cardNumberInput"]').fill('4000 0038 0000 0446')
@@ -77,7 +77,7 @@ async function updatePaymentMethod(page, subscription) {
 }
 
 async function addSubscriptionCancelledStatus(page, subscription) {
-    await page.goto(subscription.cancel_url)
+    await page.goto(subscription.status[1].cancel_url)
     await page.locator('text=Cancel Subscription').click()
 }
 
@@ -91,7 +91,7 @@ function validateStatus(status) {
     chaiExpect(status.description).to.match(/active|deleted/)
     chaiExpect(status.unit_price).to.match(/[0-9]{1,2}\.[0-9]{2}/)
     chaiExpect(status.quantity).to.match(/[0-9]{1}/)
-    chaiExpect(status.start_at).to.match(/^[0-9]{4}-[0-9]{2}-[0-9]{2}/)
+    chaiExpect(status.event_time).to.match(/^[0-9]{4}-[0-9]{2}-[0-9]{2}/)
 }
 
 test('test receives and stores webhooks', async ({ page }) => {
@@ -108,8 +108,8 @@ test('test receives and stores webhooks', async ({ page }) => {
     validateStatus(subscription.status[1])
 
     // .. and check it is active
-    let isActive = await subscriptions.isSubscriptionActive(subscription)
-    expect(isActive).toBeTruthy()
+    let sub = await subscriptions.getAllSubscriptionsStatus(subscription)
+    expect(sub['33590']).toBeTruthy()
 
     // update payment method ...
     await updatePaymentMethod(page, subscription)
@@ -122,8 +122,8 @@ test('test receives and stores webhooks', async ({ page }) => {
     expect(subscription.payments).toHaveLength(1)
 
     // .. and still active
-    isActive = await subscriptions.isSubscriptionActive(subscription)
-    expect(isActive).toBeTruthy()
+    sub = await subscriptions.getAllSubscriptionsStatus(subscription)
+    expect(sub['33590']).toBeTruthy()
 
     // cancel subscription ...
     await addSubscriptionCancelledStatus(page, subscription)
@@ -136,10 +136,10 @@ test('test receives and stores webhooks', async ({ page }) => {
 
     validateStatus(subscription.status[2])
 
-    isActive = await subscriptions.isSubscriptionActive(subscription)
-    expect(isActive).toBeTruthy()
+    sub = await subscriptions.getAllSubscriptionsStatus(subscription)
+    expect(sub['33590']).toBeTruthy()
 
     // and not active next month (35 days)
-    isActive = await subscriptions.isSubscriptionActive(subscription, new Date(new Date().getTime() + 1000 * 3600 * 24 * 35))
-    expect(isActive).toBeFalsy()
+    sub = await subscriptions.getAllSubscriptionsStatus(subscription, new Date(new Date().getTime() + 1000 * 3600 * 24 * 35))
+    expect(sub['33590']).toBeFalsy()
 })
