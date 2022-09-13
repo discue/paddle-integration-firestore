@@ -12,16 +12,16 @@ module.exports = class Runner {
 
             if (logOutput) {
                 this._process.stdout.on('data', (data) => {
-                    process.stdout.write(`${binary} ${data.toString()}`)
+                    process.stdout.write(`${binary} | ${data.toString()}`)
                 });
             }
 
             this._process.stderr.on('data', (data) => {
-                process.stderr.write(`${binary} ${data.toString()}`)
+                process.stderr.write(`${binary} | ${data.toString()}`)
             });
 
             process.on('SIGHUP', () => {
-                this.stop()
+                this.stop(binary)
             })
         })
     }
@@ -35,8 +35,8 @@ module.exports = class Runner {
         })
     }
 
-    stop() {
-        process.stdout.write('stopping')
+    stop(name) {
+        console.log(`${name} | stopping`)
         if (isUnix) {
             return this._stopUnix()
         } else {
