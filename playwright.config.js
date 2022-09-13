@@ -8,7 +8,8 @@ const config = {
     testDir: 'test-e2e/spec',
     testMatch: '*.spec.js',
     reportSlowTests: null,
-    timeout: 1000 * 60 * 2,
+    timeout: 1000 * 60 * 5,
+    fullyParallel: false,
     forbidOnly: !!process.env.CI,
     use: {
         trace: 'on-first-retry',
