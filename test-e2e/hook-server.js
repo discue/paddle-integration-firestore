@@ -13,9 +13,7 @@ const port = process.env.PORT || 3456
 
 app.use(require('../lib/body-parser')())
 app.use((req, _, next) => {
-    console.log('Request')
-    console.log('>>', req.method, req.path)
-    console.log('>>', req.body.alert_name)
+    console.log('Request', req.method, req.path, req.body.alert_name)
     console.log()
     next()
 })
