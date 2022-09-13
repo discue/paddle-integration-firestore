@@ -94,7 +94,10 @@ describe('PaddleIntegration', () => {
 
             const { subscription: sub } = await storage.get(ids)
             expect(sub.payments).to.have.length(0)
-            expect(sub.status).to.have.length(3)
+            // 1. placeholder
+            // 2. subscription created
+            // 3. perpetual status subscription 
+            expect(sub.status).to.have.length(4)
 
             const status0 = sub.status[0]
             expect(status0.description).to.equal('pre-checkout-placeholder')
@@ -117,25 +120,39 @@ describe('PaddleIntegration', () => {
             expect(status1.vendor_user_id).to.equal(createPayload.user_id)
 
             const status2 = sub.status[2]
-            // ensure we changed these values
             expect(status2.currency).to.not.equal(createPayload.currency)
-            expect(status2.next_bill_date).to.not.equal(createPayload.next_bill_date)
-            expect(status2.unit_price).to.not.equal(createPayload.unit_price)
-            expect(status2.quantity).to.not.equal(createPayload.quantity)
-            expect(status2.event_time).to.not.equal(createPayload.event_time)
             // these values must be equal to update payload values
             expect(status2.alert_id).to.equal(updatePayload.alert_id)
             expect(status2.alert_name).to.equal(updatePayload.alert_name)
             expect(status2.currency).to.equal(updatePayload.currency)
-            expect(status2.description).to.equal(updatePayload.status)
-            expect(status2.next_bill_date).to.equal(updatePayload.next_bill_date)
-            expect(status2.unit_price).to.equal(updatePayload.new_unit_price)
-            expect(status2.quantity).to.equal(updatePayload.new_quantity)
+            expect(status2.description).to.equal('pi/superseded-by-update')
+            expect(status2.unit_price).to.equal(updatePayload.old_unit_price)
+            expect(status2.quantity).to.equal(updatePayload.old_quantity)
             expect(status2.event_time).to.equal(updatePayload.event_time)
-            expect(status2.update_url).to.equal(updatePayload.update_url)
             expect(status2.subscription_id).to.equal(updatePayload.subscription_id)
-            expect(status2.subscription_plan_id).to.equal(updatePayload.subscription_plan_id)
+            expect(status2.subscription_plan_id).to.equal(updatePayload.old_subscription_plan_id)
             expect(status2.vendor_user_id).to.equal(updatePayload.user_id)
+
+            const status3 = sub.status[3]
+            // ensure we changed these values
+            expect(status3.currency).to.not.equal(createPayload.currency)
+            expect(status3.next_bill_date).to.not.equal(createPayload.next_bill_date)
+            expect(status3.unit_price).to.not.equal(createPayload.unit_price)
+            expect(status3.quantity).to.not.equal(createPayload.quantity)
+            expect(status3.event_time).to.not.equal(createPayload.event_time)
+            // these values must be equal to update payload values
+            expect(status3.alert_id).to.equal(updatePayload.alert_id)
+            expect(status3.alert_name).to.equal(updatePayload.alert_name)
+            expect(status3.currency).to.equal(updatePayload.currency)
+            expect(status3.description).to.equal(updatePayload.status)
+            expect(status3.next_bill_date).to.equal(updatePayload.next_bill_date)
+            expect(status3.unit_price).to.equal(updatePayload.new_unit_price)
+            expect(status3.quantity).to.equal(updatePayload.new_quantity)
+            expect(status3.event_time).to.equal(updatePayload.event_time)
+            expect(status3.update_url).to.equal(updatePayload.update_url)
+            expect(status3.subscription_id).to.equal(updatePayload.subscription_id)
+            expect(status3.subscription_plan_id).to.equal(updatePayload.subscription_plan_id)
+            expect(status3.vendor_user_id).to.equal(updatePayload.user_id)
         })
         it('throws if subscription is falsy', () => {
             return paddleIntegration.addSubscriptionUpdatedStatus(null).then(() => {
