@@ -14,23 +14,47 @@ const storageResource = require('../../lib/firestore/nested-firestore-resource')
 const storage = storageResource({ documentPath: 'api_client', resourceName: 'api_clients' })
 
 test.beforeAll(emulatorRunner.start)
-test.afterAll(emulatorRunner.stop)
-
 test.beforeAll(hookRunner.start)
-test.afterAll(hookRunner.stop)
-
 test.beforeAll(hookTunnelRunner.start)
-test.afterAll(hookTunnelRunner.stop)
-
 test.beforeAll(testPageRunner.start)
 test.afterAll(testPageRunner.stop)
 
 test.beforeAll(() => {
     return storage.put(['4815162342'], {})
 })
-test.beforeAll(() => {
+test.beforeEach(async () => {
+    try {
+        await storage.get(['4815162342'])
+        await storage.delete(['4815162342'])
+    } catch (e) {
+        //
+    }
+    await storage.put(['4815162342'], {})
+})
+test.beforeEach(() => {
     return subscriptions.addSubscriptionPlaceholder(['4815162342'])
 })
+
+test.afterAll(async () => {
+    const subscriptions = await api.listSubscriptions()
+    for (let i = 0; i < subscriptions.length; i++) {
+        const subscription = subscriptions[i]
+        await api.cancelSubscription(subscription)
+    }
+})
+
+test.afterAll(async () => {
+    await new Promise((resolve) => {
+        setTimeout(resolve, 20000)
+    })
+    await hookTunnelRunner.stop()
+})
+
+test.afterAll(async () => {
+    await hookRunner.stop()
+})
+
+test.afterAll(emulatorRunner.stop)
 
 async function createNewSubscription(page) {
     await page.goto('http://localhost:3333/checkout.html')
