@@ -313,7 +313,7 @@ describe('PaddleIntegration', () => {
             const status = await paddleIntegration.getAllSubscriptionsStatus(sub)
             expect(status[createPayload.subscription_plan_id]).to.be.false
         })
-        it('ignores a status that starts in the future', async () => {
+        it('allows 10s clock drift', async () => {
             const subscriptionId = uuid()
             const createPayload = Object.assign({}, subscriptionCreated,
                 {
@@ -328,7 +328,31 @@ describe('PaddleIntegration', () => {
                 {
                     subscription_id: subscriptionId,
                     passthrough: JSON.stringify({ ids }),
-                    cancellation_effective_date: new Date(new Date().getTime() + 1000).toISOString()
+                    cancellation_effective_date: new Date(new Date().getTime() + 9_000).toISOString()
+                }
+            )
+            await paddleIntegration.addSubscriptionCancelledStatus(payload)
+
+            const { subscription: sub } = await storage.get(ids)
+            const status = await paddleIntegration.getAllSubscriptionsStatus(sub)
+            expect(status[createPayload.subscription_plan_id]).to.be.false
+        })
+        it('ignores a status that starts more than 10s in the future', async () => {
+            const subscriptionId = uuid()
+            const createPayload = Object.assign({}, subscriptionCreated,
+                {
+                    subscription_id: subscriptionId,
+                    passthrough: JSON.stringify({ ids }),
+                    event_time: new Date().toISOString()
+                }
+            )
+            await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
+
+            const payload = Object.assign({}, subscriptionCancelled,
+                {
+                    subscription_id: subscriptionId,
+                    passthrough: JSON.stringify({ ids }),
+                    cancellation_effective_date: new Date(new Date().getTime() + 50_000).toISOString()
                 }
             )
             await paddleIntegration.addSubscriptionCancelledStatus(payload)
