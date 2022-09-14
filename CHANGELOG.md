@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.0](https://github.com/discue/paddle-integration-firestore/compare/v0.4.0...v0.5.0) (2022-09-14)
+
+
+### Features
+
+* after sub updated deactivate prev sub ([9e301d3](https://github.com/discue/paddle-integration-firestore/commit/9e301d3063fa2e86b0d668e0bdd4ca50903b754c))
+* **api:** add service for paddle subscriptions api ([f6fc40d](https://github.com/discue/paddle-integration-firestore/commit/f6fc40dfd409dbd370cbcc50cfc3a78c8efc87bc))
+
+
+### Refactorings
+
+* rename local variable ([a218168](https://github.com/discue/paddle-integration-firestore/commit/a218168791f1b3af810caac67554fe927816d7a1))
+
+
+### Chores
+
+* allow 10s clockdrift checking sub activeness ([ba9ab0e](https://github.com/discue/paddle-integration-firestore/commit/ba9ab0e131ca781f6b45df1c673b9e3b0dbb18c5))
+* also store subscription id for cancellation events ([596b85e](https://github.com/discue/paddle-integration-firestore/commit/596b85e2dcd0db545c2a961f7113167e94911bba))
+* **ci:** add secrets to e2e test environment ([243cb51](https://github.com/discue/paddle-integration-firestore/commit/243cb5133e6db00f853fbe6ee8c1d02d738efdfa))
+* decrease logging ([ad75551](https://github.com/discue/paddle-integration-firestore/commit/ad7555140ea08e966406304483df94c0c2cbbcd3))
+* **deps:** install got ([629fd9c](https://github.com/discue/paddle-integration-firestore/commit/629fd9c2203b120ac0a0bbf3f2bcd98439eee640))
+* make git ignore .env.local files ([b43eebc](https://github.com/discue/paddle-integration-firestore/commit/b43eebc26caecb788bfbdbb11dd39670bd6d7b79))
+* update what is logged and when ([a877918](https://github.com/discue/paddle-integration-firestore/commit/a877918b4bb837e7033ba82d4e4c4b158b476bc5))
+
 ## [0.4.0](https://github.com/discue/paddle-integration-firestore/compare/v0.3.0...v0.4.0) (2022-09-11)
 
 
