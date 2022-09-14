@@ -13,15 +13,20 @@ const subscriptions = new Subscriptions('api_client')
 const storageResource = require('../../lib/firestore/nested-firestore-resource')
 const storage = storageResource({ documentPath: 'api_client', resourceName: 'api_clients' })
 
+let api
+
 test.beforeAll(emulatorRunner.start)
 test.beforeAll(hookRunner.start)
 test.beforeAll(hookTunnelRunner.start)
 test.beforeAll(testPageRunner.start)
 test.afterAll(testPageRunner.stop)
 
-test.beforeAll(() => {
-    return storage.put(['4815162342'], {})
+test.beforeAll(async () => {
+    const API = await (await import('../../lib/paddle/api.js')).default
+    api = new API({ useSandbox: true, authCode: process.env.AUTH_CODE, vendorId: process.env.VENDOR_ID })
+    await api.init()
 })
+
 test.beforeEach(async () => {
     try {
         await storage.get(['4815162342'])
@@ -75,6 +80,8 @@ async function createNewSubscription(page) {
     await page.frameLocator('iframe[name="paddle_frame"]').locator('[data-testid="cardVerificationValueInput"]').press('Enter')
 
     await page.waitForSelector('#paddleSuccess', { state: 'visible', timeout: 50000 })
+    await page.waitForSelector('.paddle-loader', { state: 'hidden', timeout: 50000 })
+    await page.waitForTimeout(20000)
 }
 
 async function updatePaymentMethod(page, subscription) {
@@ -98,11 +105,13 @@ async function updatePaymentMethod(page, subscription) {
 
     await page1.locator('text=Complete authentication').click()
     await page.locator('[data-testid="subscriptionManagementSuccess"] div').first().click()
+    await page.waitForSelector('[data-testid="subscriptionManagementSuccessInfo"]', { state: 'visible', timeout: 50000 })
 }
 
-async function addSubscriptionCancelledStatus(page, subscription) {
+async function cancelSubscription(page, subscription) {
     await page.goto(subscription.status[1].cancel_url)
     await page.locator('text=Cancel Subscription').click()
+    await page.waitForSelector('[data-testid="subscriptionManagementCancelSuccessInfo"]', { state: 'visible', timeout: 50000 })
 }
 
 function validateStatus(status) {
@@ -118,10 +127,78 @@ function validateStatus(status) {
     chaiExpect(status.event_time).to.match(/^[0-9]{4}-[0-9]{2}-[0-9]{2}/)
 }
 
-test('test receives and stores webhooks', async ({ page }) => {
+test('test cancel via api', async ({ page }) => {
     // create new subscription and ...
     await createNewSubscription(page)
-    await page.waitForTimeout(45000)
+
+    // .. check it was stored and payment status was received ..
+    let { subscription } = await storage.get(['4815162342'])
+    expect(subscription).not.toBeFalsy()
+    expect(subscription.status).toHaveLength(2)
+    expect(subscription.payments).toHaveLength(1)
+
+    validateStatus(subscription.status[1])
+
+    // .. and check it is active
+    let sub = await subscriptions.getAllSubscriptionsStatus(subscription)
+    expect(sub['33590']).toBeTruthy()
+
+    // cancel subscription ...
+    const success = await api.cancelSubscription(subscription.status[1])
+    expect(success).toBeTruthy()
+    await page.waitForTimeout(10000);
+
+    // ... verify subscription still active today ...
+    ({ subscription } = await storage.get(['4815162342']))
+    expect(subscription.status).toHaveLength(3)
+    expect(subscription.payments).toHaveLength(1)
+
+    validateStatus(subscription.status[2])
+
+    sub = await subscriptions.getAllSubscriptionsStatus(subscription)
+    expect(sub['33590']).toBeTruthy()
+
+    // and not active next month (35 days)
+    sub = await subscriptions.getAllSubscriptionsStatus(subscription, new Date(new Date().getTime() + 1000 * 3600 * 24 * 35))
+    expect(sub['33590']).toBeFalsy()
+})
+
+test('test update via api', async ({ page }) => {
+    // create new subscription and ...
+    await createNewSubscription(page)
+
+    // .. check it was stored and payment status was received ..
+    let { subscription } = await storage.get(['4815162342'])
+    expect(subscription).not.toBeFalsy()
+    expect(subscription.status).toHaveLength(2)
+    expect(subscription.payments).toHaveLength(1)
+
+    validateStatus(subscription.status[1])
+
+    // .. and check it is active
+    let sub = await subscriptions.getAllSubscriptionsStatus(subscription)
+    expect(sub['33590']).toBeTruthy()
+
+    // update subscription plan via api ...
+    await api.updateSubscriptionPlan(subscription.status[1], '35141')
+    await page.waitForTimeout(30000);
+
+    // .. check  new status and payments added ...
+    ({ subscription } = await storage.get(['4815162342']))
+    expect(subscription).not.toBeFalsy()
+    expect(subscription.status).toHaveLength(4)
+    expect(subscription.payments).toHaveLength(2)
+
+    // .. and still active
+    sub = await subscriptions.getAllSubscriptionsStatus(subscription)
+    console.log('active subs', { sub })
+    expect(sub['35141']).toBeTruthy()
+    expect(sub['33590']).toBeFalsy()
+})
+
+test('test create, update, and cancel via ui', async ({ page }) => {
+    // create new subscription and ...
+    await createNewSubscription(page)
 
     // .. check it was stored and payment status was received ..
     let { subscription } = await storage.get(['4815162342'])
@@ -150,7 +227,7 @@ test('test receives and stores webhooks', async ({ page }) => {
     expect(sub['33590']).toBeTruthy()
 
     // cancel subscription ...
-    await addSubscriptionCancelledStatus(page, subscription)
+    await cancelSubscription(page, subscription)
     await page.waitForTimeout(10000);
 
     // ... verify subscription still active today ...
