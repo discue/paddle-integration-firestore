@@ -34,3 +34,5 @@ jobs:
       run: ./test-e2e.sh
       env:
         NODE_ENV: e2e
+        AUTH_CODE: ${{ secrets.AUTH_CODE }}
+        VENDOR_ID: ${{ secrets.VENDOR_ID }}
