@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.7.0](https://github.com/discue/paddle-integration-firestore/compare/v0.6.0...v0.7.0) (2022-09-27)
+
+
+### Features
+
+* sort payments trail descending ([24e5ce3](https://github.com/discue/paddle-integration-firestore/commit/24e5ce3c0fc49961311775f7d9e63bb384f55c82))
+* sort status trail also descending ([54f9128](https://github.com/discue/paddle-integration-firestore/commit/54f9128f0ed6f441bf0a2a953a68ca2a9072f4c2))
+
+
+### Chores
+
+* sort list also in sub status descending ([f886837](https://github.com/discue/paddle-integration-firestore/commit/f88683770ac1529409a030819651b266102d24e8))
+* update release scripts ([c7b3094](https://github.com/discue/paddle-integration-firestore/commit/c7b3094f633116581e11743b8a4dcbedefabe284))
+
 ## [0.6.0](https://github.com/discue/paddle-integration-firestore/compare/v0.5.0...v0.6.0) (2022-09-27)
 
 
