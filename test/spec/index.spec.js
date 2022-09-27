@@ -512,7 +512,7 @@ describe('PaddleIntegration', () => {
         })
     })
 
-    describe('.getStatusTrail', () => {
+    describe('.getPaymentsTrail', () => {
         beforeEach(async () => {
             const subscriptionId = uuid()
             const createPayload = Object.assign({}, subscriptionCreated, {
