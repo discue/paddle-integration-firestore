@@ -100,7 +100,7 @@ describe('PaddleIntegration', () => {
             expect(sub.status).to.have.length(4)
 
             const status0 = sub.status[0]
-            expect(status0.description).to.equal('pre-checkout-placeholder')
+            expect(status0.description).to.equal('pi/pre-checkout-placeholder')
 
             const status1 = sub.status[1]
             expect(status1.alert_id).to.equal(createPayload.alert_id)
