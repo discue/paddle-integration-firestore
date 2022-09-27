@@ -568,6 +568,22 @@ describe('PaddleIntegration', () => {
             })
             await paddleIntegration.addFailedPayment(paymentFailedPayload2)
         })
+        it('returns payments sorted descending', async () => {
+            const { subscription: sub } = await storage.get(ids)
+            const trail = await paddleIntegration.getPaymentsTrail(sub)
+
+            const sorted = Object.values(trail).every((payments) => {
+                return payments.every((payment, index, array) => {
+                    if (index === 0) {
+                        return true
+                    } else {
+                        return new Date(payment.event_time).getTime() <= new Date(array[index - 1].event_time).getTime()
+                    }
+                })
+            })
+
+            expect(sorted).to.be.true
+        })
         it('returns a sorted listed of payments per subscription plan id 8', async () => {
             const { subscription: sub } = await storage.get(ids)
             const trail = await paddleIntegration.getPaymentsTrail(sub)
@@ -576,24 +592,55 @@ describe('PaddleIntegration', () => {
 
             const paymentsForSubscription = trail[paymentSucceded.subscription_plan_id]
             expect(paymentsForSubscription).to.have.length(4)
-            expect(paymentsForSubscription[0].description).to.equal('subscription_payment_failed')
-            expect(paymentsForSubscription[0].amount.currency).to.equal(paymentFailed.currency)
-            expect(paymentsForSubscription[0].amount.total).to.equal(paymentFailed.amount)
-            expect(paymentsForSubscription[0].amount.quantity).to.equal(paymentFailed.quantity)
-            expect(paymentsForSubscription[0].amount.unit_price).to.equal(paymentFailed.unit_price)
-            expect(paymentsForSubscription[0].next_try.date).to.equal(paymentFailed.next_retry_date)
-            expect(paymentsForSubscription[0].instalments).to.equal(paymentFailed.instalments)
-            expect(paymentsForSubscription[0].subscription_plan_id).to.equal(paymentFailed.subscription_plan_id)
+            expect(paymentsForSubscription[3].description).to.equal('subscription_payment_failed')
+            expect(paymentsForSubscription[3].amount.currency).to.equal(paymentFailed.currency)
+            expect(paymentsForSubscription[3].amount.total).to.equal(paymentFailed.amount)
+            expect(paymentsForSubscription[3].amount.quantity).to.equal(paymentFailed.quantity)
+            expect(paymentsForSubscription[3].amount.unit_price).to.equal(paymentFailed.unit_price)
+            expect(paymentsForSubscription[3].next_try.date).to.equal(paymentFailed.next_retry_date)
+            expect(paymentsForSubscription[3].instalments).to.equal(paymentFailed.instalments)
+            expect(paymentsForSubscription[3].subscription_plan_id).to.equal(paymentFailed.subscription_plan_id)
 
-            expect(paymentsForSubscription[1].description).to.equal('subscription_payment_refunded')
-            expect(paymentsForSubscription[1].amount.currency).to.equal(paymentRefunded.currency)
-            expect(paymentsForSubscription[1].amount.total).to.equal(paymentRefunded.gross_refund)
-            expect(paymentsForSubscription[1].amount.quantity).to.equal(paymentRefunded.quantity)
-            expect(paymentsForSubscription[1].amount.unit_price).to.equal(paymentRefunded.unit_price)
-            expect(paymentsForSubscription[1].refund.reason).to.equal(paymentRefunded.refund_reason)
-            expect(paymentsForSubscription[1].refund.type).to.equal(paymentRefunded.refund_type)
-            expect(paymentsForSubscription[1].instalments).to.equal(paymentRefunded.instalments)
-            expect(paymentsForSubscription[1].subscription_plan_id).to.equal(paymentRefunded.subscription_plan_id)
+            expect(paymentsForSubscription[2].description).to.equal('subscription_payment_refunded')
+            expect(paymentsForSubscription[2].amount.currency).to.equal(paymentRefunded.currency)
+            expect(paymentsForSubscription[2].amount.total).to.equal(paymentRefunded.gross_refund)
+            expect(paymentsForSubscription[2].amount.quantity).to.equal(paymentRefunded.quantity)
+            expect(paymentsForSubscription[2].amount.unit_price).to.equal(paymentRefunded.unit_price)
+            expect(paymentsForSubscription[2].refund.reason).to.equal(paymentRefunded.refund_reason)
+            expect(paymentsForSubscription[2].refund.type).to.equal(paymentRefunded.refund_type)
+            expect(paymentsForSubscription[2].instalments).to.equal(paymentRefunded.instalments)
+            expect(paymentsForSubscription[2].subscription_plan_id).to.equal(paymentRefunded.subscription_plan_id)
+
+            expect(paymentsForSubscription[1].description).to.equal('subscription_payment_succeeded')
+            expect(paymentsForSubscription[1].amount.currency).to.equal(paymentSucceded.currency)
+            expect(paymentsForSubscription[1].amount.total).to.equal(paymentSucceded.sale_gross)
+            expect(paymentsForSubscription[1].amount.quantity).to.equal(paymentSucceded.quantity)
+            expect(paymentsForSubscription[1].amount.unit_price).to.equal(paymentSucceded.unit_price)
+            expect(paymentsForSubscription[1].amount.method).to.equal(paymentSucceded.payment_method)
+            expect(paymentsForSubscription[1].next_payment.date).to.equal(paymentSucceded.next_bill_date)
+            expect(paymentsForSubscription[1].next_payment.amount.currency).to.equal(paymentSucceded.currency)
+            expect(paymentsForSubscription[1].next_payment.amount.total).to.equal(paymentSucceded.next_payment_amount)
+            expect(paymentsForSubscription[1].receipt_url).to.equal(paymentSucceded.receipt_url)
+            expect(paymentsForSubscription[1].instalments).to.equal(paymentSucceded.instalments)
+            expect(paymentsForSubscription[1].subscription_plan_id).to.equal(paymentSucceded.subscription_plan_id)
+
+            expect(paymentsForSubscription[0].description).to.equal('pi/upcoming_payment')
+            expect(paymentsForSubscription[0].event_time).to.equal(paymentSucceded.next_bill_date)
+            expect(paymentsForSubscription[0].amount.currency).to.equal(paymentSucceded.currency)
+            expect(paymentsForSubscription[0].amount.total).to.equal(paymentSucceded.next_payment_amount)
+            expect(paymentsForSubscription[0].amount.quantity).to.equal(paymentSucceded.quantity)
+            expect(paymentsForSubscription[0].amount.unit_price).to.equal(paymentSucceded.unit_price)
+            expect(paymentsForSubscription[0].subscription_plan_id).to.equal(paymentSucceded.subscription_plan_id)
+        })
+
+        it('returns a sorted listed of payments per subscription plan id 4 and ignores refunded payment hook', async () => {
+            const { subscription: sub } = await storage.get(ids)
+            const trail = await paddleIntegration.getPaymentsTrail(sub)
+
+            expect(trail).to.have.keys(paymentSucceded.subscription_plan_id, '4')
+
+            const paymentsForSubscription = trail['4']
+            expect(paymentsForSubscription).to.have.length(3)
 
             expect(paymentsForSubscription[2].description).to.equal('subscription_payment_succeeded')
             expect(paymentsForSubscription[2].amount.currency).to.equal(paymentSucceded.currency)
@@ -606,39 +653,8 @@ describe('PaddleIntegration', () => {
             expect(paymentsForSubscription[2].next_payment.amount.total).to.equal(paymentSucceded.next_payment_amount)
             expect(paymentsForSubscription[2].receipt_url).to.equal(paymentSucceded.receipt_url)
             expect(paymentsForSubscription[2].instalments).to.equal(paymentSucceded.instalments)
-            expect(paymentsForSubscription[2].subscription_plan_id).to.equal(paymentSucceded.subscription_plan_id)
-        
-            expect(paymentsForSubscription[3].description).to.equal('pi/upcoming_payment')
-            expect(paymentsForSubscription[3].event_time).to.equal(paymentSucceded.next_bill_date)
-            expect(paymentsForSubscription[3].amount.currency).to.equal(paymentSucceded.currency)
-            expect(paymentsForSubscription[3].amount.total).to.equal(paymentSucceded.next_payment_amount)
-            expect(paymentsForSubscription[3].amount.quantity).to.equal(paymentSucceded.quantity)
-            expect(paymentsForSubscription[3].amount.unit_price).to.equal(paymentSucceded.unit_price)
-            expect(paymentsForSubscription[3].subscription_plan_id).to.equal(paymentSucceded.subscription_plan_id)
-        })
+            expect(paymentsForSubscription[2].subscription_plan_id).to.equal('4')
 
-        it('returns a sorted listed of payments per subscription plan id 4 and ignores refunded payment hook', async () => {
-            const { subscription: sub } = await storage.get(ids)
-            const trail = await paddleIntegration.getPaymentsTrail(sub)
-
-            expect(trail).to.have.keys(paymentSucceded.subscription_plan_id, '4')
-
-            const paymentsForSubscription = trail['4']
-            expect(paymentsForSubscription).to.have.length(3)
-
-            expect(paymentsForSubscription[0].description).to.equal('subscription_payment_succeeded')
-            expect(paymentsForSubscription[0].amount.currency).to.equal(paymentSucceded.currency)
-            expect(paymentsForSubscription[0].amount.total).to.equal(paymentSucceded.sale_gross)
-            expect(paymentsForSubscription[0].amount.quantity).to.equal(paymentSucceded.quantity)
-            expect(paymentsForSubscription[0].amount.unit_price).to.equal(paymentSucceded.unit_price)
-            expect(paymentsForSubscription[0].amount.method).to.equal(paymentSucceded.payment_method)
-            expect(paymentsForSubscription[0].next_payment.date).to.equal(paymentSucceded.next_bill_date)
-            expect(paymentsForSubscription[0].next_payment.amount.currency).to.equal(paymentSucceded.currency)
-            expect(paymentsForSubscription[0].next_payment.amount.total).to.equal(paymentSucceded.next_payment_amount)
-            expect(paymentsForSubscription[0].receipt_url).to.equal(paymentSucceded.receipt_url)
-            expect(paymentsForSubscription[0].instalments).to.equal(paymentSucceded.instalments)
-            expect(paymentsForSubscription[0].subscription_plan_id).to.equal('4')
-        
             expect(paymentsForSubscription[1].description).to.equal('subscription_payment_failed')
             expect(paymentsForSubscription[1].amount.currency).to.equal(paymentFailed.currency)
             expect(paymentsForSubscription[1].amount.total).to.equal(paymentFailed.amount)
@@ -648,13 +664,13 @@ describe('PaddleIntegration', () => {
             expect(paymentsForSubscription[1].instalments).to.equal(paymentFailed.instalments)
             expect(paymentsForSubscription[1].subscription_plan_id).to.equal('4')
 
-            expect(paymentsForSubscription[2].description).to.equal('pi/upcoming_payment')
-            expect(paymentsForSubscription[2].event_time).to.equal(paymentFailed.next_retry_date)
-            expect(paymentsForSubscription[2].amount.currency).to.equal(paymentFailed.currency)
-            expect(paymentsForSubscription[2].amount.total).to.equal(paymentFailed.amount)
-            expect(paymentsForSubscription[2].amount.quantity).to.equal(paymentFailed.quantity)
-            expect(paymentsForSubscription[2].amount.unit_price).to.equal(paymentFailed.unit_price)
-            expect(paymentsForSubscription[2].subscription_plan_id).to.equal('4')
+            expect(paymentsForSubscription[0].description).to.equal('pi/upcoming_payment')
+            expect(paymentsForSubscription[0].event_time).to.equal(paymentFailed.next_retry_date)
+            expect(paymentsForSubscription[0].amount.currency).to.equal(paymentFailed.currency)
+            expect(paymentsForSubscription[0].amount.total).to.equal(paymentFailed.amount)
+            expect(paymentsForSubscription[0].amount.quantity).to.equal(paymentFailed.quantity)
+            expect(paymentsForSubscription[0].amount.unit_price).to.equal(paymentFailed.unit_price)
+            expect(paymentsForSubscription[0].subscription_plan_id).to.equal('4')
         })
     })
     describe('.getStatusTrail', () => {
