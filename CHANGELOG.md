@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.6.0](https://github.com/discue/paddle-integration-firestore/compare/v0.5.0...v0.6.0) (2022-09-27)
+
+
+### Features
+
+* add upcoming payment also to payments trail ([45e746d](https://github.com/discue/paddle-integration-firestore/commit/45e746dbb2012c382cea80e2119e67245d95d033))
+* **api:** add refund payment method ([3a7d4eb](https://github.com/discue/paddle-integration-firestore/commit/3a7d4ebab2d93731d2bcd53b6e21792545d8be47))
+* html encode also all subscription events ([953bc16](https://github.com/discue/paddle-integration-firestore/commit/953bc164b32a3a7a9e084abf8961221fb9151c27))
+
+
+### Chores
+
+* add prefix to pre checkout placeholder ([11bd7c8](https://github.com/discue/paddle-integration-firestore/commit/11bd7c89e509cac3f51dff09ad7af6575753f867))
+* **ci:** install playwright deps before e2e tests ([97b8a7a](https://github.com/discue/paddle-integration-firestore/commit/97b8a7a0936a1fabd2b0c64f6baee5f12afb9f2a))
+* **deps:** remove dependency to playwright-core ([be28b9a](https://github.com/discue/paddle-integration-firestore/commit/be28b9a69550b2df37238d9cdbd3771a036ff40e))
+* do not reassign result ([b89a13c](https://github.com/discue/paddle-integration-firestore/commit/b89a13c39d3a68dbc06f8e1f64e61250fcb854f9))
+* handle unknown events gracefully ([a8f1c24](https://github.com/discue/paddle-integration-firestore/commit/a8f1c2466140c9cc68ec785ebb3ff54ae32e2adb))
+* prevent duplicate code when handling payments ([0709909](https://github.com/discue/paddle-integration-firestore/commit/070990987cb508a5de8cb6328f357c124dabbfe5))
+* update resource name ([c98bc6b](https://github.com/discue/paddle-integration-firestore/commit/c98bc6b610b822b04473fb5e3919e7fc5c0e17ee))
+
 ## [0.5.0](https://github.com/discue/paddle-integration-firestore/compare/v0.4.0...v0.5.0) (2022-09-14)
 
 
