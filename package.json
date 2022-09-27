@@ -13,8 +13,8 @@
     "test": "mocha test/spec/**/*.spec.js --check-leaks  --timeout 50000 --file test/global-mocha-setup.js",
     "test-e2e": "playwright test test-e2e/spec",
     "lint": "eslint -c .eslintrc.json lib",
-    "release": "test.sh && test-e2e.sh && standard-version && git push --follow-tags origin && npm publish",
-    "release-minor": "test.sh && test-e2e.sh && standard-version --release-as minor && git push --follow-tags origin && npm publish",
+    "release": "bash -c ./test.sh && bash -c ./test-e2e-local.sh && standard-version && git push --follow-tags origin && npm publish",
+    "release-minor": "bash -c ./test.sh && bash -c ./test-e2e-local.sh && standard-version --release-as minor && git push --follow-tags origin && npm publish",
     "paddle-webhook-tunnel": "lt --port 3456 --subdomain xxrrii533vj7h9qipggbkbze"
   },
   "repository": {
