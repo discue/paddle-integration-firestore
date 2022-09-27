@@ -709,12 +709,12 @@ describe('PaddleIntegration', () => {
             const subscriptionTrail = trail[subscriptionCreated.subscription_plan_id]
 
             // expect(subscriptionTrail).to.have.length(3)
-            expect(subscriptionTrail[0].type).to.equal('subscription_created')
-            expect(subscriptionTrail[0].description).to.equal('active')
+            expect(subscriptionTrail[2].type).to.equal('subscription_created')
+            expect(subscriptionTrail[2].description).to.equal('active')
             expect(subscriptionTrail[1].type).to.equal('subscription_updated')
             expect(subscriptionTrail[1].description).to.equal('active')
-            expect(subscriptionTrail[2].type).to.equal('subscription_cancelled')
-            expect(subscriptionTrail[2].description).to.equal('deleted')
+            expect(subscriptionTrail[0].type).to.equal('subscription_cancelled')
+            expect(subscriptionTrail[0].description).to.equal('deleted')
         })
     })
 })
