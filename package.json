@@ -40,7 +40,6 @@
     "mocha": "^10.0.0",
     "node-amy": "^3.7.0",
     "nodemon": "^2.0.19",
-    "playwright": "^1.25.1",
     "puppeteer": "^17.0.0",
     "standard-version": "^9.5.0"
   },
