@@ -196,6 +196,40 @@ test('test update via api', async ({ page }) => {
     expect(sub['33590']).toBeFalsy()
 })
 
+test('test refund via api', async ({ page }) => {
+    // create new subscription and ...
+    await createNewSubscription(page)
+
+    // .. check it was stored and payment status was received ..
+    let { subscription } = await storage.get(['4815162342'])
+    expect(subscription).not.toBeFalsy()
+    expect(subscription.status).toHaveLength(2)
+    expect(subscription.payments).toHaveLength(1)
+
+    validateStatus(subscription.status[1])
+
+    // .. and check it is active
+    let sub = await subscriptions.getAllSubscriptionsStatus(subscription)
+    expect(sub['33590']).toBeTruthy()
+
+    // refund subscription plan via api ...
+    const refunded = await api.refundFullPayment(subscription.payments[0])
+    expect(refunded).toBeTruthy()
+    await page.waitForTimeout(30000);
+
+    // .. check no new status and payments added ...
+    // .. because refunds need to be reviewed by paddle time 
+    // .. it's their money we're playing with
+    ({ subscription } = await storage.get(['4815162342']))
+    expect(subscription).not.toBeFalsy()
+    expect(subscription.status).toHaveLength(2)
+    expect(subscription.payments).toHaveLength(1)
+
+    // .. and still active
+    sub = await subscriptions.getAllSubscriptionsStatus(subscription)
+    expect(sub['33590']).toBeTruthy()
+})
+
 test('test create, update, and cancel via ui', async ({ page }) => {
     // create new subscription and ...
     await createNewSubscription(page)
