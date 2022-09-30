@@ -7,8 +7,8 @@ const hookRunner = require('../hook-server-runner')
 const hookTunnelRunner = require('../hook-tunnel-runner')
 const testPageRunner = require('../test-page-runner')
 
-const { Subscriptions, SubscriptionInfo } = require('../../lib/index')
-const subscriptions = new Subscriptions('api_client')
+const { SubscriptionsHooks, SubscriptionInfo } = require('../../lib/index')
+const subscriptions = new SubscriptionsHooks('api_client')
 const subscriptionInfo = new SubscriptionInfo('api_client')
 
 const storageResource = require('../../lib/firestore/nested-firestore-resource')

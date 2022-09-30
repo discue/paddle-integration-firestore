@@ -3,10 +3,9 @@
 const express = require('express')
 const app = express()
 
-const { Subscriptions } = require('../lib/index')
-const subscriptions = new Subscriptions('api_client')
+const { SubscriptionsHooks, middleware : Middleware } = require('../lib/index')
+const subscriptions  = new SubscriptionsHooks('api_client')
 
-const Middleware = require('../lib/middleware')
 const middleware = Middleware(subscriptions)
 
 const port = process.env.PORT || 3456

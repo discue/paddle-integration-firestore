@@ -9,8 +9,8 @@ const paymentSucceded = require('../fixtures/payment-succeeded')
 const paymentFailed = require('../fixtures/payment-failed')
 const paymentRefunded = require('../fixtures/payment-refunded')
 
-const { Subscriptions, htmlEncoder, SubscriptionInfo } = require('../../lib/index')
-const paddleIntegration = new Subscriptions('api_client')
+const { SubscriptionsHooks, htmlEncoder, SubscriptionInfo } = require('../../lib/index')
+const paddleIntegration = new SubscriptionsHooks('api_client')
 const subscriptionInfo = new SubscriptionInfo('api_client')
 const storage = require('../../lib/firestore/nested-firestore-resource')({ documentPath: 'api_client', resourceName: 'api_clients' })
 
