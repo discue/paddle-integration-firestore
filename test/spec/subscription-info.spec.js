@@ -26,6 +26,101 @@ describe('SubscriptionInfo', () => {
         await subscriptions.addSubscriptionPlaceholder(ids)
     })
 
+    describe('.getSubscriptionInfo', () => {
+        beforeEach(async () => {
+            const subscriptionId = uuid()
+            const createPayload = Object.assign({}, subscriptionCreated,
+                {
+                    subscription_id: subscriptionId,
+                    passthrough: JSON.stringify({ ids }),
+                    event_time: new Date().toISOString()
+                }
+            )
+            await subscriptions.addSubscriptionCreatedStatus(createPayload)
+
+            const paymentSuccesfulPayload = Object.assign({}, paymentSucceded, {
+                event_time: '2017-08-08 10:47:47',
+                subscription_id: subscriptionId,
+                passthrough: JSON.stringify({ ids }),
+            })
+            await subscriptions.addSuccessfulPayment(paymentSuccesfulPayload)
+
+            const paymentSuccesfulPayload2 = Object.assign({}, paymentSucceded, {
+                event_time: '2019-08-08 10:47:47',
+                subscription_id: subscriptionId,
+                passthrough: JSON.stringify({ ids }),
+            })
+            await subscriptions.addSuccessfulPayment(paymentSuccesfulPayload2)
+        })
+        it('indicates the subscription is active', async () => {
+            await new Promise((resolve) => setTimeout(resolve, 1000))
+
+            const status = await subscriptionInfo.getSubscriptionInfo(ids)
+            console.log({ status }, new Date().toISOString())
+            expect(status[subscriptionCreated.subscription_plan_id].active).to.be.true
+        })
+        it('returns end dates for a subscription if it was cancelled', async () => {
+            const payload = Object.assign({}, subscriptionCancelled,
+                {
+                    subscription_id: 'subscriptionId',
+                    passthrough: JSON.stringify({ ids }),
+                    cancellation_effective_date: new Date().toISOString()
+                }
+            )
+
+            await subscriptions.addSubscriptionCancelledStatus(payload)
+            await new Promise((resolve) => setTimeout(resolve, 1000))
+
+            const status = await subscriptionInfo.getSubscriptionInfo(ids)
+            expect(status[subscriptionCreated.subscription_plan_id].start).to.match(/[0-9]{2}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z/)
+            expect(status[subscriptionCreated.subscription_plan_id].end).to.match(/[0-9]{2}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z/)
+        })
+        it('indicates the subscription is not active', async () => {
+            const payload = Object.assign({}, subscriptionCancelled,
+                {
+                    subscription_id: 'subscriptionId',
+                    passthrough: JSON.stringify({ ids }),
+                    cancellation_effective_date: new Date().toISOString()
+                }
+            )
+            
+            await subscriptions.addSubscriptionCancelledStatus(payload)
+            await new Promise((resolve) => setTimeout(resolve, 1000))
+
+            const status = await subscriptionInfo.getSubscriptionInfo(ids)
+            console.log({ status }, new Date().toISOString())
+            expect(status[subscriptionCreated.subscription_plan_id].active).to.be.false
+        })
+        it('returns a sorted list of status events', async () => {
+            const { [subscriptionCreated.subscription_plan_id]: { status_trail } } = await subscriptionInfo.getSubscriptionInfo(ids)
+            expect(status_trail).to.have.length(1)
+
+            const sorted = status_trail.every((status, index, array) => {
+                if (index === 0) {
+                    return true
+                } else {
+                    return new Date(status.event_time).getTime() <= new Date(array[index - 1].event_time).getTime()
+                }
+            })
+
+            expect(sorted).to.be.true
+        })
+        it('returns a sorted list of payment events', async () => {
+            const { [subscriptionCreated.subscription_plan_id]: { payments_trail } } = await subscriptionInfo.getSubscriptionInfo(ids)
+            expect(payments_trail).to.have.length(3)
+
+            const sorted = payments_trail.every((payment, index, array) => {
+                if (index === 0) {
+                    return true
+                } else {
+                    return new Date(payment.event_time).getTime() <= new Date(array[index - 1].event_time).getTime()
+                }
+            })
+
+            expect(sorted).to.be.true
+        })
+    })
+
     describe('.getAllSubscriptionsStatus', () => {
         it('takes the most recent status into account', async () => {
             const subscriptionId = uuid()

@@ -31,8 +31,6 @@ It does **not**
 - validate webhook content. Use and register [paddle-webhook-validator](https://github.com/discue/paddle-webhook-validator) in your application to validate webhooks before storing them.
 - provide a component or methods to query payment-related information. 
 
-The module stores payment-related information in aollection of the target application like e.g. `api-clients`, or `api-users` and expects the application to read this information anyhow for every request. Therefore, no extra costly read is required.
-
 ## Installation
 ```bash
 npm install @discue/paddle-integration-firestore
@@ -94,6 +92,36 @@ module.exports = async (req, res, next) => {
     const { passthrough } = await subscriptions.addSubscriptionPlaceholder([id])
     // return the passthrough to the frontend app
     res.status(200).send(JSON.stringify({ passthrough }))
+}
+```
+
+### Geting subscription infos
+Returns all available information about a subscription. Will include the `start` and (optionally) `end` date, the `status_trail`, and the `payments_trail` and a property indicating whether the subscription is currently `active`.
+
+```js
+'use strict'
+
+const { SubscriptionInfo } = require('@discue/paddle-firebase-integration')
+// pass the path to the collection here
+const subscriptions = new SubscriptionInfo('api_clients')
+
+const PREMIUM_SUBSCRIPTION_PLAN_ID = '123'
+
+module.exports = (req,res,next) => {
+    // requires application to provide the target ids of the
+    // subscription document. This can be e.g. the api client id
+    const targetIds = getSubscriptionIds(targetIds)
+
+    const info = await subscriptions.getSubscriptionInfo(targetIds)
+    //    {
+    //        '8': {
+    //        start: '2022-08-30T07:59:44.326Z',
+    //        end: '2022-09-30T07:59:44.404Z',
+    //        status_trail: [Array],
+    //        payments_trail: [Array],
+    //        active: false
+    //        }
+    //    }
 }
 ```
 
