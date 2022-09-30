@@ -5,7 +5,10 @@ on:
       - deploy
     tags-ignore:
       - "*"
-      
+
+concurrency:
+  group: paddle-integration-firestore-tests
+
 jobs:
   build:
     timeout-minutes: 10
