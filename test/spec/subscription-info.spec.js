@@ -15,6 +15,7 @@ const subscriptions = new SubscriptionsHooks('api_client')
 const storage = require('../../lib/firestore/nested-firestore-resource')({ documentPath: 'api_client', resourceName: 'api_clients' })
 
 const { expect } = require('chai')
+const { UPCOMING_PAYMENTS_DESCRIPTION } = require('../../lib/subscription-descriptions')
 
 describe('SubscriptionInfo', () => {
 
@@ -75,6 +76,44 @@ describe('SubscriptionInfo', () => {
             expect(status[subscriptionCreated.subscription_plan_id].start).to.match(/[0-9]{2}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z/)
             expect(status[subscriptionCreated.subscription_plan_id].end).to.match(/[0-9]{2}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z/)
         })
+        it('removes an upcoming payment event if its after an end date', async () => {
+            const paymentSuccesfulPayload2 = Object.assign({}, paymentSucceded, {
+                event_time: '2020-08-08 10:47:47',
+                next_bill_date: '2023-01-01',
+                subscription_id: 'subscriptionId',
+                passthrough: JSON.stringify({ ids }),
+            })
+            await subscriptions.addSuccessfulPayment(paymentSuccesfulPayload2)
+
+            const payload = Object.assign({}, subscriptionCancelled,
+                {
+                    subscription_id: 'subscriptionId',
+                    passthrough: JSON.stringify({ ids }),
+                    cancellation_effective_date: new Date().toISOString()
+                }
+            )
+
+            await subscriptions.addSubscriptionCancelledStatus(payload)
+
+            const status = await subscriptionInfo.getSubscriptionInfo(ids)
+            const { payments_trail : paymentTrail} = status[subscriptionCreated.subscription_plan_id]
+            const found = paymentTrail.find(payment => payment.description === UPCOMING_PAYMENTS_DESCRIPTION)
+            expect(found).to.be.undefined
+        })
+        it('keeps an upcoming payment event if it is scheduled before an end date', async () => {
+            const paymentSuccesfulPayload2 = Object.assign({}, paymentSucceded, {
+                event_time: '2019-08-08 10:47:47',
+                subscription_id: 'subscriptionId',
+                passthrough: JSON.stringify({ ids }),
+            })
+            await subscriptions.addSuccessfulPayment(paymentSuccesfulPayload2)
+
+            const status = await subscriptionInfo.getSubscriptionInfo(ids)
+            console.log(JSON.stringify(status[subscriptionCreated.subscription_plan_id].payments_trail, null, 2))
+            const { payments_trail : paymentTrail} = status[subscriptionCreated.subscription_plan_id]
+            const found = paymentTrail.find(payment => payment.description === UPCOMING_PAYMENTS_DESCRIPTION)
+            expect(found).to.not.be.undefined
+        })
         it('indicates the subscription is not active', async () => {
             const payload = Object.assign({}, subscriptionCancelled,
                 {
@@ -83,7 +122,7 @@ describe('SubscriptionInfo', () => {
                     cancellation_effective_date: new Date().toISOString()
                 }
             )
-            
+
             await subscriptions.addSubscriptionCancelledStatus(payload)
             await new Promise((resolve) => setTimeout(resolve, 1000))
 
