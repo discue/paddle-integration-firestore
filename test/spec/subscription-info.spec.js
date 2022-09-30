@@ -96,7 +96,7 @@ describe('SubscriptionInfo', () => {
             await subscriptions.addSubscriptionCancelledStatus(payload)
 
             const status = await subscriptionInfo.getSubscriptionInfo(ids)
-            const { payments_trail : paymentTrail} = status[subscriptionCreated.subscription_plan_id]
+            const { payments_trail: paymentTrail } = status[subscriptionCreated.subscription_plan_id]
             const found = paymentTrail.find(payment => payment.description === UPCOMING_PAYMENTS_DESCRIPTION)
             expect(found).to.be.undefined
         })
@@ -110,7 +110,7 @@ describe('SubscriptionInfo', () => {
 
             const status = await subscriptionInfo.getSubscriptionInfo(ids)
             console.log(JSON.stringify(status[subscriptionCreated.subscription_plan_id].payments_trail, null, 2))
-            const { payments_trail : paymentTrail} = status[subscriptionCreated.subscription_plan_id]
+            const { payments_trail: paymentTrail } = status[subscriptionCreated.subscription_plan_id]
             const found = paymentTrail.find(payment => payment.description === UPCOMING_PAYMENTS_DESCRIPTION)
             expect(found).to.not.be.undefined
         })
