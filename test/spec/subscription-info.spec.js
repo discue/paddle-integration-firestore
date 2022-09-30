@@ -158,6 +158,22 @@ describe('SubscriptionInfo', () => {
 
             expect(sorted).to.be.true
         })
+        it('indicates which one of updated and supereseded subs is active', async () => {
+            const updatePayload = Object.assign({}, subscriptionUpdated,
+                {
+                    event_time: new Date().toISOString(),
+                    subscription_id: 'subscriptionId',
+                    old_subscription_plan_id: '8',
+                    subscription_plan_id: '1',
+                    passthrough: JSON.stringify({ ids })
+                }
+            )
+            await subscriptions.addSubscriptionUpdatedStatus(updatePayload)
+
+            const subs = await subscriptionInfo.getSubscriptionInfo(ids)
+            expect(subs['8'].active).to.be.false
+            expect(subs['1'].active).to.be.true
+        })
     })
 
     describe('.getAllSubscriptionsStatus', () => {
