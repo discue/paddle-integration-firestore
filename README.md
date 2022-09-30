@@ -103,9 +103,9 @@ Will return the status for all subscriptions associated with the given user/api_
 ```js
 'use strict'
 
-const { Subscriptions } = require('@discue/paddle-firebase-integration')
+const { SubscriptionInfo } = require('@discue/paddle-firebase-integration')
 // pass the path to the collection here
-const subscriptions = new Subscriptions('api_clients')
+const subscriptions = new SubscriptionInfo('api_clients')
 
 const PREMIUM_SUBSCRIPTION_PLAN_ID = '123'
 
@@ -132,9 +132,9 @@ Returns list of payments for for all subscriptions associated with the given use
 ```js
 'use strict'
 
-const { Subscriptions } = require('@discue/paddle-firebase-integration')
+const { SubscriptionInfo } = require('@discue/paddle-firebase-integration')
 // pass the path to the collection here
-const subscriptions = new Subscriptions('api_clients')
+const subscriptions = new SubscriptionInfo('api_clients')
 
 const PREMIUM_SUBSCRIPTION_PLAN_ID = '123'
 
@@ -154,15 +154,15 @@ module.exports = (req,res,next) => {
 }
 ```
 
-### Get list of subscription update events
+### Get list of subscription status events
 Returns list of payments for for all subscriptions associated with the given user/api_client.
 
 ```js
 'use strict'
 
-const { Subscriptions } = require('@discue/paddle-firebase-integration')
+const { SubscriptionInfo } = require('@discue/paddle-firebase-integration')
 // pass the path to the collection here
-const subscriptions = new Subscriptions('api_clients')
+const subscriptions = new SubscriptionInfo('api_clients')
 
 const PREMIUM_SUBSCRIPTION_PLAN_ID = '123'
 
