@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.8.0](https://github.com/discue/paddle-integration-firestore/compare/v0.7.0...v0.8.0) (2022-09-30)
+
+
+### Features
+
+* implement get subscription info method ([f061e6a](https://github.com/discue/paddle-integration-firestore/commit/f061e6abeb2bc40a9ea0e2c83b79ead79e0bde9c))
+
+
+### Refactorings
+
+* move subscription hooks handling to own component ([e29ecb9](https://github.com/discue/paddle-integration-firestore/commit/e29ecb92d7017ea44394455ef137de1035eb0569))
+* rename private method name ([38a7281](https://github.com/discue/paddle-integration-firestore/commit/38a72810976eca72cafbfde3c22bd4d66dc9f86a))
+* split hook handling and subscription info components ([5adb158](https://github.com/discue/paddle-integration-firestore/commit/5adb158af794ab70a41ba5c036d27368119bb165))
+
+
+### Chores
+
+* remove client.js ([c007ca8](https://github.com/discue/paddle-integration-firestore/commit/c007ca8f9b6d40887c6fb228f6030d2c7bf0e124))
+
 ## [0.7.0](https://github.com/discue/paddle-integration-firestore/compare/v0.6.0...v0.7.0) (2022-09-27)
 
 
