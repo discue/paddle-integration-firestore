@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.9.0](https://github.com/discue/paddle-integration-firestore/compare/v0.8.0...v0.9.0) (2022-10-02)
+
+
+### Features
+
+* do not add upcoming payment if sub expires before ([92f0661](https://github.com/discue/paddle-integration-firestore/commit/92f066180e6419661dc93652214a6a70ce8ab1b5))
+
+
+### Bug Fixes
+
+* check if payments exists before accessing one of them ([4e6739f](https://github.com/discue/paddle-integration-firestore/commit/4e6739fb1476db820f1e95307f203349542a6c71))
+
+
+### Chores
+
+* **ci:** run only one job in parallel ([931145a](https://github.com/discue/paddle-integration-firestore/commit/931145a0839b4b3b47a8a98e8be3495e97b6b6f6))
+* **deps-dev:** bump @playwright/test from 1.25.1 to 1.26.1 ([a6a914f](https://github.com/discue/paddle-integration-firestore/commit/a6a914f84ed657f4784e5badaca27f8c5f9a7f6d))
+* **deps-dev:** bump eslint from 8.23.0 to 8.24.0 ([e29f1c8](https://github.com/discue/paddle-integration-firestore/commit/e29f1c8517b78305ccd36ec39bb4021db83bb6c5))
+* **deps-dev:** bump firebase-tools from 11.8.0 to 11.13.0 ([6c5e286](https://github.com/discue/paddle-integration-firestore/commit/6c5e286030e58af581c6646ae2b44380092082b0))
+* **deps-dev:** bump puppeteer from 17.0.0 to 18.0.5 ([765f918](https://github.com/discue/paddle-integration-firestore/commit/765f91843c4d4d5c8028c085ff3d5db73a87a132))
+* **deps:** bump actions/stale from 5 to 6 ([5eddd24](https://github.com/discue/paddle-integration-firestore/commit/5eddd241ad2e2feaee3015f684144e24f98ce2d4))
+* **deps:** bump got from 12.4.1 to 12.5.1 ([5f6e29f](https://github.com/discue/paddle-integration-firestore/commit/5f6e29fcfdca7d0cbc2ee82cad0c26277a21381b))
+
 ## [0.8.0](https://github.com/discue/paddle-integration-firestore/compare/v0.7.0...v0.8.0) (2022-09-30)
 
 
