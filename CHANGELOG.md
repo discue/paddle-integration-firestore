@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.10.1](https://github.com/discue/paddle-integration-firestore/compare/v0.10.0...v0.10.1) (2022-10-09)
+
+
+### Bug Fixes
+
+* timestamp not passed to get stard and end dates ([9481284](https://github.com/discue/paddle-integration-firestore/commit/948128446266932959c0b17f835072e0b7ff25d6))
+
 ## [0.10.0](https://github.com/discue/paddle-integration-firestore/compare/v0.9.0...v0.10.0) (2022-10-09)
 
 
