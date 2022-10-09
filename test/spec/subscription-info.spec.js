@@ -377,7 +377,7 @@ describe('SubscriptionInfo', () => {
             await subscriptions.addSubscriptionCancelledStatus(payload)
 
             const { subscription: sub } = await storage.get(ids)
-            const { [createPayload.subscription_plan_id]: { start, end } } = await subscriptionInfo.getStartAndEndDates(sub)
+            const { [createPayload.subscription_plan_id]: { start, end } } = await subscriptionInfo.getStartAndEndDates(sub, new Date(2099, 1))
             expect(start).to.equal(startTimeString)
             expect(end).to.equal(endTimeString)
         })
