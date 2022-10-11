@@ -176,6 +176,51 @@ describe('SubscriptionInfo', () => {
         })
     })
 
+    describe('.cancelSubscription', () => {
+        beforeEach(async () => {
+            const subscriptionId = uuid()
+            const createPayload = Object.assign({}, subscriptionCreated,
+                {
+                    subscription_id: subscriptionId,
+                    passthrough: JSON.stringify({ ids }),
+                    event_time: new Date().toISOString()
+                }
+            )
+            await subscriptions.addSubscriptionCreatedStatus(createPayload)
+        })
+        it('throws if no subscription with plan was found', async () => {
+            const { subscription: sub } = await storage.get(ids)
+
+            try {
+                await subscriptionInfo.cancelSubscription(sub, '99')
+                throw new Error('Method must throw not found')
+            } catch (e) {
+                const message = e.message
+                expect(message).to.equal(SubscriptionInfo.ERROR_MESSAGE_NOT_FOUND)
+            }
+        })
+        it('throws if subscription was already cancelled', async () => {
+            const payload = Object.assign({}, subscriptionCancelled,
+                {
+                    subscription_id: 'subscriptionId',
+                    passthrough: JSON.stringify({ ids }),
+                    cancellation_effective_date: new Date(new Date().getTime()).toISOString()
+                }
+            )
+
+            await subscriptions.addSubscriptionCancelledStatus(payload)
+            const { subscription: sub } = await storage.get(ids)
+
+            try {
+                await subscriptionInfo.cancelSubscription(sub, '8')
+                throw new Error('Method must throw "SubscriptionInfo.ERROR_SUBSCRIPTION_ALREADY_CANCELLED"')
+            } catch (e) {
+                const message = e.message
+                expect(message).to.equal(SubscriptionInfo.ERROR_SUBSCRIPTION_ALREADY_CANCELLED)
+            }
+        })
+    })
+
     describe('.getAllSubscriptionsStatus', () => {
         it('takes the most recent status into account', async () => {
             const subscriptionId = uuid()

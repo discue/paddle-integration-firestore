@@ -9,11 +9,11 @@ const testPageRunner = require('../test-page-runner')
 
 const { SubscriptionsHooks, SubscriptionInfo } = require('../../lib/index')
 const subscriptions = new SubscriptionsHooks('api_client')
-const subscriptionInfo = new SubscriptionInfo('api_client')
 
 const storageResource = require('../../lib/firestore/nested-firestore-resource')
 const storage = storageResource({ documentPath: 'api_client', resourceName: 'api_clients' })
 
+let subscriptionInfo
 let api
 
 test.beforeAll(emulatorRunner.start)
@@ -26,6 +26,8 @@ test.beforeAll(async () => {
     const API = await (await import('../../lib/paddle/api.js')).default
     api = new API({ useSandbox: true, authCode: process.env.AUTH_CODE, vendorId: process.env.VENDOR_ID })
     await api.init()
+
+    subscriptionInfo = new SubscriptionInfo('api_client', api)
 })
 
 test.beforeEach(async () => {
@@ -127,6 +129,43 @@ function validateStatus(status) {
     chaiExpect(status.quantity).to.match(/[0-9]{1}/)
     chaiExpect(status.event_time).to.match(/^[0-9]{4}-[0-9]{2}-[0-9]{2}/)
 }
+
+test('test cancel via subscription info', async ({ page }) => {
+    // create new subscription and ...
+    await createNewSubscription(page)
+
+    // .. check it was stored and payment status was received ..
+    let { subscription } = await storage.get(['4815162342'])
+    expect(subscription).not.toBeFalsy()
+    expect(subscription.status).toHaveLength(2)
+    expect(subscription.payments).toHaveLength(1)
+
+    validateStatus(subscription.status[1])
+
+    // .. and check it is active
+    let sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
+    expect(sub['33590']).toBeTruthy();
+
+    // cancel subscription ...
+    ({ subscription } = await storage.get(['4815162342']))
+    const success = await subscriptionInfo.cancelSubscription(subscription, '33590')
+    expect(success).toBeTruthy()
+    await page.waitForTimeout(10000);
+
+    // ... verify subscription still active today ...
+    ({ subscription } = await storage.get(['4815162342']))
+    expect(subscription.status).toHaveLength(3)
+    expect(subscription.payments).toHaveLength(1)
+
+    validateStatus(subscription.status[2])
+
+    sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
+    expect(sub['33590']).toBeTruthy()
+
+    // and not active next month (35 days)
+    sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription, new Date(new Date().getTime() + 1000 * 3600 * 24 * 35))
+    expect(sub['33590']).toBeFalsy()
+})
 
 test('test cancel via api', async ({ page }) => {
     // create new subscription and ...
