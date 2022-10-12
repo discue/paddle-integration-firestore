@@ -14,3 +14,9 @@ test('list all products', async () => {
     const products = await api.listProducts()
     expect(products.products).toHaveLength(0)
 })
+
+
+test('list all subscriptions', async () => {
+    const subs = await api.listSubscriptions()
+    expect(subs).toHaveLength(0)
+})
