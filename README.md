@@ -210,6 +210,53 @@ module.exports = (req,res,next) => {
 }
 ```
 
+### Cancelling a subscription
+Cancels a specific subscription plan. The subscription plan id must be passed.
+
+```js
+'use strict'
+
+const { SubscriptionInfo } = require('@discue/paddle-firebase-integration')
+// pass the path to the collection here
+const subscriptions = new SubscriptionInfo('api_clients')
+
+const PREMIUM_SUBSCRIPTION_PLAN_ID = '123'
+
+module.exports = (req,res,next) => {
+    // requires application to read api_client information 
+    // based on incoming information like a JWT or a cookie
+    const apiClient = readApiClient(req)
+    const { subscription } = apiClient
+    const subscriptionPlanId = '35141'
+
+    await subscriptions.cancelSubscription(subscription subscriptionPlanId)
+}
+```
+
+### Updateing a subscription plan
+Updates a subscription plan. The previous one will be cancelled and the new one will become active immediately. Customers will be charged immediately.
+
+```js
+'use strict'
+
+const { SubscriptionInfo } = require('@discue/paddle-firebase-integration')
+// pass the path to the collection here
+const subscriptions = new SubscriptionInfo('api_clients')
+
+const PREMIUM_SUBSCRIPTION_PLAN_ID = '123'
+
+module.exports = (req,res,next) => {
+    // requires application to read api_client information 
+    // based on incoming information like a JWT or a cookie
+    const apiClient = readApiClient(req)
+    const { subscription } = apiClient
+    const subscriptionPlanId = '35141'
+    const newSubscriptionPlanId = '55123'
+
+    await subscriptions.updateSubscription(subscription subscriptionPlanId, newSubscriptionPlanId)
+}
+```
+
 ## Run Tests
 
 To run tests, run the following command
