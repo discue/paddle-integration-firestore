@@ -203,6 +203,40 @@ test('test cancel via api', async ({ page }) => {
     expect(sub['33590']).toBeFalsy()
 })
 
+test('test update via subscription info', async ({ page }) => {
+    // create new subscription and ...
+    await createNewSubscription(page)
+
+    // .. check it was stored and payment status was received ..
+    let { subscription } = await storage.get(['4815162342'])
+    expect(subscription).not.toBeFalsy()
+    expect(subscription.status).toHaveLength(2)
+    expect(subscription.payments).toHaveLength(1)
+
+    validateStatus(subscription.status[1])
+
+    // .. and check it is active
+    let sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
+    expect(sub['33590']).toBeTruthy()
+
+    // update subscription plan via api ...
+    const updated = await subscriptionInfo.updateSubscription(subscription, '33590', '35141')
+    expect(updated).toBeTruthy()
+    await page.waitForTimeout(30000);
+
+    // .. check  new status and payments added ...
+    ({ subscription } = await storage.get(['4815162342']))
+    expect(subscription).not.toBeFalsy()
+    expect(subscription.status).toHaveLength(4)
+    expect(subscription.payments).toHaveLength(2)
+
+    // .. and still active
+    sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
+    console.log('active subs', { sub })
+    expect(sub['35141']).toBeTruthy()
+    expect(sub['33590']).toBeFalsy()
+})
+
 test('test update via api', async ({ page }) => {
     // create new subscription and ...
     await createNewSubscription(page)
