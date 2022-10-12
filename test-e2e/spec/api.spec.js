@@ -15,10 +15,14 @@ test('list all products', async () => {
     expect(products.products).toHaveLength(0)
 })
 
-
-test('list all subscriptions', async () => {
+test('list all active subscriptions', async () => {
     const subs = await api.listSubscriptions()
     expect(subs).toHaveLength(0)
+})
+
+test('list all deleted subscriptions', async () => {
+    const subs = await api.listSubscriptions('deleted', 51)
+    expect(subs.length).toBeGreaterThan(50)
 })
 
 test('list all plans', async () => {
