@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.11.0](https://github.com/discue/paddle-integration-firestore/compare/v0.10.1...v0.11.0) (2022-10-12)
+
+
+### Features
+
+* **api:** import got only once ([542e40b](https://github.com/discue/paddle-integration-firestore/commit/542e40b1671a9910bfe46fde9e989a253c691c78))
+* **subscription-info:** add cancel subscription method ([09656f0](https://github.com/discue/paddle-integration-firestore/commit/09656f04c1f9f48272a700b0000dc11194420f74))
+* **subscription-info:** add update subscription plan method ([e19306b](https://github.com/discue/paddle-integration-firestore/commit/e19306b0f353fe32786c0db9fae1e8912b9efdce))
+* **subscription-info:** catch and log api errors ([7fa6791](https://github.com/discue/paddle-integration-firestore/commit/7fa67911f46c8be0291c3a6ce44a52cda93d952e))
+
+
+### Refactorings
+
+* extract get subscription plan id to separate method ([3dc38bf](https://github.com/discue/paddle-integration-firestore/commit/3dc38bf0f3fc1fdfde31ef73d9a9e6626ac5c056))
+
+
+### Chores
+
+* add jsdoc description to cancel subscription method ([c03b6a8](https://github.com/discue/paddle-integration-firestore/commit/c03b6a8d8f3af5612562181bdfb7c7c8c06560a7))
+* update readme ([1fa863e](https://github.com/discue/paddle-integration-firestore/commit/1fa863ee530f4dfcc21139572c1e8aabae88f0c5))
+
 ### [0.10.1](https://github.com/discue/paddle-integration-firestore/compare/v0.10.0...v0.10.1) (2022-10-09)
 
 
