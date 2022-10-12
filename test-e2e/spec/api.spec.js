@@ -10,7 +10,7 @@ test.beforeAll(async () => {
     await api.init()
 })
 
-test.only('list all products', async () => {
+test('list all products', async () => {
     const products = await api.listProducts()
     expect(products.products).toHaveLength(0)
 })
