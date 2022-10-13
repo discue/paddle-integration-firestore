@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.12.0](https://github.com/discue/paddle-integration-firestore/compare/v0.11.0...v0.12.0) (2022-10-13)
+
+
+### Features
+
+* **api:** add list plans method ([0dcb855](https://github.com/discue/paddle-integration-firestore/commit/0dcb855c12d75469f3ca2d252e03a06683e205bf))
+* **api:** add list products method ([03f3327](https://github.com/discue/paddle-integration-firestore/commit/03f33278e641b86ad1b990b397bfb634fd22349c))
+* **api:** allow pagination and fetching all subs ([23c4432](https://github.com/discue/paddle-integration-firestore/commit/23c44329709fa69b5fa6577fa8093b2a58b9e655))
+* **api:** enable customization of http params ([9780123](https://github.com/discue/paddle-integration-firestore/commit/9780123a1188d9209bfc523b1d941488e575a45b))
+* export api constructor too ([7fa7dbe](https://github.com/discue/paddle-integration-firestore/commit/7fa7dbe7afb8470d5d85975bcff03a8fc0f0d26e))
+
+
+### Chores
+
+* skip tests before release ([3cf108b](https://github.com/discue/paddle-integration-firestore/commit/3cf108bd227c2ece2006cf146812cfa4c774bbf4))
+
 ## [0.11.0](https://github.com/discue/paddle-integration-firestore/compare/v0.10.1...v0.11.0) (2022-10-12)
 
 
