@@ -98,12 +98,15 @@ module.exports = async (req, res, next) => {
 ### Geting subscription infos
 Returns all available information about a subscription. Will include the `start` and (optionally) `end` date, the `status_trail`, and the `payments_trail` and a property indicating whether the subscription is currently `active`.
 
+**Note**: The Api component will be loaded asynchronously to preserve backwards compatibility with commonjs. This is achieved by returning a proxy as the entire module. The reactivity a proxy provides allows us to add the Api module then at a later point to the module instance. This reactivity will be lost if you destructure the module. If your application supports ES6 imports, you can also import the Api module directly from its path. 
+
 ```js
 'use strict'
 
-const { SubscriptionInfo } = require('@discue/paddle-firebase-integration')
+const paddleIntegration = require('@discue/paddle-firebase-integration')
+const api = new paddleIntegration.Api({ useSandbox: true, authCode: process.env.AUTH_CODE, vendorId: process.env.VENDOR_ID })
 // pass the path to the collection here
-const subscriptions = new SubscriptionInfo('api_clients')
+const subscriptions = new paddleIntegration.SubscriptionInfo('api_clients', { api })
 
 const PREMIUM_SUBSCRIPTION_PLAN_ID = '123'
 
@@ -128,12 +131,15 @@ module.exports = (req,res,next) => {
 ### Checking Subscription Status
 Will return the status for all subscriptions associated with the given user/api_client.
 
+**Note**: The Api component will be loaded asynchronously to preserve backwards compatibility with commonjs. This is achieved by returning a proxy as the entire module. The reactivity a proxy provides allows us to add the Api module then at a later point to the module instance. This reactivity will be lost if you destructure the module. If your application supports ES6 imports, you can also import the Api module directly from its path.
+
 ```js
 'use strict'
 
-const { SubscriptionInfo } = require('@discue/paddle-firebase-integration')
+const paddleIntegration = require('@discue/paddle-firebase-integration')
+const api = new paddleIntegration.Api({ useSandbox: true, authCode: process.env.AUTH_CODE, vendorId: process.env.VENDOR_ID })
 // pass the path to the collection here
-const subscriptions = new SubscriptionInfo('api_clients')
+const subscriptions = new paddleIntegration.SubscriptionInfo('api_clients', { api })
 
 const PREMIUM_SUBSCRIPTION_PLAN_ID = '123'
 
@@ -157,12 +163,15 @@ module.exports = (req,res,next) => {
 ### Get list of payment events
 Returns list of payments for for all subscriptions associated with the given user/api_client.
 
+**Note**: The Api component will be loaded asynchronously to preserve backwards compatibility with commonjs. This is achieved by returning a proxy as the entire module. The reactivity a proxy provides allows us to add the Api module then at a later point to the module instance. This reactivity will be lost if you destructure the module. If your application supports ES6 imports, you can also import the Api module directly from its path. 
+
 ```js
 'use strict'
 
-const { SubscriptionInfo } = require('@discue/paddle-firebase-integration')
+const paddleIntegration = require('@discue/paddle-firebase-integration')
+const api = new paddleIntegration.Api({ useSandbox: true, authCode: process.env.AUTH_CODE, vendorId: process.env.VENDOR_ID })
 // pass the path to the collection here
-const subscriptions = new SubscriptionInfo('api_clients')
+const subscriptions = new paddleIntegration.SubscriptionInfo('api_clients', { api })
 
 const PREMIUM_SUBSCRIPTION_PLAN_ID = '123'
 
@@ -185,12 +194,15 @@ module.exports = (req,res,next) => {
 ### Get list of subscription status events
 Returns list of payments for for all subscriptions associated with the given user/api_client.
 
+**Note**: The Api component will be loaded asynchronously to preserve backwards compatibility with commonjs. This is achieved by returning a proxy as the entire module. The reactivity a proxy provides allows us to add the Api module then at a later point to the module instance. This reactivity will be lost if you destructure the module. If your application supports ES6 imports, you can also import the Api module directly from its path. 
+
 ```js
 'use strict'
 
-const { SubscriptionInfo } = require('@discue/paddle-firebase-integration')
+const paddleIntegration = require('@discue/paddle-firebase-integration')
+const api = new paddleIntegration.Api({ useSandbox: true, authCode: process.env.AUTH_CODE, vendorId: process.env.VENDOR_ID })
 // pass the path to the collection here
-const subscriptions = new SubscriptionInfo('api_clients')
+const subscriptions = new paddleIntegration.SubscriptionInfo('api_clients', { api })
 
 const PREMIUM_SUBSCRIPTION_PLAN_ID = '123'
 
@@ -213,12 +225,15 @@ module.exports = (req,res,next) => {
 ### Cancelling a subscription
 Cancels a specific subscription plan. The subscription plan id must be passed.
 
+**Note**: The Api component will be loaded asynchronously to preserve backwards compatibility with commonjs. This is achieved by returning a proxy as the entire module. The reactivity a proxy provides allows us to add the Api module then at a later point to the module instance. This reactivity will be lost if you destructure the module. If your application supports ES6 imports, you can also import the Api module directly from its path. 
+
 ```js
 'use strict'
 
-const { SubscriptionInfo } = require('@discue/paddle-firebase-integration')
+const paddleIntegration = require('@discue/paddle-firebase-integration')
+const api = new paddleIntegration.Api({ useSandbox: true, authCode: process.env.AUTH_CODE, vendorId: process.env.VENDOR_ID })
 // pass the path to the collection here
-const subscriptions = new SubscriptionInfo('api_clients')
+const subscriptions = new paddleIntegration.SubscriptionInfo('api_clients', { api })
 
 const PREMIUM_SUBSCRIPTION_PLAN_ID = '123'
 
@@ -236,12 +251,15 @@ module.exports = (req,res,next) => {
 ### Updateing a subscription plan
 Updates a subscription plan. The previous one will be cancelled and the new one will become active immediately. Customers will be charged immediately.
 
+**Note**: The Api component will be loaded asynchronously to preserve backwards compatibility with commonjs. This is achieved by returning a proxy as the entire module. The reactivity a proxy provides allows us to add the Api module then at a later point to the module instance. This reactivity will be lost if you destructure the module. If your application supports ES6 imports, you can also import the Api module directly from its path. 
+
 ```js
 'use strict'
 
-const { SubscriptionInfo } = require('@discue/paddle-firebase-integration')
+const paddleIntegration = require('@discue/paddle-firebase-integration')
+const api = new paddleIntegration.Api({ useSandbox: true, authCode: process.env.AUTH_CODE, vendorId: process.env.VENDOR_ID })
 // pass the path to the collection here
-const subscriptions = new SubscriptionInfo('api_clients')
+const subscriptions = new paddleIntegration.SubscriptionInfo('api_clients', { api })
 
 const PREMIUM_SUBSCRIPTION_PLAN_ID = '123'
 
