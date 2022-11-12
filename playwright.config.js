@@ -12,9 +12,9 @@ const config = {
     fullyParallel: false,
     forbidOnly: !!process.env.CI,
     use: {
-        trace: 'on-first-retry',
+        // trace: 'on-first-retry',
         screenshot: 'only-on-failure',
-        video: 'on-first-retry'
+        // video: 'on-first-retry'
     },
     projects: [
         {
