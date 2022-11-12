@@ -7,8 +7,8 @@ const hookRunner = require('../hook-server-runner')
 const hookTunnelRunner = require('../hook-tunnel-runner')
 const testPageRunner = require('../test-page-runner')
 
-const { SubscriptionsHooks, SubscriptionInfo, Api } = require('../../lib/index')
-const subscriptions = new SubscriptionsHooks('api_client')
+const index = require('../../lib/index')
+const subscriptions = new index.SubscriptionsHooks('api_client')
 
 const storageResource = require('../../lib/firestore/nested-firestore-resource')
 const storage = storageResource({ documentPath: 'api_client', resourceName: 'api_clients' })
@@ -23,10 +23,10 @@ test.beforeAll(testPageRunner.start)
 test.afterAll(testPageRunner.stop)
 
 test.beforeAll(async () => {
-    api = new Api({ useSandbox: true, authCode: process.env.AUTH_CODE, vendorId: process.env.VENDOR_ID })
+    api = new index.Api({ useSandbox: true, authCode: process.env.AUTH_CODE, vendorId: process.env.VENDOR_ID })
     await api.init()
 
-    subscriptionInfo = new SubscriptionInfo('api_client', api)
+    subscriptionInfo = new index.SubscriptionInfo('api_client', { api, hookStorage: subscriptions })
 })
 
 test.beforeEach(async () => {
