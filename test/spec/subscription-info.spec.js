@@ -10,8 +10,8 @@ const paymentFailed = require('../fixtures/payment-failed')
 const paymentRefunded = require('../fixtures/payment-refunded')
 
 const { SubscriptionInfo, SubscriptionsHooks } = require('../../lib/index')
-const subscriptionInfo = new SubscriptionInfo('api_client')
 const subscriptions = new SubscriptionsHooks('api_client')
+const subscriptionInfo = new SubscriptionInfo('api_client', { hookStorage: subscriptions })
 const storage = require('../../lib/firestore/nested-firestore-resource')({ documentPath: 'api_client', resourceName: 'api_clients' })
 
 const { expect } = require('chai')

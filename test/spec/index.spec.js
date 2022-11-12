@@ -11,7 +11,7 @@ const paymentRefunded = require('../fixtures/payment-refunded')
 
 const { SubscriptionsHooks, htmlEncoder, SubscriptionInfo } = require('../../lib/index')
 const paddleIntegration = new SubscriptionsHooks('api_client')
-const subscriptionInfo = new SubscriptionInfo('api_client')
+const subscriptionInfo = new SubscriptionInfo('api_client', { hookStorage: paddleIntegration })
 const storage = require('../../lib/firestore/nested-firestore-resource')({ documentPath: 'api_client', resourceName: 'api_clients' })
 
 const { expect } = require('chai')
