@@ -56,7 +56,7 @@ const express = require('express')
 const app = express()
 const port = process.env.PORT || 3456
 
-const { bodyparser, middleware,Subscriptions } = require('@discue/paddle-firebase-integration')
+const { bodyparser, middleware, Subscriptions } = require('@discue/paddle-firebase-integration')
 // pass the path to the collection here
 const subscriptions = new Subscriptions('api_clients')
 
