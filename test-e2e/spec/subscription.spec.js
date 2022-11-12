@@ -124,7 +124,6 @@ function validateStatus(status) {
     chaiExpect(status.alert_name).to.match(/subscription_.*/)
     chaiExpect(status.currency).to.match(/EUR|USD/)
     chaiExpect(status.description).to.match(/active|deleted/)
-    chaiExpect(status.unit_price).to.match(/[0-9]{1,2}\.[0-9]{2}/)
     chaiExpect(status.quantity).to.match(/[0-9]{1}/)
     chaiExpect(status.event_time).to.match(/^[0-9]{4}-[0-9]{2}-[0-9]{2}/)
 }
