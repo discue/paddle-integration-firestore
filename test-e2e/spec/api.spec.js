@@ -5,7 +5,7 @@ const { test, expect } = require('@playwright/test')
 let api
 
 test.beforeAll(async () => {
-    const API = await (await import('../../lib/paddle/api.js')).default
+    const API = (await import('../../lib/paddle/api.js')).default
     api = new API({ useSandbox: true, authCode: process.env.AUTH_CODE, vendorId: process.env.VENDOR_ID })
     await api.init()
 })
