@@ -125,6 +125,7 @@ describe('PaddleIntegration', () => {
             expect(status2.alert_name).to.equal(updatePayload.alert_name)
             expect(status2.currency).to.equal(updatePayload.currency)
             expect(status2.description).to.equal('pi/superseded-by-update')
+            expect(status2.checkout_id).to.equal(updatePayload.checkout_id)
             expect(status2.quantity).to.equal(updatePayload.old_quantity)
             expect(status2.event_time).to.equal(updatePayload.event_time)
             expect(status2.subscription_id).to.equal(updatePayload.subscription_id)
