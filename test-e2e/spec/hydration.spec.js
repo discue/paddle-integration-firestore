@@ -90,6 +90,7 @@ test('hydrate an active subscription', async ({ page }) => {
     await createNewSubscription(page)
 
     let { subscription } = await storage.get(['4815162342'])
+    const subscriptionId = subscription.status[1].subscription_id
 
     // .. and check subscription is active to make sure setup was correct
     let sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
@@ -107,7 +108,7 @@ test('hydrate an active subscription', async ({ page }) => {
     expect(sub['33590']).toBeFalsy()
 
     // .. now hydrate status again ..
-    await subscriptionInfo.hydrateSubscriptionCreated(['4815162342'], subscription, 'checkoutId');
+    await subscriptionInfo.hydrateSubscriptionCreated(['4815162342'], { subscription_id: subscriptionId }, 'checkoutId');
 
     // .. and expect subscription to be active again
     ({ subscription } = await storage.get(['4815162342']))
@@ -120,13 +121,14 @@ test('does not hydrate if status created was already received', async ({ page })
     await createNewSubscription(page)
 
     let { subscription } = await storage.get(['4815162342'])
+    const subscriptionId = subscription.status[1].subscription_id
 
     // .. and check subscription is active to make sure setup was correct
     let sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
     expect(sub['33590']).toBeTruthy()
 
     // .. now hydrate status again ..
-    await subscriptionInfo.hydrateSubscriptionCreated(['4815162342'], subscription, 'checkoutId');
+    await subscriptionInfo.hydrateSubscriptionCreated(['4815162342'], { subscription_id: subscriptionId }, 'checkoutId');
 
     // .. and expect subscription to be active again
     ({ subscription } = await storage.get(['4815162342']))
@@ -138,6 +140,7 @@ test('hydrate a deleted subscription', async ({ page }) => {
     await createNewSubscription(page)
 
     let { subscription } = await storage.get(['4815162342'])
+    const subscriptionId = subscription.status[1].subscription_id
 
     // .. and check subscription is active to make sure setup was correct
     let sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
@@ -163,8 +166,10 @@ test('hydrate a deleted subscription', async ({ page }) => {
         'subscription.payments': []
     })
 
+    console.log(JSON.stringify(subscription, null, 2))
+
     // .. now hydrate status again ..
-    await subscriptionInfo.hydrateSubscriptionCancelled(['4815162342'], subscription, 'checkoutId');
+    await subscriptionInfo.hydrateSubscriptionCancelled(['4815162342'], { subscription_id: subscriptionId }, 'checkoutId');
 
     // .. and expect subscription to be active again
     ({ subscription } = await storage.get(['4815162342']))
