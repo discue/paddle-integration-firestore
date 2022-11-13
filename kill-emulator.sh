@@ -7,6 +7,7 @@ function kill() {
 }
 
 kill 3333 # liveness test server
+kill 3456 # hook server
 kill 4000 # emulator ui
 kill 5001 # functions
 kill 8085 # pubsub
