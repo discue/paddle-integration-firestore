@@ -220,7 +220,7 @@ describe('SubscriptionInfo', () => {
             }
         })
     })
-    
+
     describe('.updateSubscription', () => {
         beforeEach(async () => {
             const subscriptionId = uuid()
@@ -635,9 +635,11 @@ describe('SubscriptionInfo', () => {
         })
     })
 
-    describe('.getStatusTrail', () => {
+    describe.only('.getStatusTrail', () => {
         beforeEach(async () => {
             const subscriptionId = uuid()
+
+            await subscriptions.addSubscriptionPlaceholder(ids)
 
             const createPayload = Object.assign({}, subscriptionCreated,
                 {
@@ -669,7 +671,7 @@ describe('SubscriptionInfo', () => {
             const { subscription: sub } = await storage.get(ids)
             const trail = await subscriptionInfo.getStatusTrail(sub)
             const subscriptionTrail = trail[subscriptionCreated.subscription_plan_id]
-
+            expect(subscriptionTrail).to.have.length(3)
             // expect(subscriptionTrail).to.have.length(3)
             expect(subscriptionTrail[2].type).to.equal('subscription_created')
             expect(subscriptionTrail[2].description).to.equal('active')

@@ -184,7 +184,7 @@ test('test cancel via api', async ({ page }) => {
     // cancel subscription ...
     const success = await api.cancelSubscription(subscription.status[1])
     expect(success).toBeTruthy()
-    await page.waitForTimeout(10000);
+    await page.waitForTimeout(20000);
 
     // ... verify subscription still active today ...
     ({ subscription } = await storage.get(['4815162342']))
