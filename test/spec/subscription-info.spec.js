@@ -196,7 +196,7 @@ describe('SubscriptionInfo', () => {
                 throw new Error('Method must throw not found')
             } catch (e) {
                 const message = e.message
-                expect(message).to.equal(SubscriptionInfo.ERROR_MESSAGE_NOT_FOUND)
+                expect(message).to.equal(SubscriptionInfo.ERROR_SUBSCRIPTION_NOT_FOUND)
             }
         })
         it('throws if subscription was already cancelled', async () => {
@@ -241,7 +241,7 @@ describe('SubscriptionInfo', () => {
                 throw new Error('Method must throw not found')
             } catch (e) {
                 const message = e.message
-                expect(message).to.equal(SubscriptionInfo.ERROR_MESSAGE_NOT_FOUND)
+                expect(message).to.equal(SubscriptionInfo.ERROR_SUBSCRIPTION_NOT_FOUND)
             }
         })
         it('throws if subscription was already cancelled', async () => {
