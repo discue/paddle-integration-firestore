@@ -1,0 +1,368 @@
+{
+    "event": "Checkout.PaymentMethodSelected",
+    "eventData": {
+        "checkout": {
+            "created_at": "2022-11-08 19:58:59",
+            "completed": false,
+            "id": "1079125-chredb4ee6b8162-ad09f22763",
+            "coupon": {
+                "coupon_code": null
+            },
+            "passthrough": "{\"ids\":[\"77693b60-e2b5-404b-a7f0-51d4dda7284a\"]}",
+            "prices": {
+                "customer": {
+                    "currency": "EUR",
+                    "unit": "10.13",
+                    "unit_tax": "1.76",
+                    "total": "10.13",
+                    "total_tax": "1.76",
+                    "items": [
+                        {
+                            "checkout_product_id": 1050575,
+                            "product_id": 36630,
+                            "name": "Small",
+                            "custom_message": "This is a message",
+                            "quantity": 1,
+                            "allow_quantity": false,
+                            "icon_url": "https://paddle-sandbox.s3.amazonaws.com/user/8523/subs_36630_icon.png",
+                            "min_quantity": 1,
+                            "max_quantity": 10000,
+                            "currency": "EUR",
+                            "unit_price": {
+                                "net": 8.37,
+                                "gross": 10.13,
+                                "net_discount": 0,
+                                "gross_discount": 0,
+                                "net_after_discount": 8.37,
+                                "gross_after_discount": 10.13,
+                                "tax": 1.76,
+                                "tax_after_discount": 1.76
+                            },
+                            "line_price": {
+                                "net": 8.37,
+                                "gross": 10.13,
+                                "net_discount": 0,
+                                "gross_discount": 0,
+                                "net_after_discount": 8.37,
+                                "gross_after_discount": 10.13,
+                                "tax": 1.76,
+                                "tax_after_discount": 1.76
+                            },
+                            "discounts": [],
+                            "tax_rate": 0.21,
+                            "recurring": {
+                                "period": "month",
+                                "interval": 1,
+                                "trial_days": 0,
+                                "currency": "EUR",
+                                "unit_price": {
+                                    "net": 8.37,
+                                    "gross": 10.13,
+                                    "net_discount": 0,
+                                    "gross_discount": 0,
+                                    "net_after_discount": 8.37,
+                                    "gross_after_discount": 10.13,
+                                    "tax": 1.76,
+                                    "tax_after_discount": 1.76
+                                },
+                                "line_price": {
+                                    "net": 8.37,
+                                    "gross": 10.13,
+                                    "net_discount": 0,
+                                    "gross_discount": 0,
+                                    "net_after_discount": 8.37,
+                                    "gross_after_discount": 10.13,
+                                    "tax": 1.76,
+                                    "tax_after_discount": 1.76
+                                },
+                                "discounts": [],
+                                "tax_rate": 0.21
+                            }
+                        }
+                    ]
+                },
+                "vendor": {
+                    "currency": "USD",
+                    "unit": "10.19",
+                    "unit_tax": "1.77",
+                    "total": "10.19",
+                    "total_tax": "1.77",
+                    "items": [
+                        {
+                            "checkout_product_id": 1050575,
+                            "product_id": 36630,
+                            "name": "Small",
+                            "custom_message": "This is a message",
+                            "quantity": 1,
+                            "allow_quantity": false,
+                            "icon_url": "https://paddle-sandbox.s3.amazonaws.com/user/8523/subs_36630_icon.png",
+                            "min_quantity": 1,
+                            "max_quantity": 10000,
+                            "currency": "EUR",
+                            "unit_price": {
+                                "net": 8.37,
+                                "gross": 10.13,
+                                "net_discount": 0,
+                                "gross_discount": 0,
+                                "net_after_discount": 8.37,
+                                "gross_after_discount": 10.13,
+                                "tax": 1.76,
+                                "tax_after_discount": 1.76
+                            },
+                            "line_price": {
+                                "net": 8.37,
+                                "gross": 10.13,
+                                "net_discount": 0,
+                                "gross_discount": 0,
+                                "net_after_discount": 8.37,
+                                "gross_after_discount": 10.13,
+                                "tax": 1.76,
+                                "tax_after_discount": 1.76
+                            },
+                            "discounts": [],
+                            "tax_rate": 0.21,
+                            "recurring": {
+                                "period": "month",
+                                "interval": 1,
+                                "trial_days": 0,
+                                "currency": "EUR",
+                                "unit_price": {
+                                    "net": 8.37,
+                                    "gross": 10.13,
+                                    "net_discount": 0,
+                                    "gross_discount": 0,
+                                    "net_after_discount": 8.37,
+                                    "gross_after_discount": 10.13,
+                                    "tax": 1.76,
+                                    "tax_after_discount": 1.76
+                                },
+                                "line_price": {
+                                    "net": 8.37,
+                                    "gross": 10.13,
+                                    "net_discount": 0,
+                                    "gross_discount": 0,
+                                    "net_after_discount": 8.37,
+                                    "gross_after_discount": 10.13,
+                                    "tax": 1.76,
+                                    "tax_after_discount": 1.76
+                                },
+                                "discounts": [],
+                                "tax_rate": 0.21
+                            }
+                        }
+                    ]
+                }
+            },
+            "redirect_url": null,
+            "test_variant": "newCheckout",
+            "recurring_prices": {
+                "customer": {
+                    "currency": "EUR",
+                    "unit": "10.13",
+                    "unit_tax": "1.76",
+                    "total": "10.13",
+                    "total_tax": "1.76",
+                    "items": [
+                        {
+                            "checkout_product_id": 1050575,
+                            "product_id": 36630,
+                            "name": "Small",
+                            "custom_message": "This is a message",
+                            "quantity": 1,
+                            "allow_quantity": false,
+                            "icon_url": "https://paddle-sandbox.s3.amazonaws.com/user/8523/subs_36630_icon.png",
+                            "min_quantity": 1,
+                            "max_quantity": 10000,
+                            "currency": "EUR",
+                            "unit_price": {
+                                "net": 8.37,
+                                "gross": 10.13,
+                                "net_discount": 0,
+                                "gross_discount": 0,
+                                "net_after_discount": 8.37,
+                                "gross_after_discount": 10.13,
+                                "tax": 1.76,
+                                "tax_after_discount": 1.76
+                            },
+                            "line_price": {
+                                "net": 8.37,
+                                "gross": 10.13,
+                                "net_discount": 0,
+                                "gross_discount": 0,
+                                "net_after_discount": 8.37,
+                                "gross_after_discount": 10.13,
+                                "tax": 1.76,
+                                "tax_after_discount": 1.76
+                            },
+                            "discounts": [],
+                            "tax_rate": 0.21,
+                            "recurring": {
+                                "period": "month",
+                                "interval": 1,
+                                "trial_days": 0,
+                                "currency": "EUR",
+                                "unit_price": {
+                                    "net": 8.37,
+                                    "gross": 10.13,
+                                    "net_discount": 0,
+                                    "gross_discount": 0,
+                                    "net_after_discount": 8.37,
+                                    "gross_after_discount": 10.13,
+                                    "tax": 1.76,
+                                    "tax_after_discount": 1.76
+                                },
+                                "line_price": {
+                                    "net": 8.37,
+                                    "gross": 10.13,
+                                    "net_discount": 0,
+                                    "gross_discount": 0,
+                                    "net_after_discount": 8.37,
+                                    "gross_after_discount": 10.13,
+                                    "tax": 1.76,
+                                    "tax_after_discount": 1.76
+                                },
+                                "discounts": [],
+                                "tax_rate": 0.21
+                            }
+                        }
+                    ]
+                },
+                "interval": {
+                    "length": 1,
+                    "type": "month"
+                },
+                "vendor": {
+                    "currency": "USD",
+                    "unit": "10.19",
+                    "unit_tax": "1.77",
+                    "total": "10.19",
+                    "total_tax": "1.77",
+                    "items": [
+                        {
+                            "checkout_product_id": 1050575,
+                            "product_id": 36630,
+                            "name": "Small",
+                            "custom_message": "This is a message",
+                            "quantity": 1,
+                            "allow_quantity": false,
+                            "icon_url": "https://paddle-sandbox.s3.amazonaws.com/user/8523/subs_36630_icon.png",
+                            "min_quantity": 1,
+                            "max_quantity": 10000,
+                            "currency": "EUR",
+                            "unit_price": {
+                                "net": 8.37,
+                                "gross": 10.13,
+                                "net_discount": 0,
+                                "gross_discount": 0,
+                                "net_after_discount": 8.37,
+                                "gross_after_discount": 10.13,
+                                "tax": 1.76,
+                                "tax_after_discount": 1.76
+                            },
+                            "line_price": {
+                                "net": 8.37,
+                                "gross": 10.13,
+                                "net_discount": 0,
+                                "gross_discount": 0,
+                                "net_after_discount": 8.37,
+                                "gross_after_discount": 10.13,
+                                "tax": 1.76,
+                                "tax_after_discount": 1.76
+                            },
+                            "discounts": [],
+                            "tax_rate": 0.21,
+                            "recurring": {
+                                "period": "month",
+                                "interval": 1,
+                                "trial_days": 0,
+                                "currency": "EUR",
+                                "unit_price": {
+                                    "net": 8.37,
+                                    "gross": 10.13,
+                                    "net_discount": 0,
+                                    "gross_discount": 0,
+                                    "net_after_discount": 8.37,
+                                    "gross_after_discount": 10.13,
+                                    "tax": 1.76,
+                                    "tax_after_discount": 1.76
+                                },
+                                "line_price": {
+                                    "net": 8.37,
+                                    "gross": 10.13,
+                                    "net_discount": 0,
+                                    "gross_discount": 0,
+                                    "net_after_discount": 8.37,
+                                    "gross_after_discount": 10.13,
+                                    "tax": 1.76,
+                                    "tax_after_discount": 1.76
+                                },
+                                "discounts": [],
+                                "tax_rate": 0.21
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        "product": {
+            "quantity": 1,
+            "id": 36630,
+            "name": "Small"
+        },
+        "user": {
+            "id": "32509",
+            "email": "a@b.com",
+            "country": "ES"
+        },
+        "payment_method": "CARD"
+    },
+    "checkoutData": {
+        "method": "inline",
+        "product": 36630,
+        "email": "a@b.com",
+        "country": "ES",
+        "postcode": "08013",
+        "message": "This is a message",
+        "passthrough": "{\"ids\":[\"77693b60-e2b5-404b-a7f0-51d4dda7284a\"]}",
+        "allowQuantity": false,
+        "disableLogout": true,
+        "frameTarget": "paddle",
+        "frameInitialHeight": 700,
+        "frameStyle": "position: relative; width: 100%;",
+        "parentURL": "http://localhost:8080/registration/checkout",
+        "parent_url": "http://localhost:8080/registration/checkout"
+    },
+    "campaignData": {
+        "_Library": {
+            "Version": "2.0.51",
+            "LoadMethod": "Direct"
+        },
+        "_Request": {
+            "Secure": false,
+            "Domain": "localhost:8080",
+            "Page": "http://localhost:8080/registration/checkout",
+            "Mobile": false,
+            "Browser": "Chrome",
+            "Platform": "Web",
+            "ApplePaySupported": false
+        },
+        "_Affiliate": {
+            "IsAffiliate": false,
+            "AffiliateToken": null
+        },
+        "_Campaign": {
+            "Referrer": {
+                "Name": "localhost:8080",
+                "Type": null
+            },
+            "Paddle": null,
+            "Name": null,
+            "Source": null,
+            "Medium": null,
+            "Term": null,
+            "CampaignSummaryString": "localhost:8080 / localhost:8080"
+        },
+        "_SDK": {},
+        "_Vendor": 8523
+    }
+}
