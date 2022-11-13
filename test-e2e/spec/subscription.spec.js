@@ -230,7 +230,6 @@ test('test update via subscription info', async ({ page }) => {
 
     // .. and still active
     sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
-    console.log('active subs', { sub })
     expect(sub['35141']).toBeTruthy()
     expect(sub['33590']).toBeFalsy()
 })
@@ -263,7 +262,6 @@ test('test update via api', async ({ page }) => {
 
     // .. and still active
     sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
-    console.log('active subs', { sub })
     expect(sub['35141']).toBeTruthy()
     expect(sub['33590']).toBeFalsy()
 })
