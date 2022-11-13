@@ -635,7 +635,7 @@ describe('SubscriptionInfo', () => {
         })
     })
 
-    describe.only('.getStatusTrail', () => {
+    describe('.getStatusTrail', () => {
         beforeEach(async () => {
             const subscriptionId = uuid()
 
