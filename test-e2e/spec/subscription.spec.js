@@ -61,7 +61,7 @@ async function createNewSubscription(page, apiClientId) {
 
     await page.waitForSelector('#paddleSuccess', { state: 'visible', timeout: 50000 })
     await page.waitForSelector('.paddle-loader', { state: 'hidden', timeout: 50000 })
-    await page.waitForTimeout(20000)
+    await page.waitForTimeout(30000)
 }
 
 async function updatePaymentMethod(page, subscription) {
