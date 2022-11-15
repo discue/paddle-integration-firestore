@@ -1,5 +1,6 @@
 'use strict'
 
+const { randomUUID } = require('crypto')
 const { test, expect } = require('@playwright/test')
 const emulatorRunner = require('../../test/emulators-runner')
 const hookRunner = require('../hook-server-runner')
@@ -13,6 +14,7 @@ const storageResource = require('../../lib/firestore/nested-firestore-resource')
 const storage = storageResource({ documentPath: 'api_client', resourceName: 'api_clients' })
 
 let subscriptionInfo
+let apiClientId
 let api
 
 test.beforeAll(emulatorRunner.start)
@@ -29,16 +31,9 @@ test.beforeAll(async () => {
 })
 
 test.beforeEach(async () => {
-    try {
-        await storage.get(['4815162342'])
-        await storage.delete(['4815162342'])
-    } catch (e) {
-        //
-    }
-    await storage.put(['4815162342'], {})
-})
-test.beforeEach(() => {
-    return subscriptions.addSubscriptionPlaceholder(['4815162342'])
+    apiClientId = randomUUID()
+    await storage.put([apiClientId], {})
+    await subscriptions.addSubscriptionPlaceholder([apiClientId])
 })
 
 test.afterAll(async () => {
@@ -62,8 +57,8 @@ test.afterAll(async () => {
 
 test.afterAll(emulatorRunner.stop)
 
-async function createNewSubscription(page) {
-    await page.goto('http://localhost:3333/checkout.html')
+async function createNewSubscription(page, apiClientId) {
+    await page.goto(`http://localhost:3333/checkout.html?clientId=${apiClientId}`)
     await page.frameLocator('iframe[name="paddle_frame"]').locator('[data-testid="postcodeInput"]').click()
     await page.frameLocator('iframe[name="paddle_frame"]').locator('[data-testid="postcodeInput"]').fill('12345')
     await page.frameLocator('iframe[name="paddle_frame"]').locator('[data-testid="postcodeInput"]').press('Enter')
@@ -87,9 +82,9 @@ async function createNewSubscription(page) {
 
 test('hydrate an active subscription', async ({ page }) => {
     // create new subscription and ...
-    await createNewSubscription(page)
+    await createNewSubscription(page, apiClientId)
 
-    let { subscription } = await storage.get(['4815162342'])
+    let { subscription } = await storage.get([apiClientId])
     const subscriptionId = subscription.status[1].subscription_id
 
     // .. and check subscription is active to make sure setup was correct
@@ -97,30 +92,30 @@ test('hydrate an active subscription', async ({ page }) => {
     expect(sub['33590']).toBeTruthy()
 
     // remove status and payments to verify hydration process
-    await storage.update(['4815162342'], {
+    await storage.update([apiClientId], {
         'subscription.status': [],
         'subscription.payments': []
     });
 
-    ({ subscription } = await storage.get(['4815162342']))
+    ({ subscription } = await storage.get([apiClientId]))
     // .. expect sub to be not active anymore after we reset all status and payments
     sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
     expect(sub['33590']).toBeFalsy()
 
     // .. now hydrate status again ..
-    await subscriptionInfo.hydrateSubscriptionCreated(['4815162342'], { subscription_id: subscriptionId }, 'checkoutId');
+    await subscriptionInfo.hydrateSubscriptionCreated([apiClientId], { subscription_id: subscriptionId }, 'checkoutId');
 
     // .. and expect subscription to be active again
-    ({ subscription } = await storage.get(['4815162342']))
+    ({ subscription } = await storage.get([apiClientId]))
     sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
     expect(sub['33590']).toBeTruthy()
 })
 
 test('does not hydrate if status created was already received', async ({ page }) => {
     // create new subscription and ...
-    await createNewSubscription(page)
+    await createNewSubscription(page, apiClientId)
 
-    let { subscription } = await storage.get(['4815162342'])
+    let { subscription } = await storage.get([apiClientId])
     const subscriptionId = subscription.status[1].subscription_id
 
     // .. and check subscription is active to make sure setup was correct
@@ -128,18 +123,18 @@ test('does not hydrate if status created was already received', async ({ page })
     expect(sub['33590']).toBeTruthy()
 
     // .. now hydrate status again ..
-    await subscriptionInfo.hydrateSubscriptionCreated(['4815162342'], { subscription_id: subscriptionId }, 'checkoutId');
+    await subscriptionInfo.hydrateSubscriptionCreated([apiClientId], { subscription_id: subscriptionId }, 'checkoutId');
 
     // .. and expect subscription to be active again
-    ({ subscription } = await storage.get(['4815162342']))
+    ({ subscription } = await storage.get([apiClientId]))
     expect(subscription.status).toHaveLength(2)
 })
 
 test('hydrate a deleted subscription', async ({ page }) => {
     // create new subscription and ...
-    await createNewSubscription(page)
+    await createNewSubscription(page, apiClientId)
 
-    let { subscription } = await storage.get(['4815162342'])
+    let { subscription } = await storage.get([apiClientId])
     const subscriptionId = subscription.status[1].subscription_id
 
     // .. and check subscription is active to make sure setup was correct
@@ -155,13 +150,13 @@ test('hydrate a deleted subscription', async ({ page }) => {
         }
     }
 
-    ({ subscription } = await storage.get(['4815162342']))
+    ({ subscription } = await storage.get([apiClientId]))
     // .. expect sub to be not active anymore in the future
     sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription, new Date(new Date().getTime() + 1000 * 3600 * 24 * 35))
     expect(sub['33590']).toBeFalsy()
 
     // remove status and payments to verify hydration process
-    await storage.update(['4815162342'], {
+    await storage.update([apiClientId], {
         'subscription.status': [],
         'subscription.payments': []
     })
@@ -169,10 +164,10 @@ test('hydrate a deleted subscription', async ({ page }) => {
     console.log(JSON.stringify(subscription, null, 2))
 
     // .. now hydrate status again ..
-    await subscriptionInfo.hydrateSubscriptionCancelled(['4815162342'], { subscription_id: subscriptionId }, 'checkoutId');
+    await subscriptionInfo.hydrateSubscriptionCancelled([apiClientId], { subscription_id: subscriptionId }, 'checkoutId');
 
     // .. and expect subscription to be active again
-    ({ subscription } = await storage.get(['4815162342']))
+    ({ subscription } = await storage.get([apiClientId]))
     sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
     expect(sub['33590']).toBeFalsy()
 

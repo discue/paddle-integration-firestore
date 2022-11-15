@@ -1,5 +1,6 @@
 'use strict'
 
+const { randomUUID } = require('crypto')
 const { test, expect } = require('@playwright/test')
 const { expect: chaiExpect } = require('chai')
 const emulatorRunner = require('../../test/emulators-runner')
@@ -14,6 +15,7 @@ const storageResource = require('../../lib/firestore/nested-firestore-resource')
 const storage = storageResource({ documentPath: 'api_client', resourceName: 'api_clients' })
 
 let subscriptionInfo
+let apiClientId = '4815162342'
 let api
 
 test.beforeAll(emulatorRunner.start)
@@ -30,16 +32,9 @@ test.beforeAll(async () => {
 })
 
 test.beforeEach(async () => {
-    try {
-        await storage.get(['4815162342'])
-        await storage.delete(['4815162342'])
-    } catch (e) {
-        //
-    }
-    await storage.put(['4815162342'], {})
-})
-test.beforeEach(() => {
-    return subscriptions.addSubscriptionPlaceholder(['4815162342'])
+    apiClientId = randomUUID()
+    await storage.put([apiClientId], {})
+    await subscriptions.addSubscriptionPlaceholder([apiClientId])
 })
 
 test.afterAll(async () => {
@@ -63,8 +58,8 @@ test.afterAll(async () => {
 
 test.afterAll(emulatorRunner.stop)
 
-async function createNewSubscription(page) {
-    await page.goto('http://localhost:3333/checkout.html')
+async function createNewSubscription(page, apiClientId) {
+    await page.goto(`http://localhost:3333/checkout.html?clientId=${apiClientId}`)
     await page.frameLocator('iframe[name="paddle_frame"]').locator('[data-testid="postcodeInput"]').click()
     await page.frameLocator('iframe[name="paddle_frame"]').locator('[data-testid="postcodeInput"]').fill('12345')
     await page.frameLocator('iframe[name="paddle_frame"]').locator('[data-testid="postcodeInput"]').press('Enter')
@@ -130,10 +125,10 @@ function validateStatus(status) {
 
 test('test cancel via subscription info', async ({ page }) => {
     // create new subscription and ...
-    await createNewSubscription(page)
+    await createNewSubscription(page, apiClientId)
 
     // .. check it was stored and payment status was received ..
-    let { subscription } = await storage.get(['4815162342'])
+    let { subscription } = await storage.get([apiClientId])
     expect(subscription).not.toBeFalsy()
     expect(subscription.status).toHaveLength(2)
     expect(subscription.payments).toHaveLength(1)
@@ -145,13 +140,13 @@ test('test cancel via subscription info', async ({ page }) => {
     expect(sub['33590']).toBeTruthy();
 
     // cancel subscription ...
-    ({ subscription } = await storage.get(['4815162342']))
+    ({ subscription } = await storage.get([apiClientId]))
     const success = await subscriptionInfo.cancelSubscription(subscription, '33590')
     expect(success).toBeTruthy()
     await page.waitForTimeout(10000);
 
     // ... verify subscription still active today ...
-    ({ subscription } = await storage.get(['4815162342']))
+    ({ subscription } = await storage.get([apiClientId]))
     expect(subscription.status).toHaveLength(3)
     expect(subscription.payments).toHaveLength(1)
 
@@ -167,10 +162,10 @@ test('test cancel via subscription info', async ({ page }) => {
 
 test('test cancel via api', async ({ page }) => {
     // create new subscription and ...
-    await createNewSubscription(page)
+    await createNewSubscription(page, apiClientId)
 
     // .. check it was stored and payment status was received ..
-    let { subscription } = await storage.get(['4815162342'])
+    let { subscription } = await storage.get([apiClientId])
     expect(subscription).not.toBeFalsy()
     expect(subscription.status).toHaveLength(2)
     expect(subscription.payments).toHaveLength(1)
@@ -187,7 +182,7 @@ test('test cancel via api', async ({ page }) => {
     await page.waitForTimeout(20000);
 
     // ... verify subscription still active today ...
-    ({ subscription } = await storage.get(['4815162342']))
+    ({ subscription } = await storage.get([apiClientId]))
     expect(subscription.status).toHaveLength(3)
     expect(subscription.payments).toHaveLength(1)
 
@@ -203,10 +198,10 @@ test('test cancel via api', async ({ page }) => {
 
 test('test update via subscription info', async ({ page }) => {
     // create new subscription and ...
-    await createNewSubscription(page)
+    await createNewSubscription(page, apiClientId)
 
     // .. check it was stored and payment status was received ..
-    let { subscription } = await storage.get(['4815162342'])
+    let { subscription } = await storage.get([apiClientId])
     expect(subscription).not.toBeFalsy()
     expect(subscription.status).toHaveLength(2)
     expect(subscription.payments).toHaveLength(1)
@@ -223,7 +218,7 @@ test('test update via subscription info', async ({ page }) => {
     await page.waitForTimeout(30000);
 
     // .. check  new status and payments added ...
-    ({ subscription } = await storage.get(['4815162342']))
+    ({ subscription } = await storage.get([apiClientId]))
     expect(subscription).not.toBeFalsy()
     expect(subscription.status).toHaveLength(4)
     expect(subscription.payments).toHaveLength(2)
@@ -236,10 +231,10 @@ test('test update via subscription info', async ({ page }) => {
 
 test('test update via api', async ({ page }) => {
     // create new subscription and ...
-    await createNewSubscription(page)
+    await createNewSubscription(page, apiClientId)
 
     // .. check it was stored and payment status was received ..
-    let { subscription } = await storage.get(['4815162342'])
+    let { subscription } = await storage.get([apiClientId])
     expect(subscription).not.toBeFalsy()
     expect(subscription.status).toHaveLength(2)
     expect(subscription.payments).toHaveLength(1)
@@ -255,7 +250,7 @@ test('test update via api', async ({ page }) => {
     await page.waitForTimeout(30000);
 
     // .. check  new status and payments added ...
-    ({ subscription } = await storage.get(['4815162342']))
+    ({ subscription } = await storage.get([apiClientId]))
     expect(subscription).not.toBeFalsy()
     expect(subscription.status).toHaveLength(4)
     expect(subscription.payments).toHaveLength(2)
@@ -268,10 +263,10 @@ test('test update via api', async ({ page }) => {
 
 test('test refund via api', async ({ page }) => {
     // create new subscription and ...
-    await createNewSubscription(page)
+    await createNewSubscription(page, apiClientId)
 
     // .. check it was stored and payment status was received ..
-    let { subscription } = await storage.get(['4815162342'])
+    let { subscription } = await storage.get([apiClientId])
     expect(subscription).not.toBeFalsy()
     expect(subscription.status).toHaveLength(2)
     expect(subscription.payments).toHaveLength(1)
@@ -290,7 +285,7 @@ test('test refund via api', async ({ page }) => {
     // .. check no new status and payments added ...
     // .. because refunds need to be reviewed by paddle time 
     // .. it's their money we're playing with
-    ({ subscription } = await storage.get(['4815162342']))
+    ({ subscription } = await storage.get([apiClientId]))
     expect(subscription).not.toBeFalsy()
     expect(subscription.status).toHaveLength(2)
     expect(subscription.payments).toHaveLength(1)
@@ -302,10 +297,10 @@ test('test refund via api', async ({ page }) => {
 
 test('test create, update, and cancel via ui', async ({ page }) => {
     // create new subscription and ...
-    await createNewSubscription(page)
+    await createNewSubscription(page, apiClientId)
 
     // .. check it was stored and payment status was received ..
-    let { subscription } = await storage.get(['4815162342'])
+    let { subscription } = await storage.get([apiClientId])
     expect(subscription).not.toBeFalsy()
     expect(subscription.status).toHaveLength(2)
     expect(subscription.payments).toHaveLength(1)
@@ -321,7 +316,7 @@ test('test create, update, and cancel via ui', async ({ page }) => {
     await page.waitForTimeout(10000);
 
     // .. check no new status or payments added ...
-    ({ subscription } = await storage.get(['4815162342']))
+    ({ subscription } = await storage.get([apiClientId]))
     expect(subscription).not.toBeFalsy()
     expect(subscription.status).toHaveLength(2)
     expect(subscription.payments).toHaveLength(1)
@@ -335,7 +330,7 @@ test('test create, update, and cancel via ui', async ({ page }) => {
     await page.waitForTimeout(10000);
 
     // ... verify subscription still active today ...
-    ({ subscription } = await storage.get(['4815162342']))
+    ({ subscription } = await storage.get([apiClientId]))
     expect(subscription.status).toHaveLength(3)
     expect(subscription.payments).toHaveLength(1)
 

@@ -99,6 +99,8 @@
     ((window) => {
         'use strict'
 
+        const searchParams = new URLSearchParams(location.search)
+        const clientId = searchParams.get('clientId')
         Paddle.Environment.set('sandbox');
 
         const paddleCheckoutTimeout = window.setTimeout(() => {
@@ -160,7 +162,7 @@
             message: 'This is a message',
             allowQuantity: false,
             disableLogout: false,
-            passthrough: '{"ids": ["4815162342"]}',
+            passthrough: `{"ids": ["${clientId}"]}`,
             frameTarget: 'paddle', // The className of your checkout <div>
             frameInitialHeight: 500,
             frameStyle: 'position: relative;',    // Please ensure the minimum width is kept at or above 286px with checkout padding disabled, or 312px with checkout padding enabled. See "General" section under "Branded Inline Checkout" below for more information on checkout padding.
