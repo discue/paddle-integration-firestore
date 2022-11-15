@@ -12,6 +12,8 @@ const config = {
     timeout: 1000 * 60 * 5,
     fullyParallel: false,
     forbidOnly: !!process.env.CI,
+    globalSetup: require.resolve('./test-e2e/before-all.js'),
+    globalTeardown: require.resolve('./test-e2e/after-all.js'),
     use: {
         // trace: 'on-first-retry',
         screenshot: 'only-on-failure',

@@ -2,10 +2,6 @@
 
 const { randomUUID } = require('crypto')
 const { test, expect } = require('@playwright/test')
-const emulatorRunner = require('../../test/emulators-runner')
-const hookRunner = require('../hook-server-runner')
-const hookTunnelRunner = require('../hook-tunnel-runner')
-const testPageRunner = require('../test-page-runner')
 
 const index = require('../../lib/index')
 const subscriptions = new index.SubscriptionsHooks('api_client')
@@ -16,12 +12,6 @@ const storage = storageResource({ documentPath: 'api_client', resourceName: 'api
 let subscriptionInfo
 let apiClientId
 let api
-
-test.beforeAll(emulatorRunner.start)
-test.beforeAll(hookRunner.start)
-test.beforeAll(hookTunnelRunner.start)
-test.beforeAll(testPageRunner.start)
-test.afterAll(testPageRunner.stop)
 
 test.beforeAll(async () => {
     api = new index.Api({ useSandbox: true, authCode: process.env.AUTH_CODE, vendorId: process.env.VENDOR_ID })
@@ -48,14 +38,7 @@ test.afterAll(async () => {
     await new Promise((resolve) => {
         setTimeout(resolve, 20000)
     })
-    await hookTunnelRunner.stop()
 })
-
-test.afterAll(async () => {
-    await hookRunner.stop()
-})
-
-test.afterAll(emulatorRunner.stop)
 
 async function createNewSubscription(page, apiClientId) {
     await page.goto(`http://localhost:3333/checkout.html?clientId=${apiClientId}`)
