@@ -5,7 +5,12 @@ const isUnix = platform().includes('win') ? false : true
 
 module.exports = class Runner {
     start(binary, args, cwd, waitFor, logOutput = true) {
+        this._binary = binary
+        this._args = args
+
         return new Promise((resolve) => {
+            console.log(`${binary} ${args.join(' ')} | spawning`)
+
             this._process = spawn(binary, args, { windowsHide: true, env: null, cwd })
 
             this._waitForOutputAndCallBack(this._process.stdout, waitFor, resolve)
@@ -21,7 +26,7 @@ module.exports = class Runner {
             });
 
             process.on('SIGHUP', () => {
-                this.stop(binary)
+                this.stop()
             })
         })
     }
@@ -35,8 +40,8 @@ module.exports = class Runner {
         })
     }
 
-    stop(name) {
-        console.log(`${name} | stopping`)
+    stop() {
+        console.log(`${this._binary} ${this._args.join(' ')} | stopping`)
         if (isUnix) {
             return this._stopUnix()
         } else {
