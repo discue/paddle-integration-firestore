@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.13.0](https://github.com/discue/paddle-integration-firestore/compare/v0.12.0...v0.13.0) (2022-11-17)
+
+
+### Features
+
+* **api:** add get single subscription method ([606d247](https://github.com/discue/paddle-integration-firestore/commit/606d2471a42f96e27f11a99a368101de3a93be02))
+* handle errors in middleware gracefully ([7adeaa2](https://github.com/discue/paddle-integration-firestore/commit/7adeaa2481776a58df5653253c19cd706b527674))
+* **subscription-info:** allow hydration of local status ([48aa964](https://github.com/discue/paddle-integration-firestore/commit/48aa9648c0dd58eaee4d2fe3362829972a6b0136))
+* **subscription-info:** check whether sub was already hydrated ([dbb2df2](https://github.com/discue/paddle-integration-firestore/commit/dbb2df224fe89a6151f68226720b44debb7fcd30))
+
+
+### Bug Fixes
+
+* cannot import without es6 ([7700a88](https://github.com/discue/paddle-integration-firestore/commit/7700a88621850f1529ffcccd1672749ba6dd14a5))
+
+
+### Refactorings
+
+* rename sub not found variable ([6cb69f8](https://github.com/discue/paddle-integration-firestore/commit/6cb69f8e7649b2d5591ae7eedaeaec1ec6e5d534))
+
+
+### Chores
+
+* add missing whitespace ([7ff0354](https://github.com/discue/paddle-integration-firestore/commit/7ff0354850101bd110cb6f8144f96f8e8b66362e))
+* add payloads of client events ([3d069ab](https://github.com/discue/paddle-integration-firestore/commit/3d069abb386175f426e099253b52861c0af4d8c9))
+* also kill hook server if necessary ([d796a2f](https://github.com/discue/paddle-integration-firestore/commit/d796a2fc991d08efa78f523920034477b77a7f94))
+* **ci:** increase test timeout ([cb9aff0](https://github.com/discue/paddle-integration-firestore/commit/cb9aff081e4d3ca774b71c60bf79234b33b68f21))
+* **ci:** use node 16 ([2607bac](https://github.com/discue/paddle-integration-firestore/commit/2607bac46189e8fecb34976716d85ebdccbf56db))
+* **deps-dev:** bump eslint from 8.24.0 to 8.26.0 ([f1e1f01](https://github.com/discue/paddle-integration-firestore/commit/f1e1f013414103a8a090f9d2ae95a71a551be8ac))
+* **deps-dev:** bump nodemon from 2.0.19 to 2.0.20 ([9b9cfa4](https://github.com/discue/paddle-integration-firestore/commit/9b9cfa46f43113de58ff0ab74fc2e65ccc9ce277))
+* **deps-dev:** bump puppeteer from 18.0.5 to 19.2.0 ([f6f215e](https://github.com/discue/paddle-integration-firestore/commit/f6f215ed54e1b9bbe7882f90b85fb4a4172765eb))
+* **deps:** bump firebase-admin from 11.0.1 to 11.2.0 ([5d2617f](https://github.com/discue/paddle-integration-firestore/commit/5d2617fcd1d2e1284270e26d3c1d9f9c995027d5))
+* **deps:** bump got from 12.5.1 to 12.5.2 ([0f6a15d](https://github.com/discue/paddle-integration-firestore/commit/0f6a15d639e90d632a78c508ba0da0930f328903))
+* **deps:** update dependencies ([8d1a9aa](https://github.com/discue/paddle-integration-firestore/commit/8d1a9aa078a8c2ea1619932a42dd19cfcca6d507))
+* **hooks:** do not store unit_price ([c5441d5](https://github.com/discue/paddle-integration-firestore/commit/c5441d5a1fa9c62fb9aff661a39530c13756116e))
+* log binary and args when starting and stopping ([9566c48](https://github.com/discue/paddle-integration-firestore/commit/9566c4822723cf95665ff40e6f1af240430364df))
+* on ci/cd envs return 202 even if not found ([992064e](https://github.com/discue/paddle-integration-firestore/commit/992064e48d5104ee4983182620b6f3e2825f3ff7))
+* store also checkout id of cancelled events ([55c88b6](https://github.com/discue/paddle-integration-firestore/commit/55c88b61c6a6349c0d9164f3c47111c9e5bfee60))
+* **subscription-info:** require also hook storage instance ([86081b1](https://github.com/discue/paddle-integration-firestore/commit/86081b1b2284162db6475acd6acfee92818fdafd))
+
 ## [0.12.0](https://github.com/discue/paddle-integration-firestore/compare/v0.11.0...v0.12.0) (2022-10-13)
 
 
