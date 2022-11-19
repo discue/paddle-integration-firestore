@@ -7,7 +7,6 @@ let api
 test.beforeAll(async () => {
     const API = (await import('../../lib/paddle/api.js')).default
     api = new API({ useSandbox: true, authCode: process.env.AUTH_CODE, vendorId: process.env.VENDOR_ID })
-    await api.init()
 })
 
 test('list all products', async () => {
