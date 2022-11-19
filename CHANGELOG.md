@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.14.0](https://github.com/discue/paddle-integration-firestore/compare/v0.13.0...v0.14.0) (2022-11-19)
+
+
+### Features
+
+* **api:** ensure api is always initialized before first request ([de0344c](https://github.com/discue/paddle-integration-firestore/commit/de0344cd33766270adf0ceaee0973564fbc103aa))
+
 ## [0.13.0](https://github.com/discue/paddle-integration-firestore/compare/v0.12.0...v0.13.0) (2022-11-17)
 
 
