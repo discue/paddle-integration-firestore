@@ -33,3 +33,8 @@ test('list one plan', async () => {
     const subs = await api.listPlans(33590)
     expect(subs).toHaveLength(1)
 })
+
+test('list order', async () => {
+    const order = await api.getOrder({ checkout_id: '1099955-chre32e85ebc35a-3ce5a0996a' })
+    expect(order.checkout.checkout_id).toEqual('1099955-chre32e85ebc35a-3ce5a0996a')
+})
