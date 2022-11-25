@@ -160,6 +160,11 @@
             email: 'a@b.com',
             title: 'This is the title',
             message: 'This is a message',
+            customData: {
+                _pi: {
+                    ids: [clientId]
+                }
+            },
             allowQuantity: false,
             disableLogout: false,
             passthrough: `{"ids": ["${clientId}"]}`,

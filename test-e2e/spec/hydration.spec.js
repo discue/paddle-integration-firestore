@@ -7,6 +7,7 @@ const index = require('../../lib/index')
 const subscriptions = new index.SubscriptionsHooks('api_client')
 
 const storageResource = require('../../lib/firestore/nested-firestore-resource')
+const SubscriptionInfo = require('../../lib/subscription-info')
 const storage = storageResource({ documentPath: 'api_client', resourceName: 'api_clients' })
 
 let subscriptionInfo
@@ -92,6 +93,43 @@ test('hydrate an active subscription', async ({ page }) => {
     ({ subscription } = await storage.get([apiClientId]))
     sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
     expect(sub['33590']).toBeTruthy()
+})
+
+test('throws if subscription was created for another client', async ({ page }) => {
+    // create new subscription and ...
+    await createNewSubscription(page, apiClientId)
+
+    let { subscription } = await storage.get([apiClientId])
+    const subscriptionId = subscription.status[1].subscription_id
+
+    // .. and check subscription is active to make sure setup was correct
+    let sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
+    expect(sub['33590']).toBeTruthy()
+
+    // remove status and payments to verify hydration process
+    await storage.update([apiClientId], {
+        'subscription.status': [],
+        'subscription.payments': []
+    });
+
+    ({ subscription } = await storage.get([apiClientId]))
+    // .. expect sub to be not active anymore after we reset all status and payments
+    sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
+    expect(sub['33590']).toBeFalsy()
+
+    try {
+        // add dummy client here
+        await storage.put(['123'], {
+            subscription: {
+                status: []
+            }
+        })
+        await subscriptionInfo.hydrateSubscriptionCreated(['123'], { subscription_id: subscriptionId }, 'checkoutId')
+        throw new Error('Must throw')
+    } catch (e) {
+        const message = e.message
+        expect(message).toEqual(SubscriptionInfo.HYDRATION_UNAUTHORIZED)
+    }
 })
 
 test('does not hydrate if status created was already received', async ({ page }) => {
