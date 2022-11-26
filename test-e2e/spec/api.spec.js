@@ -26,7 +26,7 @@ test('list all deleted subscriptions', async () => {
 
 test('list all plans', async () => {
     const subs = await api.listPlans()
-    expect(subs).toHaveLength(2)
+    expect(subs).toBeGreaterThanOrEqual(2)
 })
 
 test('list one plan', async () => {
