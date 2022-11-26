@@ -151,6 +151,13 @@
                 }
             }
         })
+
+        const passthrough = {
+            _pi: {
+                ids: [clientId]
+            }
+        }
+
         Paddle.Checkout.open({
             method: 'inline',
             // product: 649915,       // Replace with your Product or Plan ID
@@ -160,14 +167,10 @@
             email: 'a@b.com',
             title: 'This is the title',
             message: 'This is a message',
-            customData: {
-                _pi: {
-                    ids: [clientId]
-                }
-            },
+            customData: passthrough,
             allowQuantity: false,
             disableLogout: false,
-            passthrough: `{"ids": ["${clientId}"]}`,
+            passthrough,
             frameTarget: 'paddle', // The className of your checkout <div>
             frameInitialHeight: 500,
             frameStyle: 'position: relative;',    // Please ensure the minimum width is kept at or above 286px with checkout padding disabled, or 312px with checkout padding enabled. See "General" section under "Branded Inline Checkout" below for more information on checkout padding.
