@@ -16,7 +16,7 @@ test('list all products', async () => {
 
 test('list all active subscriptions', async () => {
     const subs = await api.listSubscriptions()
-    expect(subs).toBeGreaterThanOrEqual(0)
+    expect(subs.length).toBeGreaterThanOrEqual(0)
 })
 
 test('list all deleted subscriptions', async () => {
@@ -26,7 +26,7 @@ test('list all deleted subscriptions', async () => {
 
 test('list all plans', async () => {
     const subs = await api.listPlans()
-    expect(subs).toBeGreaterThanOrEqual(2)
+    expect(subs.length).toBeGreaterThanOrEqual(2)
 })
 
 test('list one plan', async () => {
