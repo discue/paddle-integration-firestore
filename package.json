@@ -9,9 +9,9 @@
     "lib"
   ],
   "exports": {
-    "default": "./lib/index.js",
-    "client": "./lib/client/index.js",
-    "server": "./lib/index.js"
+    ".": "./lib/index.js",
+    "./client": "./lib/client/index.js",
+    "./server": "./lib/index.js"
   },
   "scripts": {
     "emulators": "firebase emulators:start",
