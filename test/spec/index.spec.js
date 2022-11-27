@@ -15,6 +15,7 @@ const subscriptionInfo = new SubscriptionInfo('api_client', { hookStorage: paddl
 const storage = require('../../lib/firestore/nested-firestore-resource')({ documentPath: 'api_client', resourceName: 'api_clients' })
 
 const { expect } = require('chai')
+const { customData } = require('../../lib/client')
 
 describe('PaddleIntegration', () => {
 
@@ -28,7 +29,7 @@ describe('PaddleIntegration', () => {
 
     describe('.addSubscription', () => {
         it('creates an aactive subscription', async () => {
-            const createPayload = Object.assign({}, subscriptionCreated, { passthrough: JSON.stringify({ ids }) })
+            const createPayload = Object.assign({}, subscriptionCreated, { passthrough: JSON.stringify(customData(ids)) })
 
             await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
             const { subscription: sub } = await storage.get(ids)
@@ -38,7 +39,7 @@ describe('PaddleIntegration', () => {
         it('stores subscription related info', async () => {
             const createPayload = Object.assign({}, subscriptionCreated,
                 {
-                    subscription_id: uuid(), passthrough: JSON.stringify({ ids })
+                    subscription_id: uuid(), passthrough: JSON.stringify(customData(ids))
                 }
             )
             await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
@@ -80,14 +81,14 @@ describe('PaddleIntegration', () => {
 
             const createPayload = Object.assign({}, subscriptionCreated,
                 {
-                    subscription_id: subscriptionId, passthrough: JSON.stringify({ ids })
+                    subscription_id: subscriptionId, passthrough: JSON.stringify(customData(ids))
                 }
             )
             await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
 
             const updatePayload = Object.assign({}, subscriptionUpdated,
                 {
-                    subscription_id: subscriptionId, passthrough: JSON.stringify({ ids })
+                    subscription_id: subscriptionId, passthrough: JSON.stringify(customData(ids))
                 }
             )
             await paddleIntegration.addSubscriptionUpdatedStatus(updatePayload)
@@ -168,7 +169,7 @@ describe('PaddleIntegration', () => {
 
             const createPayload = Object.assign({}, subscriptionCreated,
                 {
-                    subscription_id: subscriptionId, passthrough: JSON.stringify({ ids })
+                    subscription_id: subscriptionId, passthrough: JSON.stringify(customData(ids))
                 }
             )
             await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
@@ -176,7 +177,7 @@ describe('PaddleIntegration', () => {
             const payload = Object.assign({}, subscriptionCancelled,
                 {
                     subscription_id: subscriptionId,
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     cancellation_effective_date: new Date(new Date().getTime() - 1000).toISOString()
                 }
             )
@@ -191,7 +192,7 @@ describe('PaddleIntegration', () => {
 
             const createPayload = Object.assign({}, subscriptionCreated,
                 {
-                    subscription_id: subscriptionId, passthrough: JSON.stringify({ ids })
+                    subscription_id: subscriptionId, passthrough: JSON.stringify(customData(ids))
                 }
             )
             await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
@@ -199,7 +200,7 @@ describe('PaddleIntegration', () => {
             const cancelPayload = Object.assign({}, subscriptionCancelled,
                 {
                     subscription_id: subscriptionId,
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     cancellation_effective_date: new Date(new Date().getTime() - 1000).toISOString()
                 }
             )
@@ -233,7 +234,7 @@ describe('PaddleIntegration', () => {
             const subscriptionId = uuid()
             const createPayload = Object.assign({}, subscriptionCreated, {
                 subscription_id: subscriptionId,
-                passthrough: JSON.stringify({ ids }),
+                passthrough: JSON.stringify(customData(ids)),
             })
             await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
 
@@ -242,7 +243,7 @@ describe('PaddleIntegration', () => {
 
             const paymentPayload = Object.assign({}, paymentSucceded, {
                 subscription_id: subscriptionId,
-                passthrough: JSON.stringify({ ids }),
+                passthrough: JSON.stringify(customData(ids)),
             })
             await paddleIntegration.addSuccessfulPayment(paymentPayload);
 
@@ -259,13 +260,13 @@ describe('PaddleIntegration', () => {
             const subscriptionId = uuid()
             const createPayload = Object.assign({}, subscriptionCreated, {
                 subscription_id: subscriptionId,
-                passthrough: JSON.stringify({ ids }),
+                passthrough: JSON.stringify(customData(ids)),
             })
             await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
 
             const paymentPayload = Object.assign({}, paymentRefunded, {
                 subscription_id: subscriptionId,
-                passthrough: JSON.stringify({ ids }),
+                passthrough: JSON.stringify(customData(ids)),
             })
             await paddleIntegration.addRefundedPayment(paymentPayload)
 
@@ -283,13 +284,13 @@ describe('PaddleIntegration', () => {
             const subscriptionId = uuid()
             const createPayload = Object.assign({}, subscriptionCreated, {
                 subscription_id: subscriptionId,
-                passthrough: JSON.stringify({ ids }),
+                passthrough: JSON.stringify(customData(ids)),
             })
             await paddleIntegration.addSubscriptionCreatedStatus(createPayload)
 
             const paymentPayload = Object.assign({}, paymentFailed, {
                 subscription_id: subscriptionId,
-                passthrough: JSON.stringify({ ids }),
+                passthrough: JSON.stringify(customData(ids)),
             })
             await paddleIntegration.addFailedPayment(paymentPayload)
 

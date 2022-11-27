@@ -8,6 +8,11 @@
   "files": [
     "lib"
   ],
+  "exports": {
+    "default": "./lib/index.js",
+    "client": "./lib/client/index.js",
+    "server": "./lib/index.js"
+  },
   "scripts": {
     "emulators": "firebase emulators:start",
     "test": "mocha test/spec/**/*.spec.js --check-leaks  --timeout 50000 --file test/global-mocha-setup.js",

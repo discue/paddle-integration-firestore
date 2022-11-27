@@ -13,6 +13,7 @@ const { SubscriptionInfo, SubscriptionsHooks } = require('../../lib/index')
 const subscriptions = new SubscriptionsHooks('api_client')
 const subscriptionInfo = new SubscriptionInfo('api_client', { hookStorage: subscriptions })
 const storage = require('../../lib/firestore/nested-firestore-resource')({ documentPath: 'api_client', resourceName: 'api_clients' })
+const { customData } = require('../../lib/client/index')
 
 const { expect } = require('chai')
 const { UPCOMING_PAYMENTS_DESCRIPTION } = require('../../lib/subscription-descriptions')
@@ -33,7 +34,7 @@ describe('SubscriptionInfo', () => {
             const createPayload = Object.assign({}, subscriptionCreated,
                 {
                     subscription_id: subscriptionId,
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     event_time: new Date().toISOString()
                 }
             )
@@ -42,14 +43,14 @@ describe('SubscriptionInfo', () => {
             const paymentSuccesfulPayload = Object.assign({}, paymentSucceded, {
                 event_time: '2017-08-08 10:47:47',
                 subscription_id: subscriptionId,
-                passthrough: JSON.stringify({ ids }),
+                passthrough: JSON.stringify(customData(ids)),
             })
             await subscriptions.addSuccessfulPayment(paymentSuccesfulPayload)
 
             const paymentSuccesfulPayload2 = Object.assign({}, paymentSucceded, {
                 event_time: '2019-08-08 10:47:47',
                 subscription_id: subscriptionId,
-                passthrough: JSON.stringify({ ids }),
+                passthrough: JSON.stringify(customData(ids)),
             })
             await subscriptions.addSuccessfulPayment(paymentSuccesfulPayload2)
         })
@@ -63,7 +64,7 @@ describe('SubscriptionInfo', () => {
             const payload = Object.assign({}, subscriptionCancelled,
                 {
                     subscription_id: 'subscriptionId',
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     cancellation_effective_date: new Date().toISOString()
                 }
             )
@@ -80,14 +81,14 @@ describe('SubscriptionInfo', () => {
                 event_time: '2020-08-08 10:47:47',
                 next_bill_date: '2023-01-01',
                 subscription_id: 'subscriptionId',
-                passthrough: JSON.stringify({ ids }),
+                passthrough: JSON.stringify(customData(ids)),
             })
             await subscriptions.addSuccessfulPayment(paymentSuccesfulPayload2)
 
             const payload = Object.assign({}, subscriptionCancelled,
                 {
                     subscription_id: 'subscriptionId',
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     cancellation_effective_date: new Date().toISOString()
                 }
             )
@@ -103,7 +104,7 @@ describe('SubscriptionInfo', () => {
             const paymentSuccesfulPayload2 = Object.assign({}, paymentSucceded, {
                 event_time: '2019-08-08 10:47:47',
                 subscription_id: 'subscriptionId',
-                passthrough: JSON.stringify({ ids }),
+                passthrough: JSON.stringify(customData(ids)),
             })
             await subscriptions.addSuccessfulPayment(paymentSuccesfulPayload2)
 
@@ -116,7 +117,7 @@ describe('SubscriptionInfo', () => {
             const payload = Object.assign({}, subscriptionCancelled,
                 {
                     subscription_id: 'subscriptionId',
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     cancellation_effective_date: new Date().toISOString()
                 }
             )
@@ -162,7 +163,7 @@ describe('SubscriptionInfo', () => {
                     subscription_id: 'subscriptionId',
                     old_subscription_plan_id: '8',
                     subscription_plan_id: '1',
-                    passthrough: JSON.stringify({ ids })
+                    passthrough: JSON.stringify(customData(ids))
                 }
             )
             await subscriptions.addSubscriptionUpdatedStatus(updatePayload)
@@ -179,7 +180,7 @@ describe('SubscriptionInfo', () => {
             const createPayload = Object.assign({}, subscriptionCreated,
                 {
                     subscription_id: subscriptionId,
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     event_time: new Date().toISOString()
                 }
             )
@@ -200,7 +201,7 @@ describe('SubscriptionInfo', () => {
             const payload = Object.assign({}, subscriptionCancelled,
                 {
                     subscription_id: 'subscriptionId',
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     cancellation_effective_date: new Date(new Date().getTime()).toISOString()
                 }
             )
@@ -224,7 +225,7 @@ describe('SubscriptionInfo', () => {
             const createPayload = Object.assign({}, subscriptionCreated,
                 {
                     subscription_id: subscriptionId,
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     event_time: new Date().toISOString()
                 }
             )
@@ -245,7 +246,7 @@ describe('SubscriptionInfo', () => {
             const payload = Object.assign({}, subscriptionCancelled,
                 {
                     subscription_id: 'subscriptionId',
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     cancellation_effective_date: new Date(new Date().getTime()).toISOString()
                 }
             )
@@ -269,7 +270,7 @@ describe('SubscriptionInfo', () => {
             const createPayload = Object.assign({}, subscriptionCreated,
                 {
                     subscription_id: subscriptionId,
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     event_time: new Date().toISOString()
                 }
             )
@@ -278,7 +279,7 @@ describe('SubscriptionInfo', () => {
             const payload = Object.assign({}, subscriptionCancelled,
                 {
                     subscription_id: subscriptionId,
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     cancellation_effective_date: new Date(new Date().getTime()).toISOString()
                 }
             )
@@ -293,7 +294,7 @@ describe('SubscriptionInfo', () => {
             const createPayload = Object.assign({}, subscriptionCreated,
                 {
                     subscription_id: subscriptionId,
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     event_time: new Date().toISOString()
                 }
             )
@@ -302,7 +303,7 @@ describe('SubscriptionInfo', () => {
             const payload = Object.assign({}, subscriptionCancelled,
                 {
                     subscription_id: subscriptionId,
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     cancellation_effective_date: new Date(new Date().getTime() + 9_000).toISOString()
                 }
             )
@@ -317,7 +318,7 @@ describe('SubscriptionInfo', () => {
             const createPayload = Object.assign({}, subscriptionCreated,
                 {
                     subscription_id: subscriptionId,
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     event_time: new Date().toISOString()
                 }
             )
@@ -326,7 +327,7 @@ describe('SubscriptionInfo', () => {
             const payload = Object.assign({}, subscriptionCancelled,
                 {
                     subscription_id: subscriptionId,
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     cancellation_effective_date: new Date(new Date().getTime() + 50_000).toISOString()
                 }
             )
@@ -341,7 +342,7 @@ describe('SubscriptionInfo', () => {
             const createPayload = Object.assign({}, subscriptionCreated,
                 {
                     subscription_id: subscriptionId,
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     event_time: new Date().toISOString()
                 }
             )
@@ -350,7 +351,7 @@ describe('SubscriptionInfo', () => {
             const payload = Object.assign({}, subscriptionCancelled,
                 {
                     subscription_id: subscriptionId,
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     cancellation_effective_date: new Date(new Date().getTime() + 1000).toISOString()
                 }
             )
@@ -365,7 +366,7 @@ describe('SubscriptionInfo', () => {
             const createPayload = Object.assign({}, subscriptionCreated,
                 {
                     subscription_id: subscriptionId,
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     event_time: new Date().toISOString()
                 }
             )
@@ -374,7 +375,7 @@ describe('SubscriptionInfo', () => {
             const createPayload2 = Object.assign({}, subscriptionCreated,
                 {
                     subscription_id: subscriptionId,
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     subscription_plan_id: '9',
                     event_time: new Date().toISOString()
                 }
@@ -384,7 +385,7 @@ describe('SubscriptionInfo', () => {
             const payload = Object.assign({}, subscriptionCancelled,
                 {
                     subscription_id: subscriptionId,
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     cancellation_effective_date: new Date(new Date().getTime() + 1000).toISOString()
                 }
             )
@@ -404,7 +405,7 @@ describe('SubscriptionInfo', () => {
             const createPayload = Object.assign({}, subscriptionCreated,
                 {
                     subscription_id: subscriptionId,
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     event_time: startTimeString
                 }
             )
@@ -412,7 +413,7 @@ describe('SubscriptionInfo', () => {
             const createPayload2 = Object.assign({}, subscriptionCreated,
                 {
                     subscription_id: subscriptionId,
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     event_time: startTimeString,
                     subscription_plan_id: '4'
                 }
@@ -429,7 +430,7 @@ describe('SubscriptionInfo', () => {
             const createPayload = Object.assign({}, subscriptionCreated,
                 {
                     subscription_id: subscriptionId,
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     event_time: startTimeString
                 }
             )
@@ -448,7 +449,7 @@ describe('SubscriptionInfo', () => {
             const createPayload = Object.assign({}, subscriptionCreated,
                 {
                     subscription_id: subscriptionId,
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     event_time: startTimeString
                 }
             )
@@ -457,7 +458,7 @@ describe('SubscriptionInfo', () => {
             const payload = Object.assign({}, subscriptionCancelled,
                 {
                     subscription_id: subscriptionId,
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     cancellation_effective_date: endTimeString
                 }
             )
@@ -476,14 +477,14 @@ describe('SubscriptionInfo', () => {
             const createPayload = Object.assign({}, subscriptionCreated, {
                 event_time: '2018-08-08 10:47:47',
                 subscription_id: subscriptionId,
-                passthrough: JSON.stringify({ ids }),
+                passthrough: JSON.stringify(customData(ids)),
             })
             await subscriptions.addSubscriptionCreatedStatus(createPayload)
 
             const paymentSuccesfulPayload = Object.assign({}, paymentSucceded, {
                 event_time: '2017-08-08 10:47:47',
                 subscription_id: subscriptionId,
-                passthrough: JSON.stringify({ ids }),
+                passthrough: JSON.stringify(customData(ids)),
             })
             await subscriptions.addSuccessfulPayment(paymentSuccesfulPayload)
 
@@ -491,7 +492,7 @@ describe('SubscriptionInfo', () => {
                 event_time: '2017-08-08 10:47:47',
                 subscription_id: subscriptionId,
                 subscription_plan_id: '4',
-                passthrough: JSON.stringify({ ids }),
+                passthrough: JSON.stringify(customData(ids)),
             })
             await subscriptions.addSuccessfulPayment(paymentSuccesfulPayload2)
 
@@ -499,7 +500,7 @@ describe('SubscriptionInfo', () => {
                 event_time: '2022-08-08 10:47:47',
                 subscription_id: subscriptionId,
                 subscription_plan_id: '4',
-                passthrough: JSON.stringify({ ids }),
+                passthrough: JSON.stringify(customData(ids)),
             })
             await subscriptions.addFailedPayment(paymentFailedPayload)
 
@@ -507,7 +508,7 @@ describe('SubscriptionInfo', () => {
                 event_time: '2024-08-08 10:47:47',
                 subscription_id: subscriptionId,
                 subscription_plan_id: '4',
-                passthrough: JSON.stringify({ ids }),
+                passthrough: JSON.stringify(customData(ids)),
             })
             await subscriptions.addRefundedPayment(paymentRefundedPayload1)
 
@@ -515,14 +516,14 @@ describe('SubscriptionInfo', () => {
             const paymentRefundedPayload2 = Object.assign({}, paymentRefunded, {
                 event_time: '2014-08-08 10:47:47',
                 subscription_id: subscriptionId,
-                passthrough: JSON.stringify({ ids }),
+                passthrough: JSON.stringify(customData(ids)),
             })
             await subscriptions.addRefundedPayment(paymentRefundedPayload2)
 
             const paymentFailedPayload2 = Object.assign({}, paymentFailed, {
                 event_time: '2012-08-08 10:47:47',
                 subscription_id: subscriptionId,
-                passthrough: JSON.stringify({ ids }),
+                passthrough: JSON.stringify(customData(ids)),
             })
             await subscriptions.addFailedPayment(paymentFailedPayload2)
         })
@@ -641,7 +642,7 @@ describe('SubscriptionInfo', () => {
             const createPayload = Object.assign({}, subscriptionCreated,
                 {
                     event_time: new Date().toISOString(),
-                    subscription_id: subscriptionId, passthrough: JSON.stringify({ ids })
+                    subscription_id: subscriptionId, passthrough: JSON.stringify(customData(ids))
                 }
             )
             await subscriptions.addSubscriptionCreatedStatus(createPayload)
@@ -649,7 +650,7 @@ describe('SubscriptionInfo', () => {
             const updatePayload = Object.assign({}, subscriptionUpdated,
                 {
                     event_time: new Date().toISOString(),
-                    subscription_id: subscriptionId, passthrough: JSON.stringify({ ids })
+                    subscription_id: subscriptionId, passthrough: JSON.stringify(customData(ids))
                 }
             )
             await subscriptions.addSubscriptionUpdatedStatus(updatePayload)
@@ -657,7 +658,7 @@ describe('SubscriptionInfo', () => {
             const cancelPayload = Object.assign({}, subscriptionCancelled,
                 {
                     subscription_id: subscriptionId,
-                    passthrough: JSON.stringify({ ids }),
+                    passthrough: JSON.stringify(customData(ids)),
                     cancellation_effective_date: new Date().toISOString(),
                 }
             )
