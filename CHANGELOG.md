@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.15.0](https://github.com/discue/paddle-integration-firestore/compare/v0.14.0...v0.15.0) (2022-11-27)
+
+
+### Features
+
+* add client function to create customData objects ([66abf90](https://github.com/discue/paddle-integration-firestore/commit/66abf9042d0d8a685b192b45bf3f93c61e64ff14))
+* **api:** add get order method ([8055f97](https://github.com/discue/paddle-integration-firestore/commit/8055f971161f3d8464c90763c5218ccf5eb4e061))
+* extract ids from namespaced object ([77542b8](https://github.com/discue/paddle-integration-firestore/commit/77542b8088344f1ae4e39a6f15739ef95bfcb786))
+* **subscription-info:** use custom data to verify api client ([4ca8117](https://github.com/discue/paddle-integration-firestore/commit/4ca81173de24563de395e0b3003131dea01b9351))
+
+
+### Refactorings
+
+* **api:** add api version to path elements ([344a0fa](https://github.com/discue/paddle-integration-firestore/commit/344a0fa0433a6f8af4c0e4fa8b0319ce7997c2a8))
+* **api:** create base urls for vendor and checkout api ([a7ad551](https://github.com/discue/paddle-integration-firestore/commit/a7ad551fa8feeb2c59fe43f90a4ffaeededccf54))
+
+
+### Chores
+
+* **error-handler:** during tests always return 200 ([ac64039](https://github.com/discue/paddle-integration-firestore/commit/ac64039b3c635c13a19c89189642ac16f44ca492))
+* **subscription-info:** add logging ([69c7c01](https://github.com/discue/paddle-integration-firestore/commit/69c7c01e6a26e7cd05dc84f36af1ba369be52d73))
+* **subscription-info:** delete unused method ([ae2b96b](https://github.com/discue/paddle-integration-firestore/commit/ae2b96b806975bb838b252e279e074d99f23cb0b))
+
 ## [0.14.0](https://github.com/discue/paddle-integration-firestore/compare/v0.13.0...v0.14.0) (2022-11-19)
 
 
