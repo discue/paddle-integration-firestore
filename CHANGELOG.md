@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.15.1](https://github.com/discue/paddle-integration-firestore/compare/v0.15.0...v0.15.1) (2022-11-27)
+
+
+### Bug Fixes
+
+* module exports ([e7eb82c](https://github.com/discue/paddle-integration-firestore/commit/e7eb82c7faee28350acd24ed450abd52abbfec64))
+
 ## [0.15.0](https://github.com/discue/paddle-integration-firestore/compare/v0.14.0...v0.15.0) (2022-11-27)
 
 
