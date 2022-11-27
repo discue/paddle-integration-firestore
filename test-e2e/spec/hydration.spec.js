@@ -182,8 +182,6 @@ test('hydrate a deleted subscription', async ({ page }) => {
         'subscription.payments': []
     })
 
-    console.log(JSON.stringify(subscription, null, 2))
-
     // .. now hydrate status again ..
     await subscriptionInfo.hydrateSubscriptionCancelled([apiClientId], { subscription_id: subscriptionId }, 'checkoutId');
 

@@ -57,7 +57,6 @@ describe('SubscriptionInfo', () => {
             await new Promise((resolve) => setTimeout(resolve, 1000))
 
             const status = await subscriptionInfo.getSubscriptionInfo(ids)
-            console.log({ status }, new Date().toISOString())
             expect(status[subscriptionCreated.subscription_plan_id].active).to.be.true
         })
         it('returns end dates for a subscription if it was cancelled', async () => {
@@ -109,7 +108,6 @@ describe('SubscriptionInfo', () => {
             await subscriptions.addSuccessfulPayment(paymentSuccesfulPayload2)
 
             const status = await subscriptionInfo.getSubscriptionInfo(ids)
-            console.log(JSON.stringify(status[subscriptionCreated.subscription_plan_id].payments_trail, null, 2))
             const { payments_trail: paymentTrail } = status[subscriptionCreated.subscription_plan_id]
             const found = paymentTrail.find(payment => payment.description === UPCOMING_PAYMENTS_DESCRIPTION)
             expect(found).to.not.be.undefined
@@ -127,7 +125,6 @@ describe('SubscriptionInfo', () => {
             await new Promise((resolve) => setTimeout(resolve, 1000))
 
             const status = await subscriptionInfo.getSubscriptionInfo(ids)
-            console.log({ status }, new Date().toISOString())
             expect(status[subscriptionCreated.subscription_plan_id].active).to.be.false
         })
         it('returns a sorted list of status events', async () => {
