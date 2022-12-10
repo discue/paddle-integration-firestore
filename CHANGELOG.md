@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.16.0](https://github.com/discue/paddle-integration-firestore/compare/v0.15.1...v0.16.0) (2022-12-10)
+
+
+### Features
+
+* allow logging of outgoing requests ([4f4bde3](https://github.com/discue/paddle-integration-firestore/commit/4f4bde312377b91cf9d5903bb56d0ff6b7142182))
+
+
+### Bug Fixes
+
+* **middleware:** handle of failed and refunded payments ([9045cf0](https://github.com/discue/paddle-integration-firestore/commit/9045cf058daca17eedb7f62cff4ddbc5191bcfc4))
+
+
+### Chores
+
+* add simple logger ([3dc4b94](https://github.com/discue/paddle-integration-firestore/commit/3dc4b94195643594650f4f3fdac9c2bc8bd933cd))
+* **deps-dev:** bump @playwright/test from 1.28.0 to 1.28.1 ([83fb530](https://github.com/discue/paddle-integration-firestore/commit/83fb53086f7bab2410a0214c46742cd071831300))
+* **deps-dev:** bump chai from 4.3.6 to 4.3.7 ([8dd28d7](https://github.com/discue/paddle-integration-firestore/commit/8dd28d74fafec85510efa6093d5eaaa1cba4475a))
+* **deps-dev:** bump express from 4.18.1 to 4.18.2 ([548740f](https://github.com/discue/paddle-integration-firestore/commit/548740f003d31f284fb4abb11efd144e5b028748))
+* **deps-dev:** bump mocha from 10.0.0 to 10.1.0 ([bf95f5b](https://github.com/discue/paddle-integration-firestore/commit/bf95f5b4eeb22558d9bd25ea40f262ade843c754))
+* **deps:** bump firebase-admin from 11.2.0 to 11.3.0 ([4b83bfa](https://github.com/discue/paddle-integration-firestore/commit/4b83bfa50a2332a01de610ec4465b4b766e245ec))
+
 ### [0.15.1](https://github.com/discue/paddle-integration-firestore/compare/v0.15.0...v0.15.1) (2022-11-27)
 
 
