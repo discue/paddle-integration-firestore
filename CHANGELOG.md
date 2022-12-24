@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.17.0](https://github.com/discue/paddle-integration-firestore/compare/v0.16.0...v0.17.0) (2022-12-24)
+
+
+### Features
+
+* add jsdoc to main export to enable typings ([2143b3c](https://github.com/discue/paddle-integration-firestore/commit/2143b3c76536682860b2255fd5c44940f179a95a))
+
+
+### Chores
+
+* update module  name in logger ([3c6df94](https://github.com/discue/paddle-integration-firestore/commit/3c6df9406aeddc820eaf30cae66f8e7b8e8b62b1))
+
 ## [0.16.0](https://github.com/discue/paddle-integration-firestore/compare/v0.15.1...v0.16.0) (2022-12-10)
 
 
