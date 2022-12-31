@@ -8,8 +8,6 @@ export NODE_ENV='e2e'
 function cancel {
     echo "Received kill signal"
     echo "Initiating shutdown"
-
-    source ./.test.env.local
     node run-cancel-all-subscriptions
 }
 
