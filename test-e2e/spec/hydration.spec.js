@@ -64,7 +64,7 @@ async function createNewSubscription(page, apiClientId) {
     await page.waitForTimeout(30000)
 }
 
-test.only('hydrate an active subscription', async ({ page }) => {
+test('hydrate an active subscription', async ({ page }) => {
     // create new subscription and ...
     await createNewSubscription(page, apiClientId)
 
