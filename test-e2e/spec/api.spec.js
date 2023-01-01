@@ -29,6 +29,11 @@ test('list all plans', async () => {
     expect(subs.length).toBeGreaterThanOrEqual(2)
 })
 
+test('get plan by id', async () => {
+    const subs = await api.getPlan({ plan_id: 33590 })
+    expect(subs.length).toEqual(1)
+})
+
 test('list one plan', async () => {
     const subs = await api.listPlans(33590)
     expect(subs).toHaveLength(1)
