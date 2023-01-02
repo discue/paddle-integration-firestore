@@ -3,7 +3,7 @@
   "author": "Stefan Pfaffel",
   "license": "MIT",
   "version": "0.17.0",
-  "description": "Paddle payments integaration for Google Cloud Firestore",
+  "description": "Paddle payments integration for Google Cloud Firestore",
   "main": "lib/index",
   "files": [
     "lib"
