@@ -178,9 +178,7 @@
                 const checkoutId = data.checkout.id;
 
                 Paddle.Order.details(checkoutId, function (data) {
-                    console.log('details')
-                    // Order data, downloads, receipts etc... available within 'data' constiable.
-                    console.log(data);
+                    testCallback(data)
                 })
             },
         })
