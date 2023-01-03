@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.18.0](https://github.com/discue/paddle-integration-firestore/compare/v0.17.0...v0.18.0) (2023-01-03)
+
+
+### Features
+
+* **api:** add get plan by id method ([a700319](https://github.com/discue/paddle-integration-firestore/commit/a70031941027a96f5119e17a84d793e7b9a820d2))
+* **middleware:** emit events after successful hook processing ([4764578](https://github.com/discue/paddle-integration-firestore/commit/4764578905776f33637f9462cae91578d217068d))
+* **subscription-info:** expect object or resource ids ([4df224b](https://github.com/discue/paddle-integration-firestore/commit/4df224bfe2b50418753cdccd8726cbf64a331f3f))
+
+
+### Bug Fixes
+
+* **subscription-info:** return subscription and not parent object ([f184ad7](https://github.com/discue/paddle-integration-firestore/commit/f184ad708b0afae399f17b89e3554c9966c32c0f))
+
+
+### Chores
+
+* **deps-dev:** bump eslint from 8.30.0 to 8.31.0 ([8750ddf](https://github.com/discue/paddle-integration-firestore/commit/8750ddfd04db771fa37289ed2c6cc3137de8fa5b))
+* **deps:** bump actions/stale from 6 to 7 ([f89f55b](https://github.com/discue/paddle-integration-firestore/commit/f89f55b7f8421afe1ae8b592dbf7f85a62ad2f61))
+* **deps:** update dependencies ([523ca9e](https://github.com/discue/paddle-integration-firestore/commit/523ca9ed2c505e27faf18d1ce850a728864aa39f))
+* do not source hidden env file ([891c5e0](https://github.com/discue/paddle-integration-firestore/commit/891c5e05121c292f8cf33e5dbcb903272ccab342))
+* **firebase:** prevent port collisions ([e49452a](https://github.com/discue/paddle-integration-firestore/commit/e49452a22dbf997db50a81dd75504deed31e3658))
+* fix type on description ([fc6132d](https://github.com/discue/paddle-integration-firestore/commit/fc6132d8495435b185f8fb00bf6e61c7cbeeb436))
+
 ## [0.17.0](https://github.com/discue/paddle-integration-firestore/compare/v0.16.0...v0.17.0) (2022-12-24)
 
 
