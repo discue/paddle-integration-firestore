@@ -79,7 +79,7 @@ describe('SubscriptionInfo', () => {
         it('removes an upcoming payment event if its after an end date', async () => {
             const paymentSuccesfulPayload2 = Object.assign({}, paymentSucceded, {
                 event_time: '2020-08-08 10:47:47',
-                next_bill_date: '2023-01-01',
+                next_bill_date: '2030-01-01',
                 subscription_id: 'subscriptionId',
                 passthrough: JSON.stringify(customData(ids)),
             })
