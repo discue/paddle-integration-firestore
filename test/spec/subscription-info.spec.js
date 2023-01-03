@@ -289,6 +289,29 @@ describe('SubscriptionInfo', () => {
             const status = await subscriptionInfo.getAllSubscriptionsStatus(sub)
             expect(status[createPayload.subscription_plan_id]).to.be.false
         })
+        it('also accepts clientId array', async () => {
+            const subscriptionId = uuid()
+            const createPayload = Object.assign({}, subscriptionCreated,
+                {
+                    subscription_id: subscriptionId,
+                    passthrough: JSON.stringify(customData(ids)),
+                    event_time: new Date().toISOString()
+                }
+            )
+            await subscriptions.addSubscriptionCreatedStatus(createPayload)
+
+            const payload = Object.assign({}, subscriptionCancelled,
+                {
+                    subscription_id: subscriptionId,
+                    passthrough: JSON.stringify(customData(ids)),
+                    cancellation_effective_date: new Date(new Date().getTime()).toISOString()
+                }
+            )
+            await subscriptions.addSubscriptionCancelledStatus(payload)
+
+            const status = await subscriptionInfo.getAllSubscriptionsStatus(ids)
+            expect(status[createPayload.subscription_plan_id]).to.be.false
+        })
         it('allows 10s clock drift', async () => {
             const subscriptionId = uuid()
             const createPayload = Object.assign({}, subscriptionCreated,
@@ -424,6 +447,31 @@ describe('SubscriptionInfo', () => {
             const dates = await subscriptionInfo.getStartAndEndDates(sub)
             expect(dates).to.have.keys(createPayload.subscription_plan_id, createPayload2.subscription_plan_id)
         })
+        it('also accepts clientId array as parameter', async () => {
+            const subscriptionId = uuid()
+            const startTimeString = new Date().toISOString()
+            const createPayload = Object.assign({}, subscriptionCreated,
+                {
+                    subscription_id: subscriptionId,
+                    passthrough: JSON.stringify(customData(ids)),
+                    event_time: startTimeString
+                }
+            )
+            await subscriptions.addSubscriptionCreatedStatus(createPayload)
+            const createPayload2 = Object.assign({}, subscriptionCreated,
+                {
+                    subscription_id: subscriptionId,
+                    passthrough: JSON.stringify(customData(ids)),
+                    event_time: startTimeString,
+                    subscription_plan_id: '4'
+                }
+            )
+            await subscriptions.addSubscriptionCreatedStatus(createPayload2)
+
+            const { subscription: sub } = await storage.get(ids)
+            const dates = await subscriptionInfo.getStartAndEndDates(ids)
+            expect(dates).to.have.keys(createPayload.subscription_plan_id, createPayload2.subscription_plan_id)
+        })
         it('returns only start date if theres no end date', async () => {
             const subscriptionId = uuid()
             const startTimeString = new Date().toISOString()
@@ -530,6 +578,21 @@ describe('SubscriptionInfo', () => {
         it('returns payments sorted descending', async () => {
             const { subscription: sub } = await storage.get(ids)
             const trail = await subscriptionInfo.getPaymentsTrail(sub)
+
+            const sorted = Object.values(trail).every((payments) => {
+                return payments.every((payment, index, array) => {
+                    if (index === 0) {
+                        return true
+                    } else {
+                        return new Date(payment.event_time).getTime() <= new Date(array[index - 1].event_time).getTime()
+                    }
+                })
+            })
+
+            expect(sorted).to.be.true
+        })
+        it('accepts also clientId array as parameter', async () => {
+            const trail = await subscriptionInfo.getPaymentsTrail(ids)
 
             const sorted = Object.values(trail).every((payments) => {
                 return payments.every((payment, index, array) => {
@@ -668,6 +731,18 @@ describe('SubscriptionInfo', () => {
         it('returns a sorted listed of status per id', async () => {
             const { subscription: sub } = await storage.get(ids)
             const trail = await subscriptionInfo.getStatusTrail(sub)
+            const subscriptionTrail = trail[subscriptionCreated.subscription_plan_id]
+            expect(subscriptionTrail).to.have.length(3)
+            // expect(subscriptionTrail).to.have.length(3)
+            expect(subscriptionTrail[2].type).to.equal('subscription_created')
+            expect(subscriptionTrail[2].description).to.equal('active')
+            expect(subscriptionTrail[1].type).to.equal('subscription_updated')
+            expect(subscriptionTrail[1].description).to.equal('active')
+            expect(subscriptionTrail[0].type).to.equal('subscription_cancelled')
+            expect(subscriptionTrail[0].description).to.equal('deleted')
+        })
+        it('also accepts clientIds array as parameter', async () => {
+            const trail = await subscriptionInfo.getStatusTrail(ids)
             const subscriptionTrail = trail[subscriptionCreated.subscription_plan_id]
             expect(subscriptionTrail).to.have.length(3)
             // expect(subscriptionTrail).to.have.length(3)
