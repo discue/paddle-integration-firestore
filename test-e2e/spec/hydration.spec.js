@@ -8,7 +8,6 @@ const subscriptions = new index.SubscriptionHooks('api_client')
 
 const storageResource = require('../../lib/firestore/nested-firestore-resource')
 const SubscriptionInfo = require('../../lib/subscription-info')
-const { writeFileSync } = require('fs')
 const storage = storageResource({ documentPath: 'api_client', resourceName: 'api_clients' })
 
 let subscriptionInfo
@@ -24,7 +23,7 @@ test.beforeAll(async () => {
     await api.init()
 
     subscriptionInfo = new index.SubscriptionInfo('api_client', { api })
-    subscriptionHydration = new index.SubscriptionHydration('api_client', { api, hookStorage: subscriptions })
+    subscriptionHydration = new index.SubscriptionHydration('api_client', { api, hookStorage: subscriptions, subscriptionInfo })
 })
 
 test.beforeEach(async () => {
