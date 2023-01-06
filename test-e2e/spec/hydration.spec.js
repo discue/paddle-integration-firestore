@@ -8,15 +8,19 @@ const subscriptions = new index.SubscriptionHooks('api_client')
 
 const storageResource = require('../../lib/firestore/nested-firestore-resource')
 const SubscriptionInfo = require('../../lib/subscription-info')
+const { writeFileSync } = require('fs')
 const storage = storageResource({ documentPath: 'api_client', resourceName: 'api_clients' })
 
 let subscriptionInfo
 let subscriptionHydration
 let apiClientId
+/**
+ * @type {import('../../lib/paddle/api.js')}
+ */
 let api
 
 test.beforeAll(async () => {
-    api = new index.Api({ useSandbox: true, authCode: process.env.AUTH_CODE, vendorId: process.env.VENDOR_ID })
+    api = new index.Api({ logRequests: true, useSandbox: true, authCode: process.env.AUTH_CODE, vendorId: process.env.VENDOR_ID })
     await api.init()
 
     subscriptionInfo = new index.SubscriptionInfo('api_client', { api })
@@ -97,6 +101,65 @@ test('hydrate an active subscription', async ({ page }) => {
     ({ subscription } = await storage.get([apiClientId]))
     sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
     expect(sub['33590']).toBeTruthy()
+})
+
+test('hydrates the initial payment too', async ({ page }) => {
+    // create new subscription and ...
+    const result = await createNewSubscription(page, apiClientId)
+    writeFileSync('checkout-details', JSON.stringify(result, null, 2), 'utf-8')
+    const { order } = result
+    const { subscription_id: subscriptionId } = order
+
+    let { subscription } = await storage.get([apiClientId])
+
+    // remove status and payments to verify hydration process
+    await storage.update([apiClientId], {
+        'subscription.status': [],
+        'subscription.payments': []
+    });
+
+    ({ subscription } = await storage.get([apiClientId]))
+    // .. expect sub to be not active anymore after we reset all status and payments
+    let sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
+    expect(sub['33590']).toBeFalsy()
+
+    // .. now hydrate status again ..
+    await subscriptionHydration.hydrateSubscriptionCreated([apiClientId], { subscription_id: subscriptionId }, 'checkoutId');
+
+    // .. and expect subscription to be active again
+    ({ subscription } = await storage.get([apiClientId]))
+
+    const payments = subscription.payments
+    const payment = payments.at(0)
+
+    expect(payment.alert_id).toEqual(index.SubscriptionHydration.HYDRATION_SUBSCRIPTION_CREATED)
+    expect(payment.alert_name).toEqual(index.SubscriptionHydration.HYDRATION_SUBSCRIPTION_CREATED)
+    expect(payment.checkout_id).toEqual('checkoutId')
+    expect(payment.currency).toEqual(result.order.currency)
+    expect(payment.email).toEqual(result.order.customer.email)
+    expect(new Date(payment.event_time).getTime()).toBeGreaterThanOrEqual(new Date(new Date().getTime() - 1000 * 60 * 60 * 2).getTime())
+    expect(payment.initial_payment).toEqual('1')
+    expect(new Date(payment.next_bill_date).getTime()).toBeGreaterThan(new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 28).getTime())
+    expect(payment.passthrough).toContain(apiClientId)
+    expect(String(payment.next_payment_amount)).toEqual(String(result.order.total))
+    expect(payment.payment_method).toEqual('card')
+    expect(payment.quantity).toEqual('')
+    {
+        // strip the hash value 3834651 from url
+        // https://sandbox-my.paddle.com/receipt/525486-3834651/1192015-chrea38c44d0069-2b66b730c9
+        const url = payment.receipt_url
+        const indexOfSecondHyphen = url.indexOf('-', url.indexOf('receipt'))
+        const indexOfSlashAfterHypen = url.indexOf('/', indexOfSecondHyphen)
+        const urlWithoutHash = url.substring(0, indexOfSecondHyphen) + url.substring(indexOfSlashAfterHypen)
+        expect(urlWithoutHash).toEqual(result.order.receipt_url)
+    }
+    expect(payment.status).toEqual('active')
+    expect(payment.subscription_id).toEqual(result.order.subscription_id)
+    expect(payment.subscription_plan_id).toEqual(result.order.product_id)
+
+    const remoteSubscriptions = await api.getSubscription({ subscription_id: subscriptionId })
+    expect(payment.user_id).toEqual(remoteSubscriptions.at(0).user_id)
+    expect(payment.marketing_consent).toEqual(remoteSubscriptions.at(0).marketing_consent)
 })
 
 test('throws if subscription was created for another client', async ({ page }) => {
