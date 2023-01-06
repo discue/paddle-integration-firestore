@@ -137,7 +137,7 @@ test('hydrates the initial payment too', async ({ page }) => {
     expect(payment.initial_payment).toEqual('1')
     expect(new Date(payment.next_bill_date).getTime()).toBeGreaterThan(new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 28).getTime())
     expect(payment.passthrough).toContain(apiClientId)
-    expect(String(payment.next_payment_amount)).toEqual(String(result.order.total))
+    expect(parseFloat(payment.next_payment_amount)).toEqual(parseFloat(result.order.total))
     expect(payment.payment_method).toEqual('card')
     expect(payment.quantity).toEqual('')
     {
