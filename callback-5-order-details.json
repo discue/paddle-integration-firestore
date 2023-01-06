@@ -1,0 +1,45 @@
+{
+  "state": "processed",
+  "checkout": {
+    "checkout_id": "1192132-chre160193c950a-78630ce001",
+    "image_url": "https://paddle-sandbox.s3.amazonaws.com/user/7663/subs_33590_icon.png",
+    "title": "This is the title"
+  },
+  "custom_data": {
+    "_pi": {
+      "ids": [
+        "738def2b-f428-4ac5-b39d-f14ad86db6fa"
+      ]
+    }
+  },
+  "order": {
+    "order_id": 525556,
+    "total": "4.86",
+    "total_tax": "0.84",
+    "currency": "EUR",
+    "quantity": 1,
+    "formatted_total": "€4.86",
+    "formatted_tax": "€0.84",
+    "coupon_code": null,
+    "completed": {
+      "date": "2023-01-06 13:11:44.000000",
+      "timezone_type": 3,
+      "timezone": "UTC"
+    },
+    "receipt_url": "https://sandbox-my.paddle.com/receipt/525556/1192132-chre160193c950a-78630ce001",
+    "customer_success_redirect_url": "",
+    "has_locker": false,
+    "customer": {
+      "email": "a@b.com",
+      "marketing_consent": false
+    },
+    "is_subscription": true,
+    "product_id": 33590,
+    "subscription_id": 399372,
+    "subscription_order_id": "525556-3834795",
+    "access_management": {
+      "software_key": []
+    }
+  },
+  "lockers": []
+}
