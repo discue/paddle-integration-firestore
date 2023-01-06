@@ -11,6 +11,7 @@ Low level wrapper for Paddle API.
     - [List all subscriptions](#list-all-subscriptions)
     - [Get subscription plan](#get-subscription-plan)
     - [List all subscription plans](#list-all-subscription-plans)
+    - [List all subscription payments](#list-all-subscription-payments)
     - [Update subscription plan](#update-subscription-plan)
     - [Update subscription post code](#update-subscription-post-code)
     - [Cancel subscription](#cancel-subscription)
@@ -210,6 +211,25 @@ const plans = await paddleApi.listPlans()
 ```
 
 [API reference](https://developer.paddle.com/api-reference/a835554495295-list-plans)
+
+### List all subscription payments
+```js
+const plans = await paddleApi.getSubscriptionPayments({ subscription_id: 12345 }, { plan: 4815, from: '2022-04-01', to: '2023-01-01' })
+// [
+//   {
+//     "id": 8936,
+//     "subscription_id": 2746,
+//     "amount": 1,
+//     "currency": "USD",
+//     "payout_date": "2015-10-15",
+//     "is_paid": 0,
+//     "is_one_off_charge": false,
+//     "receipt_url": "https://my.paddle.com/receipt/469214-8936/1940881-chrea0eb34164b5-f0d6553bdf"
+//   }
+// ]
+```
+
+[API reference](https://developer.paddle.com/api-reference/80462f27b2011-list-payments)
 
 
 ### Update subscription plan
