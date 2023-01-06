@@ -40,6 +40,7 @@ npm install @discue/paddle-integration-firestore
 - <a href="README_HOOK_BODY_PARSER.md">Webhooks Body Parser</a>
 - <a href="README_HOOK_MIDDLEWARE.md">Webhooks Middleware</a>
 - <a href="README_SUBSCRIPTION_INFO.md">Subscription Info</a>
+- <a href="README_SUBSCRIPTION_HYDRATION.md">Subscription Hydration</a>
 - <a href="README_SUBSCRIPTION_API.md">Subscriptions API</a>
 
 ### Preparing a New Subscription

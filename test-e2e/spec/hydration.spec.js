@@ -11,6 +11,7 @@ const SubscriptionInfo = require('../../lib/subscription-info')
 const storage = storageResource({ documentPath: 'api_client', resourceName: 'api_clients' })
 
 let subscriptionInfo
+let subscriptionHydration
 let apiClientId
 let api
 
@@ -18,7 +19,8 @@ test.beforeAll(async () => {
     api = new index.Api({ useSandbox: true, authCode: process.env.AUTH_CODE, vendorId: process.env.VENDOR_ID })
     await api.init()
 
-    subscriptionInfo = new index.SubscriptionInfo('api_client', { api, hookStorage: subscriptions })
+    subscriptionInfo = new index.SubscriptionInfo('api_client', { api })
+    subscriptionHydration = new index.SubscriptionsHydration('api_client', { api, hookStorage: subscriptions })
 })
 
 test.beforeEach(async () => {
@@ -89,7 +91,7 @@ test('hydrate an active subscription', async ({ page }) => {
     expect(sub['33590']).toBeFalsy()
 
     // .. now hydrate status again ..
-    await subscriptionInfo.hydrateSubscriptionCreated([apiClientId], { subscription_id: subscriptionId }, 'checkoutId');
+    await subscriptionHydration.hydrateSubscriptionCreated([apiClientId], { subscription_id: subscriptionId }, 'checkoutId');
 
     // .. and expect subscription to be active again
     ({ subscription } = await storage.get([apiClientId]))
@@ -126,7 +128,7 @@ test('throws if subscription was created for another client', async ({ page }) =
                 status: []
             }
         })
-        await subscriptionInfo.hydrateSubscriptionCreated(['123'], { subscription_id: subscriptionId }, 'checkoutId')
+        await subscriptionHydration.hydrateSubscriptionCreated(['123'], { subscription_id: subscriptionId }, 'checkoutId')
         throw new Error('Must throw')
     } catch (e) {
         const message = e.message
@@ -146,7 +148,7 @@ test('does not hydrate if status created was already received', async ({ page })
     expect(sub['33590']).toBeTruthy()
 
     // .. now hydrate status again ..
-    await subscriptionInfo.hydrateSubscriptionCreated([apiClientId], { subscription_id: subscriptionId }, 'checkoutId');
+    await subscriptionHydration.hydrateSubscriptionCreated([apiClientId], { subscription_id: subscriptionId }, 'checkoutId');
 
     // .. and expect subscription to be active again
     ({ subscription } = await storage.get([apiClientId]))
@@ -185,7 +187,7 @@ test('hydrate a deleted subscription', async ({ page }) => {
     })
 
     // .. now hydrate status again ..
-    await subscriptionInfo.hydrateSubscriptionCancelled([apiClientId], { subscription_id: subscriptionId }, 'checkoutId');
+    await subscriptionHydration.hydrateSubscriptionCancelled([apiClientId], { subscription_id: subscriptionId }, 'checkoutId');
 
     // .. and expect subscription to be active again
     ({ subscription } = await storage.get([apiClientId]))
