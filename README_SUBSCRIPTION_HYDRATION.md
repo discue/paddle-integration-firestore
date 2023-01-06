@@ -19,8 +19,8 @@ Uses the `subscription_id` to contact Paddle API and checks whether the given lo
 const paddleIntegration = require('@discue/paddle-firebase-integration')
 // initialize api and subscription hooks first
 const api = new paddleIntegration.Api({ useSandbox: true, authCode: process.env.AUTH_CODE, vendorId: process.env.VENDOR_ID })
-const hookStorage = new paddleIntegration.SubscriptionsHooks('api_clients')
-const subscriptions = new paddleIntegration.SubscriptionsHydration('api_clients', { api, hookStorage })
+const hookStorage = new paddleIntegration.SubscriptionHooks('api_clients')
+const subscriptions = new paddleIntegration.SubscriptionHydration('api_clients', { api, hookStorage })
 
 router.post('/subscriptions/initialize', async (req, res) => {
     const { _dsq: { clientId } = {}, body } = req

@@ -17,13 +17,13 @@ const express = require('express')
 const app = express()
 const port = process.env.PORT || 3456
 
-const { bodyparser, middleware, Subscriptions } = require('@discue/paddle-firebase-integration')
+const paddleIntegration = require('@discue/paddle-firebase-integration')
 // pass the path to the collection here
-const subscriptions = new Subscriptions('api_clients')
+const subscriptions = new paddleIntegration.SubscriptionHooks('api_clients')
 
 // register body parser first and middleware second
-app.use('/_/payments', bodyparser())
-app.post('/_/payments', middleware(subscriptions))
+app.use('/_/payments', paddleIntegration.bodyparser())
+app.post('/_/payments', paddleIntegration.middleware(subscriptions))
 
 module.exports = app.listen(port)
 ```

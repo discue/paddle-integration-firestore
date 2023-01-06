@@ -5,7 +5,7 @@ const { test, expect } = require('@playwright/test')
 const { expect: chaiExpect } = require('chai')
 
 const index = require('../../lib/index')
-const subscriptions = new index.SubscriptionsHooks('api_client')
+const subscriptions = new index.SubscriptionHooks('api_client')
 
 const storageResource = require('../../lib/firestore/nested-firestore-resource')
 const storage = storageResource({ documentPath: 'api_client', resourceName: 'api_clients' })

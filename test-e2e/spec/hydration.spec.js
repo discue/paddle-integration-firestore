@@ -4,7 +4,7 @@ const { randomUUID } = require('crypto')
 const { test, expect } = require('@playwright/test')
 
 const index = require('../../lib/index')
-const subscriptions = new index.SubscriptionsHooks('api_client')
+const subscriptions = new index.SubscriptionHooks('api_client')
 
 const storageResource = require('../../lib/firestore/nested-firestore-resource')
 const SubscriptionInfo = require('../../lib/subscription-info')
@@ -20,7 +20,7 @@ test.beforeAll(async () => {
     await api.init()
 
     subscriptionInfo = new index.SubscriptionInfo('api_client', { api })
-    subscriptionHydration = new index.SubscriptionsHydration('api_client', { api, hookStorage: subscriptions })
+    subscriptionHydration = new index.SubscriptionHydration('api_client', { api, hookStorage: subscriptions })
 })
 
 test.beforeEach(async () => {

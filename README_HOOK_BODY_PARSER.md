@@ -13,7 +13,7 @@ const port = process.env.PORT || 3456
 
 const paddleIntegrationFirestore = require('@discue/paddle-firebase-integration')
 // pass the path to the collection here
-const subscriptions = new paddleIntegrationFirestore.Subscriptions('api_clients')
+const subscriptions = new paddleIntegrationFirestore.SubscriptionHooks('api_clients')
 
 // register body parser first and middleware second
 app.use('/_/payments', paddleIntegrationFirestore.bodyparser())

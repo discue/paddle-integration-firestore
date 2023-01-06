@@ -54,7 +54,7 @@ You can see in the example below, the Subscriptions constructor is called with t
 const readApiClient = require('./lib/your-application/read-api-client')
 const paddleIntegration = require('@discue/paddle-firebase-integration')
 // pass the path to the collection here
-const subscriptions = new paddleIntegration.Subscriptions('api_clients')
+const subscriptions = new paddleIntegration.SubscriptionHooks('api_clients')
 
 module.exports = async (req, res, next) => {
     // requires application to read api_client information 
