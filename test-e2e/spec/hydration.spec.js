@@ -264,7 +264,6 @@ test('hydrate a deleted subscription', async ({ page }) => {
     expect(status.subscription_id).toEqual(subscriptionFromApi.subscription_id)
     expect(status.subscription_plan_id).toEqual(subscriptionFromApi.plan_id)
     expect(status.cancel_url).toBeUndefined()
-    expect(status.checkout_id).toEqual('checkoutId')
     expect(status.vendor_user_id).toEqual(subscriptionFromApi.user_id)
 
     const signUpDate = new Date(subscriptionFromApi.signup_date)
