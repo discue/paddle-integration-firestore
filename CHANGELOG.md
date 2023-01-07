@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.19.0](https://github.com/discue/paddle-integration-firestore/compare/v0.18.0...v0.19.0) (2023-01-07)
+
+
+### Features
+
+* **api:** add get subscription payments method ([8e7a294](https://github.com/discue/paddle-integration-firestore/commit/8e7a2944e96fd4d3170a7509c21bec117a77f8a3))
+* **subscription-hydration:** also hydrate payments ([c6c254c](https://github.com/discue/paddle-integration-firestore/commit/c6c254cffc933fb706288e0cb6e44904dc992096))
+* **subscription-hydration:** check if plan already active ([fd4ed5d](https://github.com/discue/paddle-integration-firestore/commit/fd4ed5d9f945c37a19cedc05dbfa130d8d765a4f))
+* **subscription-hydration:** set effective cancellation date based on last payment ([85cfd3b](https://github.com/discue/paddle-integration-firestore/commit/85cfd3bd19b3aa7b9ff20705c1d26638d4640b72))
+
+
+### Bug Fixes
+
+* **html-encoder:** do not encode value false ([5ad8987](https://github.com/discue/paddle-integration-firestore/commit/5ad8987ca279d816995b23d4d9fc40800c1e4488))
+
+
+### Refactorings
+
+* promote subscription hydration to own component ([9d3436b](https://github.com/discue/paddle-integration-firestore/commit/9d3436b8a8662c8d4d98ecb23222c03cec782688))
+* use singular for main component exports ([2ccd3c9](https://github.com/discue/paddle-integration-firestore/commit/2ccd3c9b968ea5f4a6d579a41dc71d5c1fa47f9b))
+
+
+### Chores
+
+* add order details callback ([e9de247](https://github.com/discue/paddle-integration-firestore/commit/e9de2474875b48f810afdefabb11bf53052a6cdc))
+* **subscription-hydration:** do not require checkout id ([50baca2](https://github.com/discue/paddle-integration-firestore/commit/50baca2f24562ab7b8d97ed4cab8798cee0c7e14))
+
 ## [0.18.0](https://github.com/discue/paddle-integration-firestore/compare/v0.17.0...v0.18.0) (2023-01-03)
 
 
