@@ -5,6 +5,7 @@ Due to limitations of the Paddle API some assumptions will be made, like derivin
 
 - [Subscription Hydration](#subscription-hydration)
   - [Hydrate subscription created](#hydrate-subscription-created)
+  - [Hydrate subscription cancelled](#hydrate-subscription-cancelled)
 
 :information_source: The API component of this module will be loaded asynchronously to preserve backwards compatibility with commonjs. This is achieved by returning a proxy for the entire `paddle-integration-firestore` module. The reactivity a proxy provides allows us to add the API module then at a later point to the module instance. The drawback is, we do not return named exports and, therefore, cannot not enable destructuring in ES modules.
 
@@ -81,4 +82,40 @@ export const usePaddleCheckout = (ids, checkoutOptions) => {
 
     Paddle.Checkout.open(checkoutOptions)
 }
+```
+
+## Hydrate subscription cancelled
+Fetches subscription-related information from Paddle API to update the local storage. Has various safety measures to ensure users **cannot** cancel other subscriptions from already existing cancelled ones. 
+
+Uses the `subscription_id` to contact Paddle API and checks whether the given local API Client ID equals the API Client ID that was passed to Paddle API during checkout. 
+
+:information_source: Will calculate the end of the subscription based on the last payment date and the payment interval. **Note:** Currently only monthly payments are supported.
+
+```js
+'use strict'
+
+const paddleIntegration = require('@discue/paddle-firebase-integration')
+// initialize api and subscription hooks first
+const api = new paddleIntegration.Api({ useSandbox: true, authCode: process.env.AUTH_CODE, vendorId: process.env.VENDOR_ID })
+const hookStorage = new paddleIntegration.SubscriptionHooks('api_clients')
+const subscriptions = new paddleIntegration.SubscriptionHydration('api_clients', { api, hookStorage })
+
+router.post('/subscriptions/cancel', async (req, res) => {
+    const { _dsq: { clientId } = {}, body } = req
+    const { subscription_id } = body
+
+    await errorHandler(res, async () => {
+        try {
+            // cancel subscription
+            // ..
+            // then hydrate cancellation
+            await subscriptionInfo.hydrateSubscriptionCancelled([clientId], { subscription_id })
+            sendOkNoContent({ res })
+        } catch (e) {
+            console.error(`Hydration failed with ${e} at ${e.stack}}`)
+            return sendError.conflict(res)
+        }
+    })
+})
+
 ```
