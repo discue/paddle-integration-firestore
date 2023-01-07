@@ -219,7 +219,7 @@ test('hydrate a deleted subscription', async ({ page }) => {
     let { subscription } = await storage.get([apiClientId])
 
     try {
-        await subscriptionInfo.cancelSubscription(subscription, '33590')
+        await api.cancelSubscription(order)
         await page.waitForTimeout(10000)
     } catch (e) {
         if (e.message !== index.SubscriptionInfo.ERROR_SUBSCRIPTION_ALREADY_CANCELLED) {
@@ -260,11 +260,24 @@ test('hydrate a deleted subscription', async ({ page }) => {
     expect(status.description).toEqual('deleted')
     expect(status.next_bill_date).toBeUndefined()
     expect(status.quantity).toEqual('')
-    expect(new Date(status.event_time).getTime()).toBeGreaterThanOrEqual(Date.now() - 2000)
     expect(status.update_url).toBeUndefined()
     expect(status.subscription_id).toEqual(subscriptionFromApi.subscription_id)
     expect(status.subscription_plan_id).toEqual(subscriptionFromApi.plan_id)
     expect(status.cancel_url).toBeUndefined()
     expect(status.checkout_id).toEqual('checkoutId')
     expect(status.vendor_user_id).toEqual(subscriptionFromApi.user_id)
+
+    const signUpDate = new Date(subscriptionFromApi.signup_date)
+    const expectedEndDate = new Date(signUpDate.getTime())
+
+    while (expectedEndDate.getDate() !== signUpDate.getDate() - 1) {
+        expectedEndDate.setTime(expectedEndDate.getTime() + 1000 * 60 * 60 * 24)
+    }
+
+    expectedEndDate.setUTCHours(23)
+    expectedEndDate.setUTCMinutes(59)
+    expectedEndDate.setUTCSeconds(59)
+    expectedEndDate.setUTCMilliseconds(0)
+
+    expect(new Date(status.event_time).toISOString()).toEqual(expectedEndDate.toISOString())
 })
