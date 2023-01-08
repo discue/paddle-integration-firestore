@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.20.0](https://github.com/discue/paddle-integration-firestore/compare/v0.19.0...v0.20.0) (2023-01-08)
+
+
+### Features
+
+* **subscription-hydration:** require plan id instead of subscription id param ([9e2f32a](https://github.com/discue/paddle-integration-firestore/commit/9e2f32af33666606e993a4e53d3a40f057d25b0d))
+* **subscription-info:** add find subscription id method ([a6db41e](https://github.com/discue/paddle-integration-firestore/commit/a6db41e8a96a0aa9b9e12ea223072f8446b3e85d))
+
+
+### Refactorings
+
+* **subscription-hooks:** do not flatten objects ([d7d5bac](https://github.com/discue/paddle-integration-firestore/commit/d7d5bac09cbdb5c4d2d7d2cacd64a5ff810430a9))
+* **subscription-hooks:** return promise instead of waiting it ([95be565](https://github.com/discue/paddle-integration-firestore/commit/95be565eda4c1e4dacabc41067323d9c29374186))
+
+
+### Chores
+
+* remove unused flatten component ([6ace030](https://github.com/discue/paddle-integration-firestore/commit/6ace0304c6840310d97f1b8e694555c10d60fc2e))
+* **subscription-hooks:** add resource name property ([4b39dd4](https://github.com/discue/paddle-integration-firestore/commit/4b39dd47d60c63ca87fe5dbc583aebac49d72cd6))
+* **subscription-hydration:** hide private instance properties ([b39c13d](https://github.com/discue/paddle-integration-firestore/commit/b39c13dc90f8d455e7c11a83dea66d1938e07b51))
+* **subscription-info:** update constructor jsdoc ([e466977](https://github.com/discue/paddle-integration-firestore/commit/e4669776bbf233e0f464ded887a3e972695895e1))
+
 ## [0.19.0](https://github.com/discue/paddle-integration-firestore/compare/v0.18.0...v0.19.0) (2023-01-07)
 
 
