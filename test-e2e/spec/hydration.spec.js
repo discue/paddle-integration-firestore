@@ -203,7 +203,7 @@ test('does not hydrate if status created was already received', async ({ page })
     expect(sub['33590']).toBeTruthy()
 
     // .. now hydrate status again ..
-    await subscriptionHydration.hydrateSubscriptionCreated([apiClientId], { subscription_id: subscriptionId }, 'checkoutId');
+    await subscriptionHydration.hydrateSubscriptionCreated([apiClientId], '33590');
 
     // .. and expect subscription to be active again
     ({ subscription } = await storage.get([apiClientId]))
@@ -214,7 +214,6 @@ test('hydrate a deleted subscription', async ({ page }) => {
     // create new subscription and ...
     const result = await createNewSubscription(page, apiClientId)
     const { order } = result
-    const { subscription_id: subscriptionId } = order
 
     let { subscription } = await storage.get([apiClientId])
 
@@ -227,32 +226,20 @@ test('hydrate a deleted subscription', async ({ page }) => {
         }
     }
 
+    // .. now hydrate status again ..
+    await subscriptionHydration.hydrateSubscriptionCancelled([apiClientId], '33590');
+
     ({ subscription } = await storage.get([apiClientId]))
-    // .. expect sub to be not active anymore in the future
     let sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription, new Date(new Date().getTime() + 1000 * 3600 * 24 * 35))
     expect(sub['33590']).toBeFalsy()
 
-    // remove status and payments to verify hydration process
-    await storage.update([apiClientId], {
-        'subscription.status': [],
-        'subscription.payments': []
-    })
-
-    // .. now hydrate status again ..
-    await subscriptionHydration.hydrateSubscriptionCancelled([apiClientId], { subscription_id: subscriptionId }, 'checkoutId');
-
-    // .. and expect subscription to be active again
-    ({ subscription } = await storage.get([apiClientId]))
-    sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
-    expect(sub['33590']).toBeFalsy()
-
     const { status: subscriptionStatus } = subscription
-    expect(subscriptionStatus).toHaveLength(1)
+    expect(subscriptionStatus).toHaveLength(4)
 
-    const subscriptionsFromApi = await api.getSubscription(subscription.status.at(0))
+    const subscriptionsFromApi = await api.getSubscription(subscription.status.at(-1))
     const subscriptionFromApi = subscriptionsFromApi.at(0)
 
-    const status = subscriptionStatus.at(0)
+    const status = subscriptionStatus.at(-1)
 
     expect(status.alert_id).toEqual(index.SubscriptionInfo.HYDRATION_SUBSCRIPTION_CANCELLED)
     expect(status.alert_name).toEqual(index.SubscriptionInfo.HYDRATION_SUBSCRIPTION_CANCELLED)
