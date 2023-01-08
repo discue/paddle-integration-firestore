@@ -754,4 +754,27 @@ describe('SubscriptionInfo', () => {
             expect(subscriptionTrail[0].description).to.equal('deleted')
         })
     })
+
+    describe('.findSubscriptionIdByPlanId', () => {
+        let subscriptionId
+        beforeEach(async () => {
+            subscriptionId = uuid()
+            const createPayload = Object.assign({}, subscriptionCreated,
+                {
+                    subscription_id: subscriptionId,
+                    passthrough: JSON.stringify(customData(ids)),
+                    event_time: new Date().toISOString()
+                }
+            )
+            await subscriptions.addSubscriptionCreatedStatus(createPayload)
+        })
+        it('returns the subscription id', async () => {
+            const id = await subscriptionInfo.findSubscriptionIdByPlanId(ids, '8')
+            expect(id).to.equal(subscriptionId)
+        })
+        it('returns null if no subscription id was found for plan', async () => {
+            const id = await subscriptionInfo.findSubscriptionIdByPlanId(ids, '18')
+            expect(id).to.be.null
+        })
+    })
 })
