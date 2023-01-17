@@ -134,6 +134,7 @@ test('hydrates the initial payment too', async ({ page }) => {
     expect(payment.email).toEqual(result.order.customer.email)
     expect(new Date(payment.event_time).getTime()).toBeGreaterThanOrEqual(new Date(new Date().getTime() - 1000 * 60 * 60 * 2).getTime())
     expect(payment.initial_payment).toEqual('1')
+    expect(payment.instalments).toEqual('1')
     expect(new Date(payment.next_bill_date).getTime()).toBeGreaterThan(new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 28).getTime())
     expect(payment.passthrough).toContain(apiClientId)
     expect(parseFloat(payment.next_payment_amount)).toEqual(parseFloat(result.order.total))
@@ -148,6 +149,7 @@ test('hydrates the initial payment too', async ({ page }) => {
         const urlWithoutHash = url.substring(0, indexOfSecondHyphen) + url.substring(indexOfSlashAfterHypen)
         expect(urlWithoutHash).toEqual(result.order.receipt_url)
     }
+    expect(payment.sale_gross).toEqual(result.order.total)
     expect(payment.status).toEqual('active')
     expect(payment.subscription_id).toEqual(result.order.subscription_id)
     expect(payment.subscription_plan_id).toEqual(result.order.product_id)
