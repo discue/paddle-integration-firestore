@@ -159,6 +159,58 @@ test('hydrates the initial payment too', async ({ page }) => {
     expect(payment.marketing_consent).toEqual(remoteSubscriptions.at(0).marketing_consent)
 })
 
+test('provides enough data for a hydrated subscription to look like a real one', async ({ page }) => {
+    // create new subscription and ...
+    const result = await createNewSubscription(page, apiClientId)
+    const { order } = result
+    const { subscription_id: subscriptionId } = order
+
+    let { subscription } = await storage.get([apiClientId])
+
+    // remove status and payments to verify hydration process
+    await storage.update([apiClientId], {
+        'subscription.status': [],
+        'subscription.payments': []
+    });
+
+    ({ subscription } = await storage.get([apiClientId]))
+    // .. expect sub to be not active anymore after we reset all status and payments
+    let sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
+    expect(sub['33590']).toBeFalsy()
+
+    // .. now hydrate status again ..
+    await subscriptionHydration.hydrateSubscriptionCreated([apiClientId], { subscription_id: subscriptionId }, 'checkoutId');
+
+    // .. and expect subscription to be active again
+    const subInfo = await subscriptionInfo.getSubscriptionInfo([apiClientId])
+    const { payments_trail: paymentsTrail } = subInfo['33590']
+
+    expect(paymentsTrail).toHaveLength(1)
+
+    const payment = paymentsTrail.at(0)
+
+    expect(payment.description).toEqual(index.SubscriptionHydration.HYDRATION_SUBSCRIPTION_CREATED)
+    expect(payment.checkout_id).toBeUndefined()
+    expect(payment.amount.currency).toEqual(result.order.currency)
+    expect(payment.amount.total).toEqual(result.order.total)
+    expect(payment.amount.quantity).toEqual('')
+    expect(payment.amount.unit_price).toBeUndefined()
+    expect(payment.subscription_plan_id).toEqual(result.order.product_id)
+    expect(payment.next_payment.date).not.toBeUndefined()
+    expect(payment.amount.currency).toEqual(result.order.currency)
+    expect(payment.amount.total).toEqual(result.order.total)
+    {
+        // strip the hash value 3834651 from url
+        // https://sandbox-my.paddle.com/receipt/525486-3834651/1192015-chrea38c44d0069-2b66b730c9
+        const url = payment.receipt_url
+        const indexOfSecondHyphen = url.indexOf('-', url.indexOf('receipt'))
+        const indexOfSlashAfterHypen = url.indexOf('/', indexOfSecondHyphen)
+        const urlWithoutHash = url.substring(0, indexOfSecondHyphen) + url.substring(indexOfSlashAfterHypen)
+        expect(urlWithoutHash).toEqual(result.order.receipt_url)
+    }
+    expect(payment.instalments).toEqual('1')
+})
+
 test('throws if subscription was created for another client', async ({ page }) => {
     // create new subscription and ...
     const result = await createNewSubscription(page, apiClientId)
@@ -205,7 +257,7 @@ test('does not hydrate if status created was already received', async ({ page })
     expect(sub['33590']).toBeTruthy()
 
     // .. now hydrate status again ..
-    await subscriptionHydration.hydrateSubscriptionCreated([apiClientId], {subscription_id: subscriptionId}, 'checkoutId');
+    await subscriptionHydration.hydrateSubscriptionCreated([apiClientId], { subscription_id: subscriptionId }, 'checkoutId');
 
     // .. and expect subscription to be active again
     ({ subscription } = await storage.get([apiClientId]))
