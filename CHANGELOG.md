@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.21.0](https://github.com/discue/paddle-integration-firestore/compare/v0.20.0...v0.21.0) (2023-01-18)
+
+
+### Features
+
+* **subscription-hydration:** also store instalments and sale_gross values ([b1482c0](https://github.com/discue/paddle-integration-firestore/commit/b1482c07b9c93a69ee8ef9be79d613c52a63b369))
+* **subscriptioninfo:** return more details for hydrated payments ([a13489c](https://github.com/discue/paddle-integration-firestore/commit/a13489c9cab27f4e08adc3de168d0d74d9552eee))
+
+
+### Chores
+
+* **subscription-hydration:** store sale gross and payment amount as string ([64b3a60](https://github.com/discue/paddle-integration-firestore/commit/64b3a6003a78c0e0e197d533d8afa12538112314))
+
 ## [0.20.0](https://github.com/discue/paddle-integration-firestore/compare/v0.19.0...v0.20.0) (2023-01-08)
 
 
