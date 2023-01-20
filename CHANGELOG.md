@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.22.0](https://github.com/discue/paddle-integration-firestore/compare/v0.21.0...v0.22.0) (2023-01-20)
+
+
+### Features
+
+* **subscription-info:** return update and cancel url too ([0959d5f](https://github.com/discue/paddle-integration-firestore/commit/0959d5f81de989eacfd022e2bbfbccdafca1243e))
+
 ## [0.21.0](https://github.com/discue/paddle-integration-firestore/compare/v0.20.0...v0.21.0) (2023-01-18)
 
 
