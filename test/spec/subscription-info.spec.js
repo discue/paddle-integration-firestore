@@ -14,6 +14,7 @@ const subscriptions = new SubscriptionHooks('api_client')
 const subscriptionInfo = new SubscriptionInfo('api_client', { hookStorage: subscriptions })
 const storage = require('../../lib/firestore/nested-firestore-resource')({ documentPath: 'api_client', resourceName: 'api_clients' })
 const { customData } = require('../../lib/client/index')
+const encode = require('../../lib/html-encoder.js')
 
 const { expect } = require('chai')
 const { UPCOMING_PAYMENTS_DESCRIPTION } = require('../../lib/subscription-descriptions')
@@ -141,6 +142,13 @@ describe('SubscriptionInfo', () => {
             })
 
             expect(sorted).to.be.true
+        })
+        it('returns status events with update and cancel urls', async () => {
+            const { [subscriptionCreated.subscription_plan_id]: { status_trail } } = await subscriptionInfo.getSubscriptionInfo(ids)
+            expect(status_trail).to.have.length(1)
+
+            expect(status_trail[0].update_url).to.equal(encode(subscriptionCreated.update_url))
+            expect(status_trail[0].cancel_url).to.equal(encode(subscriptionCreated.cancel_url))
         })
         it('returns a sorted list of payment events', async () => {
             const { [subscriptionCreated.subscription_plan_id]: { payments_trail } } = await subscriptionInfo.getSubscriptionInfo(ids)

@@ -159,7 +159,38 @@ test('hydrates the initial payment too', async ({ page }) => {
     expect(payment.marketing_consent).toEqual(remoteSubscriptions.at(0).marketing_consent)
 })
 
-test('provides enough data for a hydrated subscription to look like a real one', async ({ page }) => {
+test('provides enough data for a hydrated status to look like a real one', async ({ page }) => {
+    // create new subscription and ...
+    const result = await createNewSubscription(page, apiClientId)
+    const { order } = result
+    const { subscription_id: subscriptionId } = order
+
+    let { subscription } = await storage.get([apiClientId])
+
+    // remove status and payments to verify hydration process
+    await storage.update([apiClientId], {
+        'subscription.status': [],
+        'subscription.payments': []
+    });
+
+    ({ subscription } = await storage.get([apiClientId]))
+    // .. expect sub to be not active anymore after we reset all status and payments
+    let sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
+    expect(sub['33590']).toBeFalsy()
+
+    // .. now hydrate status again ..
+    await subscriptionHydration.hydrateSubscriptionCreated([apiClientId], { subscription_id: subscriptionId }, 'checkoutId');
+
+    // .. and expect subscription to be active again
+    const subInfo = await subscriptionInfo.getSubscriptionInfo([apiClientId])
+    const { status_trail: statusTrail } = subInfo['33590']
+    const status = statusTrail.at(0)
+
+    expect(status.cancel_url.startsWith('https')).toBeTruthy
+    expect(status.update_url.startsWith('https')).toBeTruthy
+})
+
+test('provides enough data for a hydrated payment to look like a real one', async ({ page }) => {
     // create new subscription and ...
     const result = await createNewSubscription(page, apiClientId)
     const { order } = result
