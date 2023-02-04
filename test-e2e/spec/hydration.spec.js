@@ -133,7 +133,7 @@ test('hydrates the initial payment too', async ({ page }) => {
     expect(new Date(payment.event_time).getTime()).toBeGreaterThanOrEqual(new Date(new Date().getTime() - 1000 * 60 * 60 * 2).getTime())
     expect(payment.initial_payment).toEqual('1')
     expect(payment.instalments).toEqual('1')
-    expect(new Date(payment.next_bill_date).getTime()).toBeGreaterThan(new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 28).getTime())
+    expect(new Date(payment.next_bill_date).getTime()).toBeGreaterThan(new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 27).getTime()) // only 27 days because of february having only 28 days
     expect(payment.passthrough).toContain(apiClientId)
     expect(parseFloat(payment.next_payment_amount)).toEqual(parseFloat(result.order.total))
     expect(payment.payment_method).toEqual('card')
