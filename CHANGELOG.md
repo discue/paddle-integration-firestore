@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.23.0](https://github.com/discue/paddle-integration-firestore/compare/v0.22.0...v0.23.0) (2023-02-25)
+
+
+### Features
+
+* allow resource name to be customized ([42ab972](https://github.com/discue/paddle-integration-firestore/commit/42ab972731a851c41e70e720e96f99f772b50317))
+
+
+### Chores
+
+* **deps-dev:** bump @playwright/test from 1.29.1 to 1.30.0 ([2b413cf](https://github.com/discue/paddle-integration-firestore/commit/2b413cfd708a3af5c2613655c05eaa1bddf9e77b))
+* **deps-dev:** bump eslint from 8.31.0 to 8.33.0 ([2d69506](https://github.com/discue/paddle-integration-firestore/commit/2d6950692d4d2656dd35af52028d2eb3215d68c7))
+* **deps-dev:** bump firebase-tools from 11.19.0 to 11.22.0 ([91f759d](https://github.com/discue/paddle-integration-firestore/commit/91f759dc065171137e15d4a1f5202ac35b6dbe69))
+* **deps-dev:** bump puppeteer from 19.4.1 to 19.6.2 ([5f60534](https://github.com/discue/paddle-integration-firestore/commit/5f60534dd1ab4d606bb3b3f70bb1379ac1abd4ef))
+* **deps:** bump firebase-admin from 11.4.1 to 11.5.0 ([dba7120](https://github.com/discue/paddle-integration-firestore/commit/dba71206818734b52b495693dec67bb2da5f4089))
+* **deps:** update dependencies ([126b282](https://github.com/discue/paddle-integration-firestore/commit/126b282f752513dbf053573e32b5e467495c2d91))
+
 ## [0.22.0](https://github.com/discue/paddle-integration-firestore/compare/v0.21.0...v0.22.0) (2023-01-20)
 
 
