@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.23.1](https://github.com/discue/paddle-integration-firestore/compare/v0.23.0...v0.23.1) (2023-02-25)
+
+
+### Bug Fixes
+
+* null pointers when using resource name starting with _ ([c209063](https://github.com/discue/paddle-integration-firestore/commit/c209063bf2158dc4c2c7ca2b3c22592fcce4a11d))
+
 ## [0.23.0](https://github.com/discue/paddle-integration-firestore/compare/v0.22.0...v0.23.0) (2023-02-25)
 
 
