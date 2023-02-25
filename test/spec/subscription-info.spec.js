@@ -10,8 +10,9 @@ const paymentFailed = require('../fixtures/payment-failed')
 const paymentRefunded = require('../fixtures/payment-refunded')
 
 const { SubscriptionInfo, SubscriptionHooks } = require('../../lib/index')
-const subscriptions = new SubscriptionHooks('api_client')
-const subscriptionInfo = new SubscriptionInfo('api_client', { hookStorage: subscriptions })
+const resourceName = '$$subscription'
+const subscriptions = new SubscriptionHooks('api_client', { resourceName })
+const subscriptionInfo = new SubscriptionInfo('api_client', { hookStorage: subscriptions, resourceName })
 const storage = require('../../lib/firestore/nested-firestore-resource')({ documentPath: 'api_client', resourceName: 'api_clients' })
 const { customData } = require('../../lib/client/index')
 const encode = require('../../lib/html-encoder.js')
@@ -195,7 +196,7 @@ describe('SubscriptionInfo', () => {
             await subscriptions.addSubscriptionCreatedStatus(createPayload)
         })
         it('throws if no subscription with plan was found', async () => {
-            const { subscription: sub } = await storage.get(ids)
+            const { $$subscription: sub } = await storage.get(ids)
 
             try {
                 await subscriptionInfo.cancelSubscription(sub, '99')
@@ -215,7 +216,7 @@ describe('SubscriptionInfo', () => {
             )
 
             await subscriptions.addSubscriptionCancelledStatus(payload)
-            const { subscription: sub } = await storage.get(ids)
+            const { $$subscription: sub } = await storage.get(ids)
 
             try {
                 await subscriptionInfo.cancelSubscription(sub, '8')
@@ -240,7 +241,7 @@ describe('SubscriptionInfo', () => {
             await subscriptions.addSubscriptionCreatedStatus(createPayload)
         })
         it('throws if no subscription with plan was found', async () => {
-            const { subscription: sub } = await storage.get(ids)
+            const { $$subscription: sub } = await storage.get(ids)
 
             try {
                 await subscriptionInfo.updateSubscription(sub, '99', '123')
@@ -260,7 +261,7 @@ describe('SubscriptionInfo', () => {
             )
 
             await subscriptions.addSubscriptionCancelledStatus(payload)
-            const { subscription: sub } = await storage.get(ids)
+            const { $$subscription: sub } = await storage.get(ids)
 
             try {
                 await subscriptionInfo.updateSubscription(sub, '8', '123')
@@ -293,7 +294,7 @@ describe('SubscriptionInfo', () => {
             )
             await subscriptions.addSubscriptionCancelledStatus(payload)
 
-            const { subscription: sub } = await storage.get(ids)
+            const { $$subscription: sub } = await storage.get(ids)
             const status = await subscriptionInfo.getAllSubscriptionsStatus(sub)
             expect(status[createPayload.subscription_plan_id]).to.be.false
         })
@@ -340,7 +341,7 @@ describe('SubscriptionInfo', () => {
             )
             await subscriptions.addSubscriptionCancelledStatus(payload)
 
-            const { subscription: sub } = await storage.get(ids)
+            const { $$subscription: sub } = await storage.get(ids)
             const status = await subscriptionInfo.getAllSubscriptionsStatus(sub)
             expect(status[createPayload.subscription_plan_id]).to.be.false
         })
@@ -364,7 +365,7 @@ describe('SubscriptionInfo', () => {
             )
             await subscriptions.addSubscriptionCancelledStatus(payload)
 
-            const { subscription: sub } = await storage.get(ids)
+            const { $$subscription: sub } = await storage.get(ids)
             const status = await subscriptionInfo.getAllSubscriptionsStatus(sub)
             expect(status[createPayload.subscription_plan_id]).to.be.true
         })
@@ -388,7 +389,7 @@ describe('SubscriptionInfo', () => {
             )
             await subscriptions.addSubscriptionCancelledStatus(payload)
 
-            const { subscription: sub } = await storage.get(ids)
+            const { $$subscription: sub } = await storage.get(ids)
             const subs = await subscriptionInfo.getAllSubscriptionsStatus(sub, new Date(new Date().getTime() + 5000))
             expect(subs[createPayload.subscription_plan_id]).to.be.false
         })
@@ -422,7 +423,7 @@ describe('SubscriptionInfo', () => {
             )
             await subscriptions.addSubscriptionCancelledStatus(payload)
 
-            const { subscription: sub } = await storage.get(ids)
+            const { $$subscription: sub } = await storage.get(ids)
             const subs = await subscriptionInfo.getAllSubscriptionsStatus(sub, new Date(new Date().getTime() + 5000))
             expect(subs[createPayload.subscription_plan_id]).to.be.false
             expect(subs[createPayload2.subscription_plan_id]).to.be.true
@@ -451,7 +452,7 @@ describe('SubscriptionInfo', () => {
             )
             await subscriptions.addSubscriptionCreatedStatus(createPayload2)
 
-            const { subscription: sub } = await storage.get(ids)
+            const { $$subscription: sub } = await storage.get(ids)
             const dates = await subscriptionInfo.getStartAndEndDates(sub)
             expect(dates).to.have.keys(createPayload.subscription_plan_id, createPayload2.subscription_plan_id)
         })
@@ -476,7 +477,7 @@ describe('SubscriptionInfo', () => {
             )
             await subscriptions.addSubscriptionCreatedStatus(createPayload2)
 
-            const { subscription: sub } = await storage.get(ids)
+            const { $$subscription: sub } = await storage.get(ids)
             const dates = await subscriptionInfo.getStartAndEndDates(ids)
             expect(dates).to.have.keys(createPayload.subscription_plan_id, createPayload2.subscription_plan_id)
         })
@@ -492,7 +493,7 @@ describe('SubscriptionInfo', () => {
             )
             await subscriptions.addSubscriptionCreatedStatus(createPayload)
 
-            const { subscription: sub } = await storage.get(ids)
+            const { $$subscription: sub } = await storage.get(ids)
             const { [createPayload.subscription_plan_id]: { start, end } } = await subscriptionInfo.getStartAndEndDates(sub)
             expect(start).to.equal(startTimeString)
             expect(end).to.be.null
@@ -520,7 +521,7 @@ describe('SubscriptionInfo', () => {
             )
             await subscriptions.addSubscriptionCancelledStatus(payload)
 
-            const { subscription: sub } = await storage.get(ids)
+            const { $$subscription: sub } = await storage.get(ids)
             const { [createPayload.subscription_plan_id]: { start, end } } = await subscriptionInfo.getStartAndEndDates(sub, new Date(2099, 1))
             expect(start).to.equal(startTimeString)
             expect(end).to.equal(endTimeString)
@@ -584,7 +585,7 @@ describe('SubscriptionInfo', () => {
             await subscriptions.addFailedPayment(paymentFailedPayload2)
         })
         it('returns payments sorted descending', async () => {
-            const { subscription: sub } = await storage.get(ids)
+            const { $$subscription: sub } = await storage.get(ids)
             const trail = await subscriptionInfo.getPaymentsTrail(sub)
 
             const sorted = Object.values(trail).every((payments) => {
@@ -615,7 +616,7 @@ describe('SubscriptionInfo', () => {
             expect(sorted).to.be.true
         })
         it('returns a sorted listed of payments per subscription plan id 8', async () => {
-            const { subscription: sub } = await storage.get(ids)
+            const { $$subscription: sub } = await storage.get(ids)
             const trail = await subscriptionInfo.getPaymentsTrail(sub)
 
             expect(trail).to.have.keys(paymentSucceded.subscription_plan_id, '4')
@@ -664,7 +665,7 @@ describe('SubscriptionInfo', () => {
         })
 
         it('returns a sorted listed of payments per subscription plan id 4 and ignores refunded payment hook', async () => {
-            const { subscription: sub } = await storage.get(ids)
+            const { $$subscription: sub } = await storage.get(ids)
             const trail = await subscriptionInfo.getPaymentsTrail(sub)
 
             expect(trail).to.have.keys(paymentSucceded.subscription_plan_id, '4')
@@ -737,7 +738,7 @@ describe('SubscriptionInfo', () => {
         })
 
         it('returns a sorted listed of status per id', async () => {
-            const { subscription: sub } = await storage.get(ids)
+            const { $$subscription: sub } = await storage.get(ids)
             const trail = await subscriptionInfo.getStatusTrail(sub)
             const subscriptionTrail = trail[subscriptionCreated.subscription_plan_id]
             expect(subscriptionTrail).to.have.length(3)
