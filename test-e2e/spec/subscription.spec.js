@@ -73,7 +73,7 @@ async function updatePaymentMethod(page, subscription) {
     await page.goto(subscription.status[1].update_url)
     await page.locator('[data-testid="CARD_PaymentSelectionButton"]').click()
     await page.locator('[data-testid="cardNumberInput"]').click()
-    await page.locator('[data-testid="cardNumberInput"]').fill('4000 0038 0000 0446')
+    await page.locator('[data-testid="cardNumberInput"]').fill('4242 4242 4242 4242')
     await page.locator('[data-testid="cardNumberInput"]').press('Tab')
     await page.locator('[data-testid="cardholderNameInput"]').fill('Mullan')
     await page.locator('[data-testid="cardholderNameInput"]').press('Tab')
@@ -82,15 +82,9 @@ async function updatePaymentMethod(page, subscription) {
     await page.locator('[data-testid="expiryYearInput"]').fill('2030')
     await page.locator('[data-testid="expiryYearInput"]').press('Tab')
     await page.locator('[data-testid="cardVerificationValueInput"]').fill('123')
+    await page.locator('[data-testid="cardPaymentFormSubmitButton"]').click()
 
-    const [page1] = await Promise.all([
-        page.waitForEvent('popup'),
-        page.locator('[data-testid="cardPaymentFormSubmitButton"]').click()
-    ])
-
-    await page1.locator('text=Complete authentication').click()
-    await page.locator('[data-testid="subscriptionManagementSuccess"] div').first().click()
-    await page.waitForSelector('[data-testid="subscriptionManagementSuccessInfo"]', { state: 'visible', timeout: 50000 })
+    await page.waitForSelector('[data-testid="subscriptionManagementSuccess"]', { state: 'visible', timeout: 50000 })
 }
 
 async function cancelSubscription(page, subscription) {
