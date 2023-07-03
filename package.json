@@ -40,7 +40,7 @@
     "chai": "^4.3.7",
     "eslint": "^8.41.0",
     "express": "^4.18.2",
-    "firebase-tools": "^12.2.1",
+    "firebase-tools": "^12.4.2",
     "localtunnel": "^2.0.2",
     "mocha": "^10.2.0",
     "node-amy": "^3.7.0",
