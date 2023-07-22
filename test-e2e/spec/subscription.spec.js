@@ -70,17 +70,14 @@ async function createNewSubscription(page, apiClientId) {
 }
 
 async function updatePaymentMethod(page, subscription) {
+    const nextYear = new Date().getFullYear() + 1
     await page.goto(subscription.status[1].update_url)
-    await page.locator('[data-testid="CARD_PaymentSelectionButton"]').click()
     await page.locator('[data-testid="cardNumberInput"]').click()
     await page.locator('[data-testid="cardNumberInput"]').fill('4242 4242 4242 4242')
     await page.locator('[data-testid="cardNumberInput"]').press('Tab')
     await page.locator('[data-testid="cardholderNameInput"]').fill('Mullan')
     await page.locator('[data-testid="cardholderNameInput"]').press('Tab')
-    await page.locator('[data-testid="expiryMonthInput"]').fill('12')
-    await page.locator('[data-testid="expiryMonthInput"]').press('Tab')
-    await page.locator('[data-testid="expiryYearInput"]').fill('2030')
-    await page.locator('[data-testid="expiryYearInput"]').press('Tab')
+    await page.locator('[data-testid="expiryDateField"]').fill(`12/${nextYear}`)
     await page.locator('[data-testid="cardVerificationValueInput"]').fill('123')
     await page.locator('[data-testid="cardPaymentFormSubmitButton"]').click()
 
