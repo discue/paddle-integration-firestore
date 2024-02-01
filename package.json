@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "firebase-admin": "^11.11.1",
-    "got": "^14.0.0",
+    "got": "^14.1.0",
     "html-entities": "^2.4.0"
   }
 }
