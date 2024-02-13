@@ -302,7 +302,7 @@ test('hydrate a deleted subscription', async ({ page }) => {
 
     try {
         await api.cancelSubscription(order)
-        await page.waitForTimeout(10000)
+        await new Promise((resolve) => setTimeout(resolve, 10000))
     } catch (e) {
         if (e.message !== index.SubscriptionInfo.ERROR_SUBSCRIPTION_ALREADY_CANCELLED) {
             throw e

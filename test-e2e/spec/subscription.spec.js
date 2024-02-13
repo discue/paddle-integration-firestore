@@ -122,7 +122,7 @@ test('test cancel via subscription info and subscription object', async ({ page 
     ({ subscription } = await storage.get([apiClientId]))
     const success = await subscriptionInfo.cancelSubscription(subscription, '33590')
     expect(success).toBeTruthy()
-    await page.waitForTimeout(10000);
+    await new Promise((resolve) => setTimeout(resolve, 10000));
 
     // ... verify subscription still active today ...
     ({ subscription } = await storage.get([apiClientId]))
@@ -158,7 +158,7 @@ test('test cancel via subscription info and client id array', async ({ page }) =
     // cancel subscription ...
     const success = await subscriptionInfo.cancelSubscription([apiClientId], '33590')
     expect(success).toBeTruthy()
-    await page.waitForTimeout(10000);
+    await new Promise((resolve) => setTimeout(resolve, 10000));
 
     // ... verify subscription still active today ...
     ({ subscription } = await storage.get([apiClientId]))
@@ -194,7 +194,7 @@ test('test cancel via api', async ({ page }) => {
     // cancel subscription ...
     const success = await api.cancelSubscription(subscription.status[1])
     expect(success).toBeTruthy()
-    await page.waitForTimeout(20000);
+    await new Promise((resolve) => setTimeout(resolve, 20000));
 
     // ... verify subscription still active today ...
     ({ subscription } = await storage.get([apiClientId]))
@@ -230,7 +230,7 @@ test('test update via subscription info and subscription object', async ({ page 
     // update subscription plan via api ...
     const updated = await subscriptionInfo.updateSubscription(subscription, '33590', '35141')
     expect(updated).toBeTruthy()
-    await page.waitForTimeout(30000);
+    await new Promise((resolve) => setTimeout(resolve, 30000));
 
     // .. check  new status and payments added ...
     ({ subscription } = await storage.get([apiClientId]))
@@ -263,7 +263,7 @@ test('test update via subscription info and api client id', async ({ page }) => 
     // update subscription plan via api ...
     const updated = await subscriptionInfo.updateSubscription([apiClientId], '33590', '35141')
     expect(updated).toBeTruthy()
-    await page.waitForTimeout(30000);
+    await new Promise((resolve) => setTimeout(resolve, 30000));
 
     // .. check  new status and payments added ...
     ({ subscription } = await storage.get([apiClientId]))
@@ -295,7 +295,7 @@ test('test update via api', async ({ page }) => {
 
     // update subscription plan via api ...
     await api.updateSubscriptionPlan(subscription.status[1], '35141')
-    await page.waitForTimeout(30000);
+    await new Promise((resolve) => setTimeout(resolve, 30000));
 
     // .. check  new status and payments added ...
     ({ subscription } = await storage.get([apiClientId]))
@@ -328,7 +328,7 @@ test('test refund via api', async ({ page }) => {
     // refund subscription plan via api ...
     const refunded = await api.refundFullPayment(subscription.payments[0])
     expect(refunded).toBeTruthy()
-    await page.waitForTimeout(30000);
+    await new Promise((resolve) => setTimeout(resolve, 30000));
 
     // .. check no new status and payments added ...
     // .. because refunds need to be reviewed by paddle time 
@@ -361,7 +361,7 @@ test('test create, update, and cancel via ui', async ({ page }) => {
 
     // update payment method ...
     await updatePaymentMethod(page, subscription)
-    await page.waitForTimeout(10000);
+    await new Promise((resolve) => setTimeout(resolve, 10000));
 
     // .. check no new status or payments added ...
     ({ subscription } = await storage.get([apiClientId]))
@@ -375,7 +375,7 @@ test('test create, update, and cancel via ui', async ({ page }) => {
 
     // cancel subscription ...
     await cancelSubscription(page, subscription)
-    await page.waitForTimeout(10000);
+    await new Promise((resolve) => setTimeout(resolve, 10000));
 
     // ... verify subscription still active today ...
     ({ subscription } = await storage.get([apiClientId]))
