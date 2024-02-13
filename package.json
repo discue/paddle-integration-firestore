@@ -44,7 +44,7 @@
     "localtunnel": "^2.0.2",
     "mocha": "^10.2.0",
     "node-amy": "^3.7.0",
-    "nodemon": "^3.0.1",
+    "nodemon": "^3.0.3",
     "puppeteer": "^22.0.0",
     "standard-version": "^9.5.0"
   },
