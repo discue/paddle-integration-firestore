@@ -477,7 +477,6 @@ describe('SubscriptionInfo', () => {
             )
             await subscriptions.addSubscriptionCreatedStatus(createPayload2)
 
-            const { [resourceName]: sub } = await storage.get(ids, true)
             const dates = await subscriptionInfo.getStartAndEndDates(ids)
             expect(dates).to.have.keys(createPayload.subscription_plan_id, createPayload2.subscription_plan_id)
         })
