@@ -153,7 +153,7 @@ test('test cancel via subscription info and client id array', async ({ page }) =
 
     // .. and check it is active
     let sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
-    expect(sub['33590']).toBeTruthy();
+    expect(sub['33590']).toBeTruthy()
 
     // cancel subscription ...
     const success = await subscriptionInfo.cancelSubscription([apiClientId], '33590')
