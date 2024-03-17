@@ -76,7 +76,11 @@ test('hydrate an active subscription', async ({ page }) => {
     const { order } = result
     const { subscription_id: subscriptionId } = order
 
-    let { subscription } = await storage.get([apiClientId])
+    let subscription = await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription).not.toBeUndefined()
+        return subscription
+    })
 
     // remove status and payments to verify hydration process
     await storage.update([apiClientId], {
@@ -104,7 +108,11 @@ test('hydrates the initial payment too', async ({ page }) => {
     const { order } = result
     const { subscription_id: subscriptionId } = order
 
-    let { subscription } = await storage.get([apiClientId])
+    let subscription = await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription).not.toBeUndefined()
+        return subscription
+    })
 
     // remove status and payments to verify hydration process
     await storage.update([apiClientId], {
@@ -120,42 +128,44 @@ test('hydrates the initial payment too', async ({ page }) => {
     // .. now hydrate status again ..
     await subscriptionHydration.hydrateSubscriptionCreated([apiClientId], { subscription_id: subscriptionId }, 'checkoutId');
 
-    // .. and expect subscription to be active again
-    ({ subscription } = await storage.get([apiClientId]))
+    await expectWithRetry(async () => {
+        // .. and expect subscription to be active again
+        const { subscription } = await storage.get([apiClientId])
 
-    const payments = subscription.payments
-    const payment = payments.at(0)
+        const payments = subscription.payments
+        const payment = payments.at(0)
 
-    expect(payment.alert_id).toEqual(index.SubscriptionHydration.HYDRATION_SUBSCRIPTION_CREATED)
-    expect(payment.alert_name).toEqual(index.SubscriptionHydration.HYDRATION_SUBSCRIPTION_CREATED)
-    expect(payment.checkout_id).toEqual('checkoutId')
-    expect(payment.currency).toEqual(result.order.currency)
-    expect(payment.email).toEqual(result.order.customer.email)
-    expect(new Date(payment.event_time).getTime()).toBeGreaterThanOrEqual(new Date(new Date().getTime() - 1000 * 60 * 60 * 2).getTime())
-    expect(payment.initial_payment).toEqual('1')
-    expect(payment.instalments).toEqual('1')
-    expect(new Date(payment.next_bill_date).getTime()).toBeGreaterThan(new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 27).getTime()) // only 27 days because of february having only 28 days
-    expect(payment.passthrough).toContain(apiClientId)
-    expect(parseFloat(payment.next_payment_amount)).toEqual(parseFloat(result.order.total))
-    expect(payment.payment_method).toEqual('card')
-    expect(payment.quantity).toEqual('')
-    {
-        // strip the hash value 3834651 from url
-        // https://sandbox-my.paddle.com/receipt/525486-3834651/1192015-chrea38c44d0069-2b66b730c9
-        const url = payment.receipt_url
-        const indexOfSecondHyphen = url.indexOf('-', url.indexOf('receipt'))
-        const indexOfSlashAfterHypen = url.indexOf('/', indexOfSecondHyphen)
-        const urlWithoutHash = url.substring(0, indexOfSecondHyphen) + url.substring(indexOfSlashAfterHypen)
-        expect(urlWithoutHash).toEqual(result.order.receipt_url)
-    }
-    expect(payment.sale_gross).toEqual(result.order.total)
-    expect(payment.status).toEqual('active')
-    expect(payment.subscription_id).toEqual(result.order.subscription_id)
-    expect(payment.subscription_plan_id).toEqual(result.order.product_id)
+        expect(payment.alert_id).toEqual(index.SubscriptionHydration.HYDRATION_SUBSCRIPTION_CREATED)
+        expect(payment.alert_name).toEqual(index.SubscriptionHydration.HYDRATION_SUBSCRIPTION_CREATED)
+        expect(payment.checkout_id).toEqual('checkoutId')
+        expect(payment.currency).toEqual(result.order.currency)
+        expect(payment.email).toEqual(result.order.customer.email)
+        expect(new Date(payment.event_time).getTime()).toBeGreaterThanOrEqual(new Date(new Date().getTime() - 1000 * 60 * 60 * 2).getTime())
+        expect(payment.initial_payment).toEqual('1')
+        expect(payment.instalments).toEqual('1')
+        expect(new Date(payment.next_bill_date).getTime()).toBeGreaterThan(new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 27).getTime()) // only 27 days because of february having only 28 days
+        expect(payment.passthrough).toContain(apiClientId)
+        expect(parseFloat(payment.next_payment_amount)).toEqual(parseFloat(result.order.total))
+        expect(payment.payment_method).toEqual('card')
+        expect(payment.quantity).toEqual('')
+        {
+            // strip the hash value 3834651 from url
+            // https://sandbox-my.paddle.com/receipt/525486-3834651/1192015-chrea38c44d0069-2b66b730c9
+            const url = payment.receipt_url
+            const indexOfSecondHyphen = url.indexOf('-', url.indexOf('receipt'))
+            const indexOfSlashAfterHypen = url.indexOf('/', indexOfSecondHyphen)
+            const urlWithoutHash = url.substring(0, indexOfSecondHyphen) + url.substring(indexOfSlashAfterHypen)
+            expect(urlWithoutHash).toEqual(result.order.receipt_url)
+        }
+        expect(payment.sale_gross).toEqual(result.order.total)
+        expect(payment.status).toEqual('active')
+        expect(payment.subscription_id).toEqual(result.order.subscription_id)
+        expect(payment.subscription_plan_id).toEqual(result.order.product_id)
 
-    const remoteSubscriptions = await api.getSubscription({ subscription_id: subscriptionId })
-    expect(payment.user_id).toEqual(remoteSubscriptions.at(0).user_id)
-    expect(payment.marketing_consent).toEqual(remoteSubscriptions.at(0).marketing_consent)
+        const remoteSubscriptions = await api.getSubscription({ subscription_id: subscriptionId })
+        expect(payment.user_id).toEqual(remoteSubscriptions.at(0).user_id)
+        expect(payment.marketing_consent).toEqual(remoteSubscriptions.at(0).marketing_consent)
+    })
 })
 
 test('provides enough data for a hydrated status to look like a real one', async ({ page }) => {
@@ -164,7 +174,11 @@ test('provides enough data for a hydrated status to look like a real one', async
     const { order } = result
     const { subscription_id: subscriptionId } = order
 
-    let { subscription } = await storage.get([apiClientId])
+    let subscription = await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription).not.toBeUndefined()
+        return subscription
+    })
 
     // remove status and payments to verify hydration process
     await storage.update([apiClientId], {
@@ -195,7 +209,11 @@ test('provides enough data for a hydrated payment to look like a real one', asyn
     const { order } = result
     const { subscription_id: subscriptionId } = order
 
-    let { subscription } = await storage.get([apiClientId])
+    let subscription = await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription).not.toBeUndefined()
+        return subscription
+    })
 
     // remove status and payments to verify hydration process
     await storage.update([apiClientId], {
@@ -247,7 +265,11 @@ test('throws if subscription was created for another client', async ({ page }) =
     const { order } = result
     const { subscription_id: subscriptionId } = order
 
-    let { subscription } = await storage.get([apiClientId])
+    let subscription = await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription).not.toBeUndefined()
+        return subscription
+    })
 
     // remove status and payments to verify hydration process
     await storage.update([apiClientId], {
@@ -279,7 +301,13 @@ test('does not hydrate if status created was already received', async ({ page })
     // create new subscription and ...
     await createNewSubscription(page, apiClientId)
 
-    let { subscription } = await storage.get([apiClientId])
+    let subscription = await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription).not.toBeUndefined()
+        expect(subscription.status).toHaveLength(2)
+        return subscription
+    })
+
     const subscriptionId = subscription.status[1].subscription_id
 
     // .. and check subscription is active to make sure setup was correct
@@ -299,7 +327,10 @@ test('hydrate a deleted subscription', async ({ page }) => {
     const result = await createNewSubscription(page, apiClientId)
     const { order } = result
 
-    let { subscription } = await storage.get([apiClientId])
+    await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription).not.toBeUndefined()
+    })
 
     try {
         await api.cancelSubscription(order)
@@ -309,47 +340,47 @@ test('hydrate a deleted subscription', async ({ page }) => {
         }
     }
 
-    // .. now hydrate status again ..
-    subscription = await expectWithRetry(async () => {
-        await subscriptionHydration.hydrateSubscriptionCancelled([apiClientId], '33590');
+    await subscriptionHydration.hydrateSubscriptionCancelled([apiClientId], '33590')
+    await expectWithRetry(async () => {
 
         const { subscription } = await storage.get([apiClientId])
         let sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription, new Date(new Date().getTime() + 1000 * 3600 * 24 * 35))
         expect(sub['33590']).toBeFalsy()
-        return subscription
+
+        const { status: subscriptionStatus } = subscription
+        expect(subscriptionStatus).toHaveLength(4)
+
+        const subscriptionsFromApi = await api.getSubscription(subscription.status.at(-1))
+        const subscriptionFromApi = subscriptionsFromApi.at(0)
+
+        console.log('status', JSON.stringify(subscriptionStatus, null, 2))
+
+        const status = subscriptionStatus.at(-1)
+
+        expect(status.alert_id).toEqual(index.SubscriptionInfo.HYDRATION_SUBSCRIPTION_CANCELLED)
+        expect(status.alert_name).toEqual(index.SubscriptionInfo.HYDRATION_SUBSCRIPTION_CANCELLED)
+        expect(status.currency).toEqual(subscriptionFromApi.last_payment.currency)
+        expect(status.description).toEqual('deleted')
+        expect(status.next_bill_date).toBeUndefined()
+        expect(status.quantity).toEqual('')
+        expect(status.update_url).toBeUndefined()
+        expect(status.subscription_id).toEqual(subscriptionFromApi.subscription_id)
+        expect(status.subscription_plan_id).toEqual(subscriptionFromApi.plan_id)
+        expect(status.cancel_url).toBeUndefined()
+        expect(status.vendor_user_id).toEqual(subscriptionFromApi.user_id)
+
+        const signUpDate = new Date(subscriptionFromApi.signup_date)
+        const expectedEndDate = new Date(signUpDate.getTime())
+
+        while (expectedEndDate.getDate() !== signUpDate.getDate() - 1) {
+            expectedEndDate.setTime(expectedEndDate.getTime() + 1000 * 60 * 60 * 24)
+        }
+
+        expectedEndDate.setUTCHours(23)
+        expectedEndDate.setUTCMinutes(59)
+        expectedEndDate.setUTCSeconds(59)
+        expectedEndDate.setUTCMilliseconds(0)
+
+        expect(new Date(status.event_time).toISOString()).toEqual(expectedEndDate.toISOString())
     })
-
-    const { status: subscriptionStatus } = subscription
-    expect(subscriptionStatus).toHaveLength(4)
-
-    const subscriptionsFromApi = await api.getSubscription(subscription.status.at(-1))
-    const subscriptionFromApi = subscriptionsFromApi.at(0)
-
-    const status = subscriptionStatus.at(-1)
-
-    expect(status.alert_id).toEqual(index.SubscriptionInfo.HYDRATION_SUBSCRIPTION_CANCELLED)
-    expect(status.alert_name).toEqual(index.SubscriptionInfo.HYDRATION_SUBSCRIPTION_CANCELLED)
-    expect(status.currency).toEqual(subscriptionFromApi.last_payment.currency)
-    expect(status.description).toEqual('deleted')
-    expect(status.next_bill_date).toBeUndefined()
-    expect(status.quantity).toEqual('')
-    expect(status.update_url).toBeUndefined()
-    expect(status.subscription_id).toEqual(subscriptionFromApi.subscription_id)
-    expect(status.subscription_plan_id).toEqual(subscriptionFromApi.plan_id)
-    expect(status.cancel_url).toBeUndefined()
-    expect(status.vendor_user_id).toEqual(subscriptionFromApi.user_id)
-
-    const signUpDate = new Date(subscriptionFromApi.signup_date)
-    const expectedEndDate = new Date(signUpDate.getTime())
-
-    while (expectedEndDate.getDate() !== signUpDate.getDate() - 1) {
-        expectedEndDate.setTime(expectedEndDate.getTime() + 1000 * 60 * 60 * 24)
-    }
-
-    expectedEndDate.setUTCHours(23)
-    expectedEndDate.setUTCMinutes(59)
-    expectedEndDate.setUTCSeconds(59)
-    expectedEndDate.setUTCMilliseconds(0)
-
-    expect(new Date(status.event_time).toISOString()).toEqual(expectedEndDate.toISOString())
 })
