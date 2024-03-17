@@ -8,6 +8,7 @@ const subscriptions = new index.SubscriptionHooks('api_client')
 
 const storageResource = require('../../lib/firestore/nested-firestore-resource')
 const SubscriptionInfo = require('../../lib/subscription-info')
+const expectWithRetry = require('./expect-with-retry.js')
 const storage = storageResource({ documentPath: 'api_client', resourceName: 'api_clients' })
 
 let subscriptionInfo
@@ -177,7 +178,7 @@ test('provides enough data for a hydrated status to look like a real one', async
     expect(sub['33590']).toBeFalsy()
 
     // .. now hydrate status again ..
-    await subscriptionHydration.hydrateSubscriptionCreated([apiClientId], { subscription_id: subscriptionId }, 'checkoutId');
+    await subscriptionHydration.hydrateSubscriptionCreated([apiClientId], { subscription_id: subscriptionId }, 'checkoutId')
 
     // .. and expect subscription to be active again
     const subInfo = await subscriptionInfo.getSubscriptionInfo([apiClientId])
@@ -208,7 +209,7 @@ test('provides enough data for a hydrated payment to look like a real one', asyn
     expect(sub['33590']).toBeFalsy()
 
     // .. now hydrate status again ..
-    await subscriptionHydration.hydrateSubscriptionCreated([apiClientId], { subscription_id: subscriptionId }, 'checkoutId');
+    await subscriptionHydration.hydrateSubscriptionCreated([apiClientId], { subscription_id: subscriptionId }, 'checkoutId')
 
     // .. and expect subscription to be active again
     const subInfo = await subscriptionInfo.getSubscriptionInfo([apiClientId])
@@ -302,7 +303,6 @@ test('hydrate a deleted subscription', async ({ page }) => {
 
     try {
         await api.cancelSubscription(order)
-        await new Promise((resolve) => setTimeout(resolve, 10000))
     } catch (e) {
         if (e.message !== index.SubscriptionInfo.ERROR_SUBSCRIPTION_ALREADY_CANCELLED) {
             throw e
@@ -310,11 +310,14 @@ test('hydrate a deleted subscription', async ({ page }) => {
     }
 
     // .. now hydrate status again ..
-    await subscriptionHydration.hydrateSubscriptionCancelled([apiClientId], '33590');
+    subscription = await expectWithRetry(async () => {
+        await subscriptionHydration.hydrateSubscriptionCancelled([apiClientId], '33590');
 
-    ({ subscription } = await storage.get([apiClientId]))
-    let sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription, new Date(new Date().getTime() + 1000 * 3600 * 24 * 35))
-    expect(sub['33590']).toBeFalsy()
+        const { subscription } = await storage.get([apiClientId])
+        let sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription, new Date(new Date().getTime() + 1000 * 3600 * 24 * 35))
+        expect(sub['33590']).toBeFalsy()
+        return subscription
+    })
 
     const { status: subscriptionStatus } = subscription
     expect(subscriptionStatus).toHaveLength(4)

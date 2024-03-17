@@ -3,6 +3,7 @@
 const { randomUUID } = require('crypto')
 const { test, expect } = require('@playwright/test')
 const { expect: chaiExpect } = require('chai')
+const expectWithRetry = require('./expect-with-retry.js')
 
 const index = require('../../lib/index')
 const subscriptions = new index.SubscriptionHooks('api_client')
@@ -107,10 +108,13 @@ test('test cancel via subscription info and subscription object', async ({ page 
     await createNewSubscription(page, apiClientId)
 
     // .. check it was stored and payment status was received ..
-    let { subscription } = await storage.get([apiClientId])
-    expect(subscription).not.toBeFalsy()
-    expect(subscription.status).toHaveLength(2)
-    expect(subscription.payments).toHaveLength(1)
+    let subscription = await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription).not.toBeFalsy()
+        expect(subscription.status).toHaveLength(2)
+        expect(subscription.payments).toHaveLength(1)
+        return subscription
+    })
 
     validateStatus(subscription.status[1])
 
@@ -122,12 +126,14 @@ test('test cancel via subscription info and subscription object', async ({ page 
     ({ subscription } = await storage.get([apiClientId]))
     const success = await subscriptionInfo.cancelSubscription(subscription, '33590')
     expect(success).toBeTruthy()
-    await new Promise((resolve) => setTimeout(resolve, 10000));
 
     // ... verify subscription still active today ...
-    ({ subscription } = await storage.get([apiClientId]))
-    expect(subscription.status).toHaveLength(3)
-    expect(subscription.payments).toHaveLength(1)
+    subscription = await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription.status).toHaveLength(3)
+        expect(subscription.payments).toHaveLength(1)
+        return subscription
+    })
 
     validateStatus(subscription.status[2])
 
@@ -144,10 +150,13 @@ test('test cancel via subscription info and client id array', async ({ page }) =
     await createNewSubscription(page, apiClientId)
 
     // .. check it was stored and payment status was received ..
-    let { subscription } = await storage.get([apiClientId])
-    expect(subscription).not.toBeFalsy()
-    expect(subscription.status).toHaveLength(2)
-    expect(subscription.payments).toHaveLength(1)
+    let subscription = await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription).not.toBeFalsy()
+        expect(subscription.status).toHaveLength(2)
+        expect(subscription.payments).toHaveLength(1)
+        return subscription
+    })
 
     validateStatus(subscription.status[1])
 
@@ -158,12 +167,14 @@ test('test cancel via subscription info and client id array', async ({ page }) =
     // cancel subscription ...
     const success = await subscriptionInfo.cancelSubscription([apiClientId], '33590')
     expect(success).toBeTruthy()
-    await new Promise((resolve) => setTimeout(resolve, 10000));
 
     // ... verify subscription still active today ...
-    ({ subscription } = await storage.get([apiClientId]))
-    expect(subscription.status).toHaveLength(3)
-    expect(subscription.payments).toHaveLength(1)
+    subscription = await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription.status).toHaveLength(3)
+        expect(subscription.payments).toHaveLength(1)
+        return subscription
+    })
 
     validateStatus(subscription.status[2])
 
@@ -180,10 +191,13 @@ test('test cancel via api', async ({ page }) => {
     await createNewSubscription(page, apiClientId)
 
     // .. check it was stored and payment status was received ..
-    let { subscription } = await storage.get([apiClientId])
-    expect(subscription).not.toBeFalsy()
-    expect(subscription.status).toHaveLength(2)
-    expect(subscription.payments).toHaveLength(1)
+    let subscription = await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription).not.toBeFalsy()
+        expect(subscription.status).toHaveLength(2)
+        expect(subscription.payments).toHaveLength(1)
+        return subscription
+    })
 
     validateStatus(subscription.status[1])
 
@@ -194,12 +208,14 @@ test('test cancel via api', async ({ page }) => {
     // cancel subscription ...
     const success = await api.cancelSubscription(subscription.status[1])
     expect(success).toBeTruthy()
-    await new Promise((resolve) => setTimeout(resolve, 20000));
 
     // ... verify subscription still active today ...
-    ({ subscription } = await storage.get([apiClientId]))
-    expect(subscription.status).toHaveLength(3)
-    expect(subscription.payments).toHaveLength(1)
+    subscription = await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription.status).toHaveLength(3)
+        expect(subscription.payments).toHaveLength(1)
+        return subscription
+    })
 
     validateStatus(subscription.status[2])
 
@@ -216,10 +232,13 @@ test('test update via subscription info and subscription object', async ({ page 
     await createNewSubscription(page, apiClientId)
 
     // .. check it was stored and payment status was received ..
-    let { subscription } = await storage.get([apiClientId])
-    expect(subscription).not.toBeFalsy()
-    expect(subscription.status).toHaveLength(2)
-    expect(subscription.payments).toHaveLength(1)
+    let subscription = await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription).not.toBeFalsy()
+        expect(subscription.status).toHaveLength(2)
+        expect(subscription.payments).toHaveLength(1)
+        return subscription
+    })
 
     validateStatus(subscription.status[1])
 
@@ -230,13 +249,14 @@ test('test update via subscription info and subscription object', async ({ page 
     // update subscription plan via api ...
     const updated = await subscriptionInfo.updateSubscription(subscription, '33590', '35141')
     expect(updated).toBeTruthy()
-    await new Promise((resolve) => setTimeout(resolve, 30000));
 
-    // .. check  new status and payments added ...
-    ({ subscription } = await storage.get([apiClientId]))
-    expect(subscription).not.toBeFalsy()
-    expect(subscription.status).toHaveLength(4)
-    expect(subscription.payments).toHaveLength(2)
+    // ... verify subscription still active today ...
+    subscription = await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription.status).toHaveLength(4)
+        expect(subscription.payments).toHaveLength(2)
+        return subscription
+    })
 
     // .. and still active
     sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
@@ -249,10 +269,13 @@ test('test update via subscription info and api client id', async ({ page }) => 
     await createNewSubscription(page, apiClientId)
 
     // .. check it was stored and payment status was received ..
-    let { subscription } = await storage.get([apiClientId])
-    expect(subscription).not.toBeFalsy()
-    expect(subscription.status).toHaveLength(2)
-    expect(subscription.payments).toHaveLength(1)
+    let subscription = await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription).not.toBeFalsy()
+        expect(subscription.status).toHaveLength(2)
+        expect(subscription.payments).toHaveLength(1)
+        return subscription
+    })
 
     validateStatus(subscription.status[1])
 
@@ -263,13 +286,14 @@ test('test update via subscription info and api client id', async ({ page }) => 
     // update subscription plan via api ...
     const updated = await subscriptionInfo.updateSubscription([apiClientId], '33590', '35141')
     expect(updated).toBeTruthy()
-    await new Promise((resolve) => setTimeout(resolve, 30000));
 
-    // .. check  new status and payments added ...
-    ({ subscription } = await storage.get([apiClientId]))
-    expect(subscription).not.toBeFalsy()
-    expect(subscription.status).toHaveLength(4)
-    expect(subscription.payments).toHaveLength(2)
+    // ... verify subscription still active today ...
+    subscription = await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription.status).toHaveLength(4)
+        expect(subscription.payments).toHaveLength(2)
+        return subscription
+    })
 
     // .. and still active
     sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
@@ -282,10 +306,13 @@ test('test update via api', async ({ page }) => {
     await createNewSubscription(page, apiClientId)
 
     // .. check it was stored and payment status was received ..
-    let { subscription } = await storage.get([apiClientId])
-    expect(subscription).not.toBeFalsy()
-    expect(subscription.status).toHaveLength(2)
-    expect(subscription.payments).toHaveLength(1)
+    let subscription = await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription).not.toBeFalsy()
+        expect(subscription.status).toHaveLength(2)
+        expect(subscription.payments).toHaveLength(1)
+        return subscription
+    })
 
     validateStatus(subscription.status[1])
 
@@ -295,13 +322,14 @@ test('test update via api', async ({ page }) => {
 
     // update subscription plan via api ...
     await api.updateSubscriptionPlan(subscription.status[1], '35141')
-    await new Promise((resolve) => setTimeout(resolve, 30000));
 
-    // .. check  new status and payments added ...
-    ({ subscription } = await storage.get([apiClientId]))
-    expect(subscription).not.toBeFalsy()
-    expect(subscription.status).toHaveLength(4)
-    expect(subscription.payments).toHaveLength(2)
+    // ... verify subscription still active today ...
+    subscription = await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription.status).toHaveLength(4)
+        expect(subscription.payments).toHaveLength(2)
+        return subscription
+    })
 
     // .. and still active
     sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
@@ -314,10 +342,13 @@ test('test refund via api', async ({ page }) => {
     await createNewSubscription(page, apiClientId)
 
     // .. check it was stored and payment status was received ..
-    let { subscription } = await storage.get([apiClientId])
-    expect(subscription).not.toBeFalsy()
-    expect(subscription.status).toHaveLength(2)
-    expect(subscription.payments).toHaveLength(1)
+    let subscription = await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription).not.toBeFalsy()
+        expect(subscription.status).toHaveLength(2)
+        expect(subscription.payments).toHaveLength(1)
+        return subscription
+    })
 
     validateStatus(subscription.status[1])
 
@@ -328,15 +359,16 @@ test('test refund via api', async ({ page }) => {
     // refund subscription plan via api ...
     const refunded = await api.refundFullPayment(subscription.payments[0])
     expect(refunded).toBeTruthy()
-    await new Promise((resolve) => setTimeout(resolve, 30000));
 
     // .. check no new status and payments added ...
     // .. because refunds need to be reviewed by paddle time 
     // .. it's their money we're playing with
-    ({ subscription } = await storage.get([apiClientId]))
-    expect(subscription).not.toBeFalsy()
-    expect(subscription.status).toHaveLength(2)
-    expect(subscription.payments).toHaveLength(1)
+    subscription = await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription.status).toHaveLength(2)
+        expect(subscription.payments).toHaveLength(1)
+        return subscription
+    })
 
     // .. and still active
     sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
@@ -348,10 +380,13 @@ test('test create, update, and cancel via ui', async ({ page }) => {
     await createNewSubscription(page, apiClientId)
 
     // .. check it was stored and payment status was received ..
-    let { subscription } = await storage.get([apiClientId])
-    expect(subscription).not.toBeFalsy()
-    expect(subscription.status).toHaveLength(2)
-    expect(subscription.payments).toHaveLength(1)
+    let subscription = await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription).not.toBeFalsy()
+        expect(subscription.status).toHaveLength(2)
+        expect(subscription.payments).toHaveLength(1)
+        return subscription
+    })
 
     validateStatus(subscription.status[1])
 
@@ -361,13 +396,14 @@ test('test create, update, and cancel via ui', async ({ page }) => {
 
     // update payment method ...
     await updatePaymentMethod(page, subscription)
-    await new Promise((resolve) => setTimeout(resolve, 10000));
 
     // .. check no new status or payments added ...
-    ({ subscription } = await storage.get([apiClientId]))
-    expect(subscription).not.toBeFalsy()
-    expect(subscription.status).toHaveLength(2)
-    expect(subscription.payments).toHaveLength(1)
+    subscription = await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription.status).toHaveLength(2)
+        expect(subscription.payments).toHaveLength(1)
+        return subscription
+    })
 
     // .. and still active
     sub = await subscriptionInfo.getAllSubscriptionsStatus(subscription)
@@ -375,12 +411,14 @@ test('test create, update, and cancel via ui', async ({ page }) => {
 
     // cancel subscription ...
     await cancelSubscription(page, subscription)
-    await new Promise((resolve) => setTimeout(resolve, 10000));
 
     // ... verify subscription still active today ...
-    ({ subscription } = await storage.get([apiClientId]))
-    expect(subscription.status).toHaveLength(3)
-    expect(subscription.payments).toHaveLength(1)
+    subscription = await expectWithRetry(async () => {
+        const { subscription } = await storage.get([apiClientId])
+        expect(subscription.status).toHaveLength(3)
+        expect(subscription.payments).toHaveLength(1)
+        return subscription
+    })
 
     validateStatus(subscription.status[2])
 
